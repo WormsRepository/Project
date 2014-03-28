@@ -12,6 +12,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of worms involving an x-coordinate, an y-coordinate, a direction in radians, a radius (in meter),
  * a minimum radius, a name, a mass (in kilogram), current amount of action points,
  * maximum amount of action points, a density and the standard acceleration.
+ * 
  * @version 1.0
  * @author Laurens Loots, Pieter Vos
  */
