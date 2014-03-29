@@ -8,10 +8,12 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
+//TODO add class invariants!
 /**
  * A class of worms involving an x-coordinate, an y-coordinate, a direction in radians, a radius (in meter),
  * a minimum radius, a name, a mass (in kilogram), current amount of action points,
  * maximum amount of action points, a density and the standard acceleration.
+ *
  * 
  * @version 1.0
  * @author Laurens Loots, Pieter Vos
@@ -174,6 +176,7 @@ public class Worm {
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
 		return getDistance()/(getInitialVelocity() * Math.cos(getDirection()));
+		//TODO if direction = pi/2 method is not correct!! test it!
 	}
 
 	/**
