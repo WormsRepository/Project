@@ -4,7 +4,6 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 
-
 /**
  * A class of exceptions signaling an illegal radius of worms.
  * 	Each illegal radius exception involves the illegal radius and the worm.

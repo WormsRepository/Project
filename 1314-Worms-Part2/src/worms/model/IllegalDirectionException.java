@@ -4,7 +4,6 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 
-
 /**
  * A class of exceptions signaling an illegal direction for a jump.
  * 	Each illegal direction exception involves the illegal direction and the worm.

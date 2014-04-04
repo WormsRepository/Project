@@ -20,26 +20,31 @@ public class WormTest {
 
 	/**
 	 * Variable referencing a worm with direction 4.
-	 * 
 	 */
 	private static Worm wormDirection4;
 
 	/**
 	 * Variable referencing a worm with direction 2.
-	 * 
 	 */
 	private static Worm wormDirection2;
+	
+	/**
+	 * Variable referencing a worm with direction 0.
+	 */
+	private static Worm wormDirection0;
 
 	/**
 	 * Set up a mutable test fixture.
 	 * 
 	 * @post The variable wormDirection4 references a new worm with radius 0.25, x and y coordinates 0, and direction 4.
 	 * @post The variable wormDirection2 references a new worm with radius 0.25, x and y coordinates 0, and direction 2.
+	 * @post The variable wormDirection0 references a new worm with radius 0.25, x and y coordinates 0, and direction 0.
 	 */
 	@Before
 	public void setUpMutableFixture(){
 		wormDirection4 = new Worm(0.0 , 0.0 , 4 , 0.25 , "Pieter");
 		wormDirection2 = new Worm(0.0 , 0.0 , 2 , 0.25 , "Pieter");
+		wormDirection0 = new Worm(0.0 , 0.0 , 0 , 0.25 , "Laurens");
 	}
 
 	/**
@@ -105,7 +110,21 @@ public class WormTest {
 	public void canMove_NegativeSteps() {
 		assertFalse(wormRadius1.canMove(-1));
 	}
-
+	
+	@Test
+	public void getJumpTime_Zero()
+		throws Exception{
+		assertTrue(wormDirection0.getJumpTime() == 0);
+	}
+	
+	@Test
+	public void getJumpTime_Vertical()
+		throws Exception{
+		wormDirection0.turn(Math.PI/2);
+		assertTrue(wormDirection0.getDirection() == Math.PI/2);
+		assertTrue(wormDirection0.getJumpTime() != 0);
+	}
+	
 	@Test
 	public void jump_LegalCase() 
 		throws Exception	{
