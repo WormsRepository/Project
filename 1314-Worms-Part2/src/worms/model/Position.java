@@ -160,6 +160,57 @@ public class Position{
 	}
 	
 	/**
+	 * Change the position of the worm as the result of a jump from the current position 
+	 * and with respect to the worm's orientation, his mass, the standard acceleration 
+	 * and the number of remaining action points.
+	 * 
+	 * @effect	The x coordinate is set to the old x coordinate incremented 
+	 * 			with the distance of the jump.
+	 * 			| this.setX(this.getX() + this.getDistance());
+	 * @effect	The new amount of current action points is set to zero.
+	 * 			| worm.setCurrentActionPoints(0)
+	 */
+	public void jump() 
+			throws IllegalActionPointsException, IllegalDirectionException
+	{
+		double distance = getDistance();
+		setX(getX() + distance);
+		worm.setCurrentActionPoints(0);
+	}
+	
+	/**
+	 * Moves the worm in the current direction of the worm with the given number of steps.
+	 * 
+	 * @param 	nbSteps
+	 * 			The number of steps to move.
+	 * @post 	The x position and the y position are changed based on the number of steps, the radius,
+	 * 			the direction and the starting values of x and y of the worm. 
+	 * 			The new amount of current action points of the worm is the old amount of 
+	 * 			action points minus the used action points.
+	 * 			| new.getX() == getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps
+	 * 			| new.getY() == getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps
+	 * 			| new.worm.getCurrentActionPoints() ==
+	 * 			|		 worm.getCurrentActionPoints() - (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) 
+	 * 			|			+ Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps)
+	 * @Throws	IllegalArgumentException("The argument 'number of steps' is invalid.")
+	 * 			The given amount of steps is not a valid amount of steps.
+	 * 			| !canMove(nbSteps)
+	 */
+	public void move(int nbSteps) 
+			throws IllegalArgumentException
+	{
+		if(! canMove(nbSteps))
+			throw new IllegalArgumentException("The argument 'number of steps' is invalid.");
+
+		setX(getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps);
+		setY(getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps);
+
+		long costOfActionPoints = (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
+				Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
+		worm.setCurrentActionPoints(worm.getCurrentActionPoints() - costOfActionPoints);
+	}
+	
+	/**
 	 * Calculate the distance covered by a jump in the current direction of the worm
 	 * and with respect to the worm's mass, the standard acceleration 
 	 * and the number of remaining action points.
@@ -209,57 +260,6 @@ public class Position{
 			throw new IllegalDirectionException(worm.getDirection(),worm);
 		double force = (5.0*(double)worm.getCurrentActionPoints()) + (worm.getMass() * STANDARD_ACCELERATION);
 		return (force/worm.getMass()) * 0.5;
-	}
-	
-	/**
-	 * Change the position of the worm as the result of a jump from the current position 
-	 * and with respect to the worm's orientation, his mass, the standard acceleration 
-	 * and the number of remaining action points.
-	 * 
-	 * @effect	The x coordinate is set to the old x coordinate incremented 
-	 * 			with the distance of the jump.
-	 * 			| this.setX(this.getX() + this.getDistance());
-	 * @effect	The new amount of current action points is set to zero.
-	 * 			| worm.setCurrentActionPoints(0)
-	 */
-	public void jump() 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
-		double distance = getDistance();
-		setX(getX() + distance);
-		worm.setCurrentActionPoints(0);
-	}
-	
-	/**
-	 * Moves the worm in the current direction of the worm with the given number of steps.
-	 * 
-	 * @param 	nbSteps
-	 * 			The number of steps to move.
-	 * @post 	The x position and the y position are changed based on the number of steps, the radius,
-	 * 			the direction and the starting values of x and y of the worm. 
-	 * 			The new amount of current action points of the worm is the old amount of 
-	 * 			action points minus the used action points.
-	 * 			| new.getX() == getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps
-	 * 			| new.getY() == getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps
-	 * 			| new.worm.getCurrentActionPoints() ==
-	 * 			|		 worm.getCurrentActionPoints() - (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) 
-	 * 			|			+ Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps)
-	 * @Throws	IllegalArgumentException("The argument 'number of steps' is invalid.")
-	 * 			The given amount of steps is not a valid amount of steps.
-	 * 			| !canMove(nbSteps)
-	 */
-	public void move(int nbSteps) 
-			throws IllegalArgumentException
-	{
-		if(! canMove(nbSteps))
-			throw new IllegalArgumentException("The argument 'number of steps' is invalid.");
-
-		setX(getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps);
-		setY(getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps);
-
-		long costOfActionPoints = (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
-				Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
-		worm.setCurrentActionPoints(worm.getCurrentActionPoints() - costOfActionPoints);
 	}
 	
 	/**
