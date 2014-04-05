@@ -54,9 +54,10 @@ public class Worm {
 	 * @effect	The name of this new worm is set to the given name.
 	 * 			| this.setName(name)
 	 */
-	public Worm(double x, double y, double direction, double radius,String name) 
+	public Worm(World world, double x, double y, double direction, double radius,String name) 
 			throws IllegalRadiusException, IllegalNameException
 	{
+		this.world = world;
 		position = new Position(this,x,y);
 		setDirection(direction);
 		setRadius(radius);
@@ -64,7 +65,18 @@ public class Worm {
 		setName(name);
 	}
 
-
+	/**
+	 * Return the world to which this worm is attached.
+	 */
+	@Basic @Raw
+	public World getWorld(){
+		return this.world;
+	}
+	
+	/**
+	 * Variable referencing the world to which this worm is attached.
+	 */
+	private World world = null;
 
 	/**
 	 * Return the x-coordinate of the position of the worm (in meter).
@@ -554,5 +566,5 @@ public class Worm {
 		this.name = name;
 	}
 
-	private String name =" ";
+	private String name = " ";
 }
