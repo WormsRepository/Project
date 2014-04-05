@@ -351,6 +351,8 @@ public class Worm {
 	 * 			| 	then (this.setDirection(getDirectin() + angle)	
 	 */
 	public void turn(double angle) {
+		assert(canTurn(angle)):
+			"Precondition: Acceptable angle to turn";
 		double orientation = getDirection() + angle;
 		if(!isValidDirection(orientation))
 		{
@@ -376,6 +378,8 @@ public class Worm {
 	@Model @Raw
 	private void setDirection(double direction)
 	{
+		assert(isValidDirection(direction)):
+			"Precondition: Acceptable direction to set";
 		this.direction = direction;
 	}
 
