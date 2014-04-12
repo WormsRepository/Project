@@ -96,7 +96,7 @@ public class World {
 	 * 
 	 * @return True if the given region is impassable, false otherwise.
 	 */
-	boolean isImpassable(World world, double x, double y, double radius){
+	boolean isImpassable(double x, double y, double radius){
 		//TODO
 	}
 	
@@ -105,14 +105,13 @@ public class World {
 	 * defined by the given center coordinates and radius,
 	 * is passable and adjacent to impassable terrain. 
 	 * 
-	 * @param world The world in which to check adjacency
 	 * @param x The x-coordinate of the center of the circle to check  
 	 * @param y The y-coordinate of the center of the circle to check
 	 * @param radius The radius of the circle to check
 	 * 
 	 * @return True if the given region is passable and adjacent to impassable terrain, false otherwise.
 	 */
-	boolean isAdjacent(World world, double x, double y, double radius){
+	public boolean isAdjacent(double x, double y, double radius){
 		//TODO
 	}
 	

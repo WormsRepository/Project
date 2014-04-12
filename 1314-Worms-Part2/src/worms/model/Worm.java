@@ -11,7 +11,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 /**
  * A class of worms involving an x-coordinate, an y-coordinate, a direction in radians, a radius (in meter),
  * a minimum radius, a name, a mass (in kilogram), current amount of action points,
- * maximum amount of action points, a density and the standard acceleration.
+ * maximum amount of action points, a density, the standard acceleration and a world.
  *
  * @invar	The direction of each worm must be a valid direction for any worm.
  * 			| isValidDirection(getDirection())
@@ -23,14 +23,18 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
  */
+//TODO world invariants? isValidWorld?
 public class Worm {
 
 
 	/**
 	 * Create a new worm that is positioned at the given position,
 	 * looks in the given direction, has the given radius, the given name,
-	 * the right mass and the right maximum amount of action points
+	 * the right mass, the right maximum amount of action points and has
+	 * the given world as the world to which this new worm is attached.
 	 * 
+	 * @param	world
+	 * 			The world to which this new worm is attached.
 	 * @param	x
 	 * 			The x-coordinate of the position of the new worm (in meter).
 	 * @param 	y
