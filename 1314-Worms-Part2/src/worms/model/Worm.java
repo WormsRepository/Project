@@ -30,11 +30,8 @@ public class Worm {
 	/**
 	 * Create a new worm that is positioned at the given position,
 	 * looks in the given direction, has the given radius, the given name,
-	 * the right mass, the right maximum amount of action points and has
-	 * the given world as the world to which this new worm is attached.
+	 * the right mass and the right amount of maximum action points.
 	 * 
-	 * @param	world
-	 * 			The world to which this new worm is attached.
 	 * @param	x
 	 * 			The x-coordinate of the position of the new worm (in meter).
 	 * @param 	y
@@ -58,10 +55,9 @@ public class Worm {
 	 * @effect	The name of this new worm is set to the given name.
 	 * 			| this.setName(name)
 	 */
-	public Worm(World world, double x, double y, double direction, double radius,String name) 
+	public Worm(double x, double y, double direction, double radius,String name) 
 			throws IllegalRadiusException, IllegalNameException
 	{
-		this.world = world;
 		position = new Position(this,x,y);
 		setDirection(direction);
 		setRadius(radius);
@@ -76,6 +72,8 @@ public class Worm {
 	public World getWorld(){
 		return this.world;
 	}
+	
+	//TODO setter en checkers voor world...
 	
 	/**
 	 * Variable referencing the world to which this worm is attached.
