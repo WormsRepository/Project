@@ -1,6 +1,7 @@
 package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 
@@ -8,31 +9,57 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of food rations involving an x-coordinate, an y-coordinate, 
  * a radius (in meter), the activity of food rations and a world.
  * 
+ * @invar	| isValidPosition(getX(),getY())
+ * @invar	| hasProperWorld()
+ * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
  */
-//TODO class invariants...
 public class Food {
 	
 	/**
 	 * Create a new food ration that is positioned at the given
-	 * coordinates and has the given world as the world to which 
-	 * this new food ration is attached.
+	 * coordinates.
 	 * 
-	 * @param 	world
-	 * 			The world to which this new food ration is attached.
 	 * @param 	x
 	 * 			The x-coordinate of this new food ration (in meter).
 	 * @param 	y
 	 * 			The y-coordinate of this new food ration (in meter).
-	 * @post	| new.getWorld() = world
 	 * @effect	| this.setPosition(x,y)
 	 */
-	public Food(World world, double x, double y) 
+	public Food(double x, double y) 
 			throws IllegalArgumentException{
-		this.world = world;
 		this.setPosition(x,y);
 	}
+	
+	
+	
+	/**
+	 * Deactivate this food.
+	 * 
+	 * @post	| ( !new.isActive() )
+	 * @post	| ( !(new getWorld()).hasAsFood(this) )
+	 * 			| && new.getWorld() == null
+	 */
+	public void deactivate(){
+		world.removeAsFood(this);
+		this.isActive = false;
+	}
+	
+	/**
+	 * Returns whether or not this food ration is alive (active), i.e., not eaten.
+	 */
+	@Basic @Raw
+	public boolean isActive(){
+		return this.isActive;
+	}
+	
+	/**
+	 * Variable registering whether or not this food is active
+	 */
+	private boolean isActive = true;
+	
+	//TODO veranderen naar isTerminated?
 	
 	
 	
@@ -42,6 +69,51 @@ public class Food {
 	@Basic @Raw
 	public World getWorld(){
 		return this.world;
+	}
+	
+	/**
+	 * Check whether this food can be attached to the given world.
+	 * 
+	 * @param 	world
+	 * 			The world to check.
+	 * @return	| result == ( (world == null) || 
+	 * 			|				(world.canHaveAsFood(this) )
+	 */
+	@Raw
+	public boolean canHaveAsWorld(World world){
+		return world == null || world.canHaveAsFood(this);
+	}
+	
+	/**
+	 * Check whether this food has a proper world to
+	 * which it is attached.
+	 * 
+	 * @return	| result == ( canHaveAsWorld(getWorld()) &&
+	 * 			|				( (getWorld() == null) ||
+	 * 			| 					getWorld().hasAsFood(this)))
+	 */
+	@Raw
+	public boolean hasProperWorld(){
+		return canHaveAsWorld(getWorld()) && 
+				(getWorld() == null || getWorld().hasAsFood(this));
+	}
+	
+	/**
+	 * Set the world to which this food is attached to the given world.
+	 * 
+	 * @param 	world
+	 * 			The world to attach this food to.
+	 * @pre		| if(world != null)
+	 * 			|	then world.hasAsFood(this)
+	 * @pre		| if( (world == null) && (getWorld() != null) )
+	 * 			| 	then !getWorld().hasAsFood(this)
+	 * @post	| new.getWorld() == world
+	 */
+	@Raw
+	void setWorld(@Raw World world){
+		assert(world == null || world.hasAsFood(this));
+		assert(world != null || getWorld() == null || !getWorld().hasAsFood(this));
+		this.world = world;
 	}
 	
 	/**
@@ -61,6 +133,7 @@ public class Food {
 	 * 			The y-coordinate to check.
 	 * @return	|world.isAdjacent(x,y,this.getRadius())
 	 */
+	@Raw
 	public boolean isValidPosition(double x, double y){
 		return world.isAdjacent(x,y,getRadius());
 	}
@@ -91,6 +164,7 @@ public class Food {
 	 * @throws 	IllegalArgumentException("This is not a valid position to place a food ration!")
 	 * 			| !isValidPosition(x,y)
 	 */
+	@Model @Raw
 	private void setPosition(double x, double y) 
 			throws IllegalArgumentException{
 		if(! isValidPosition(x,y))
@@ -124,20 +198,5 @@ public class Food {
 	 */
 	private static final double RADIUS = 0.20;
 	
-	
-	
-	/**
-	 * Returns whether or not this food ration is alive (active), i.e., not eaten.
-	 */
-	@Basic @Raw
-	public boolean isActive(){
-		return this.active;
-	}
-	
-	//TODO set active
-	
-	/**
-	 * A boolean variable indicating whether or not this food ration is active.
-	 */
-	private boolean active = true;
+	//TODO set equals and hashcode (afstanden tot middelpunten groter dan 3*radius)
 }

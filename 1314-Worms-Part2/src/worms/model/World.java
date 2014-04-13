@@ -1,7 +1,12 @@
 package worms.model;
 
+
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
+
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 
 public class World {
 	
@@ -38,6 +43,41 @@ public class World {
 		this.height = height;
 		this.passableMap = passableMap;
 	}
+	
+	
+	
+	/**
+	 * Deactivate this world.
+	 * 
+	 * @post	| ( !new.isActive() )
+	 * @post	| for each food in Food
+	 * 			|	( if (this.hasAsFood(food))
+	 * 			|		then ( !(new food).isActive() ) )
+	 * @post	| for each food in Food
+	 * 			|	(!this.hasAsFood(food))
+	 */
+	public void deactivate(){
+		for(Food food: this.foodRations){
+			food.deactivate();
+		}
+		this.isActive = false;
+		//TODO aanvullen wanneer mogelijk
+	}
+	
+	/**
+	 * Returns whether or not this world is active.
+	 */
+	@Basic @Raw
+	public boolean isActive(){
+		return this.isActive;
+	}
+	
+	/**
+	 * Variable registering whether or not this world is active.
+	 */
+	private boolean isActive = true;
+	
+	
 	
 	/**
 	 * 
@@ -89,15 +129,29 @@ public class World {
 	 * defined by the given center coordinates and radius,
 	 * is impassable. 
 	 * 
-	 * @param world The world in which to check impassability 
-	 * @param x The x-coordinate of the center of the circle to check  
-	 * @param y The y-coordinate of the center of the circle to check
-	 * @param radius The radius of the circle to check
-	 * 
-	 * @return True if the given region is impassable, false otherwise.
+	 * @param 	x 
+	 * 			The x-coordinate of the center of the circle to check  
+	 * @param 	y 
+	 * 			The y-coordinate of the center of the circle to check
+	 * @param 	radius 
+	 * 			The radius of the circle to check
+	 * @return 	True if the given region is impassable, false otherwise.
 	 */
-	boolean isImpassable(double x, double y, double radius){
-		//TODO
+	//TODO formal documentation return?
+	public boolean isImpassable(double x, double y, double radius){
+		if(x-radius<0 || x+radius>getWidth() || y-radius<0 || y+radius>getHeight() || radius <= 0)
+			return true;
+		double eindX = x + radius;
+		double eindY = y + radius;
+		for(double huidigeX = x - radius; huidigeX <= eindX; huidigeX += 0.025){
+			for(double huidigeY = y - radius; huidigeY <= eindY; huidigeY += 0.025){
+				if(Math.pow(Math.pow(x-huidigeX,2) + Math.pow(y-huidigeY,2),(1/2)) <= radius){
+					if(isImpassablePoint(huidigeX,huidigeY))
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -105,14 +159,27 @@ public class World {
 	 * defined by the given center coordinates and radius,
 	 * is passable and adjacent to impassable terrain. 
 	 * 
-	 * @param x The x-coordinate of the center of the circle to check  
-	 * @param y The y-coordinate of the center of the circle to check
-	 * @param radius The radius of the circle to check
+	 * @param 	x 
+	 * 			The x-coordinate of the center of the circle to check  
+	 * @param 	y 
+	 * 			The y-coordinate of the center of the circle to check
+	 * @param 	radius 
+	 * 			The radius of the circle to check
 	 * 
-	 * @return True if the given region is passable and adjacent to impassable terrain, false otherwise.
+	 * @return 	True if the given region is passable and adjacent to impassable terrain, false otherwise.
 	 */
 	public boolean isAdjacent(double x, double y, double radius){
-		//TODO
+		if(isImpassable(x,y,radius))
+			return false;
+		//TODO verder afwerken
+	}
+	
+	private boolean isImpassablePoint(double x, double y){
+		double temp = x*getPassableMap().length/getWidth();
+		int intX = (int)temp;
+		temp = y*getPassableMap()[0].length/getHeight();
+		int intY = (int)temp;
+		return !getPassableMap()[intX][intY];
 	}
 	
 	/**
@@ -170,15 +237,62 @@ public class World {
 	
 	//TEAMNAMES
 	
-	
+	/**
+	 * Check whether this world can have the given food 
+	 * as one of its food rations.
+	 * 
+	 * @param 	food
+	 * 			The food to check.
+	 * @return	| if (food == null)
+	 * 			|	then result == false
+	 * 			| else result ==
+	 * 			| 	( food.isActive() && this.isActive() )
+	 */
+	@Raw
+	public boolean canHaveAsFood(Food food){
+		return food != null && food.isActive() && this.isActive();
+	}
 	
 	/**
-	 * Returns all the food rations in the world
+	 * Check whether this world has proper food rations attached to it.
 	 * 
-	 * (For single-student groups that do not implement food, this method must always return an empty collection)
+	 * @return	| result ==
+	 * 			| 	for each food in Food
+	 * 			|		( if (this.hasAsFood(food))
+	 * 			|			then canHaveAsFood(food)
+	 * 			|				&& (food.getWorld() == this) )
 	 */
-	Collection<Food> getFood(World world){
-		//TODO
+	@Raw
+	public boolean hasProperFoodRations(){
+		for(Food food: this.foodRations){
+			if(!canHaveAsFood(food) || food.getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check whether this world has the given food as
+	 * one of the food rations attached to it.
+	 * 
+	 * @param 	food
+	 * 			The food to check.
+	 */
+	@Basic @Raw
+	public boolean hasAsFood(Food food){
+		return this.foodRations.contains(food);
+	}
+	
+	/**
+	 * Returns all the food rations in this world.
+	 * 
+	 * @return	| ! result.contains(null)
+	 * @return	| for each foodRations in Food
+	 * 			| 	(result.contains(foodRations) ==
+	 * 			|		this.hasAsFoodRations(foodRations))
+	 */
+	public Collection<Food> getFood(){
+		return new HashSet<Food>(this.foodRations);
 	}
 	
 	/**
@@ -187,10 +301,61 @@ public class World {
 	 * 
 	 * 
 	 */
-	void addNewFood(World world){
+	public void addNewFood(){
 		//TODO
 	}
 	
+	/**
+	 * Add the given food to the set of food rations attached to this world.
+	 * 
+	 * @param 	food
+	 * 			The food to be added.
+	 * @post	| new.hasAsFood(food)
+	 * @post	| (new food).getWorld() == this
+	 * @throws 	IllegalArgumentException("You can't add this food.")
+	 * 			| !canHaveAsFood(food)
+	 * @throws 	IllegalArgumentException("You can't add this food.")
+	 * 			| ( (food != null)
+	 * 			| && (food.getWorld() != null) )
+	 */
+	public void addAsFood(Food food) 
+			throws IllegalArgumentException{
+		if(!canHaveAsFood(food))
+			throw new IllegalArgumentException("You can't add this food.");
+		if(food.getWorld() != null)
+			throw new IllegalArgumentException("You can't add this food.");
+		this.foodRations.add(food);
+		food.setWorld(this);
+	}
+	
+	/**
+	 * Remove the given food from the set of food rations
+	 * attached to this world.
+	 * 
+	 * @param 	food
+	 * 			The food to be removed
+	 * @post	| !new.hasAsFood(food)
+	 * @post	| if (hasAsFood(food))
+	 * 			|	((new food).getWorld() == null)
+	 */
+	public void removeAsFood(Food food){
+		if(hasAsFood(food)){
+			this.foodRations.remove(food);
+			food.setWorld(null);
+		}
+	}
+	
+	
+	/**
+	 * Set collecting references to food rations attached to this world.
+	 * 
+	 * @invar	| foodRations != null
+	 * @invar	| for each foodRations in foodRations
+	 * 			|	canHaveAsFood(foodRations)
+	 * @invar	| for each foodRations in foodRations
+	 * 			|	(foodRations.getWorld() == this)
+	 */
+	HashSet<Food> foodRations = new HashSet<Food>();
 	//FOOD
 	
 	
