@@ -19,8 +19,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addNewWorm(World world) {
-		// TODO Auto-generated method stub
-		
+		world.addNewWorm();
 	}
 
 	@Override
@@ -50,8 +49,8 @@ public class Facade implements IFacade {
 	@Override
 	public World createWorld(double width, double height,
 			boolean[][] passableMap, Random random) {
-		// TODO Auto-generated method stub
-		return null;
+		World world = new World(width, height, passableMap, random);
+		return world;
 	}
 
 	@Override

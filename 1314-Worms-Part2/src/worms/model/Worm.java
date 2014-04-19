@@ -569,4 +569,127 @@ public class Worm {
 	}
 
 	private String name = " ";
+	
+	/**
+	 * Returns the name of the weapon that is currently active for the given worm,
+	 * or null if no weapon is active.
+	 */
+	public String getSelectedWeapon()
+	{
+		if(this.weapon.equals(" "))
+			return null;
+		return this.weapon;
+	}
+	
+	/**
+	 * Activates the next weapon for the given worm
+	 */
+	private void selectNextWeapon()
+	{
+		if(this.weapon.equals(" "))
+			this.weapon = "Bazooka";
+		if(this.weapon.equals("Barooka"))
+			this.weapon = "Rifle";
+		if(this.weapon.equals("Rifle"))
+			this.weapon = " ";
+	}
+	private String weapon = " ";
+	
+	/**
+	 * Returns the current number of hit points of the given worm.
+	 */
+	public int getHitPoints(Worm worm)
+	{
+		return this.currentHitPoints;
+	}
+	
+	/**
+	 * Set the amount of current action points of this worm to the given amount.
+	 * 
+	 * @param 	newHitPoints
+	 * 			The new amount of current hit points for this worm.
+	 * @post	If the new amount of current hit points is below zero or greater than
+	 * 			the maximum amount of hit points, nothing happens.
+	 * 			| if(newHitPoints < 0 || newHitPoints > getMaxHitPoints())
+	 * 			|	then new.getCurrentHitPoints() == getCurrentHitPoints()
+	 * 			Else the new amount of current hit points is equal to the given amount.
+	 * 			| else (new.getCurrentHitPoints() == newHitPoints)
+	 */
+	@Model @Raw
+	protected void setCurrentHitPoints(long newHitPoints){
+		if(newHitPoints < 0)
+			{
+			this.currentHitPoints = 0;
+			this.isAlive = false;
+			}
+		
+		if(newHitPoints > getMaxHitPoints())
+			return;
+		this.currentActionPoints = newHitPoints;
+	}
+	
+	private int currentHitPoints = 0;
+	
+	/**
+	 * Set the max action points of this worm according to the mass, 
+	 * if needed change the current amount of action points.
+	 * 
+	 * @post 	the new maximum hitpoints is the mass rounded to the nearest integer.
+	 * 			| new.maxHitPoints = Math.round(getMass())
+	 * 			If the current amount of hit points is bigger than the maximum amount of hit points
+	 * 			the current amount of hit points is set to the maximum amount of hit points.
+	 * 			| if(getCurrentHitPoints() > getMaxHitPoints())
+	 * 			|	then(new.getCurrentHitPoints() == new.getMaxHitPoints())
+	 */
+	@Raw @Model
+	private void setMaxHitPoints()
+	{
+		maxHitPoints = Math.round(getMass());
+		if(getCurrentActionPoints() > getMaxActionPoints())
+			setCurrentActionPoints(getMaxActionPoints());
+	}
+	
+	/**
+	 * Returns the variable maxHitPoints.
+	 * 		The maximum amount of hit points a worm has is represented by the variable maxHitPoints.
+	 */
+	@Basic @Raw
+	public long getMaxHitPoints()
+	{
+		return this.maxHitPoints;
+	}
+	
+	private long maxHitPoints = 0;
+	
+	/**
+	 * returns if the worm is alive or not.
+	 */
+	public boolean isAlive() {
+		return isAlive;
+	}
+	
+	private boolean isAlive = true;
+	
+	/**
+	 * returns the name the worm is in.
+	 */
+	public String getTeamName()
+	{
+		return this.team;
+	}
+	/**
+	 * sets the team for a worm. 
+	 * 
+	 * @param team the new team the worm is assigned to.
+	 */
+	public void setTeam(String team)
+	{
+		this.team = team;
+	}
+	
+	private String team = " ";
+
+	public void setWorld(World world) {
+		this.world = world;
+	}
 }

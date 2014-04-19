@@ -3,6 +3,8 @@ package worms.model;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -138,6 +140,9 @@ public class World {
 	 * @return 	True if the given region is impassable, false otherwise.
 	 */
 	//TODO formal documentation return?
+	
+	//each pixel of an image that is x pixels wide and y pixels high, shall be used to mark a rectangular area
+	// of width/x x height/y of the game world as either passable or impassable
 	public boolean isImpassable(double x, double y, double radius){
 		if(x-radius<0 || x+radius>getWidth() || y-radius<0 || y+radius>getHeight() || radius <= 0)
 			return true;
@@ -171,7 +176,17 @@ public class World {
 	public boolean isAdjacent(double x, double y, double radius){
 		if(isImpassable(x,y,radius))
 			return false;
-		//TODO verder afwerken
+		else
+		{
+			// a location is adjacent to impassable terrain if the location itself is passable and
+			// the location's distance to impassable terrain is smaller than the game object's radius*0.1.
+			for(double angle = 0; angle > 2*Math.PI ; angle = angle + (Math.PI *2)/360)
+			{
+				if (isImpassablePoint(x+(Math.cos(angle)*radius*0.1), y+(Math.sin(angle))*radius*0.1))
+					return true;
+			}
+			return false;
+		}
 	}
 	
 	private boolean isImpassablePoint(double x, double y){
@@ -212,9 +227,24 @@ public class World {
 	/**
 	 * Returns whether the game in the given world has finished.
 	 */
+	
+	// eindigt bij:
+	// - 1 worm over 
+	// - alle overige wormen aan hetzelfde team
 	boolean isGameFinished(World world){
-		//TODO
-	}
+		if (worms.size() <= 1)
+				return true;
+		String winner = " ";
+		for(Worm worm : worms)
+		{
+			if (!worm.getTeamName().equals(" ") && winner.equals(" ") )
+				winner = worm.getTeamName();
+			if (!worm.getTeamName().equals(winner))
+				return false;
+		}
+		return true;
+		
+		}
 	
 	/**
 	 * Returns the name of a single worm if that worm is the winner, or the name
@@ -222,8 +252,19 @@ public class World {
 	 * 
 	 * (For single-student groups that do not implement teams, this method should always return the name of the winning worm, or null if there is no winner)
 	 */
-	String getWinner(World world){
-		//TODO
+	public String getWinner(){
+		if (worms.size() >= 1)
+		{
+			for( Worm worm : worms)
+			{
+				if (worm.getTeamName().equals(" "))
+					return worm.getName();
+				else
+					return worm.getTeamName();
+			}
+		}
+		return null;
+		
 	}
 	
 	/**
@@ -363,23 +404,39 @@ public class World {
 	 * Returns the active worm in the given world (i.e., the worm whose turn it is).
 	 */
 	Worm getCurrentWorm(World world){
-		//TODO
+		return this.currentWorm;
 	}
+	
+	private Worm currentWorm;
 	
 	/**
 	 * Returns all the worms in the given world
 	 */
-	Collection<Worm> getWorms(World world){
-		//TODO
+	Collection<Worm> getWorms(){
+		return worms;
 	}
+	
 
 	
 	/**
 	 * Starts the next turn in the given world
 	 */
-	void startNextTurn(World world){
-		//TODO
+	//vorige worm checken, zoeken in linkedHashSet, en de volgende in de set nemen als current worm.
+	// TODO afmaken als je weet wat een 'turn' precies is.
+	public void startNextTurn(){
+		Iterator<Worm> it = worms.iterator();
+		if (this.currentWorm == null)
+		{
+			lastWorm = currentWorm;
+			
+		}
 	}
+	
+	/**
+	 * the last worm whose turn it was.
+	 */
+	
+	private Worm lastWorm = null;
 	
 	/**
 	 * Create and add a new worm to the given world.
@@ -387,20 +444,108 @@ public class World {
 	 * The new worm can have an arbitrary (but valid) radius and direction.
 	 * The new worm may (but isn't required to) have joined a team.
 	 */
-	void addNewWorm(World world){
-		
+	public void addNewWorm()
+	{
+		//TODO
 	}
 	
+	public boolean canHaveAsWorm(Worm worm){
+		return (worm != null);
+	}
+	
+	/**
+	 * add the given worm to the set of worms attached to this world.
+	 * 
+	 * @param 	worm	
+	 * 			the worm to be added
+	 * @post	this world has the given worm as one of its worms
+	 * 			| new.hasAsWorm(worm)
+	 * @post 	the given worm references this world as the world is is attached to.
+	 * 			| (new.worm).getWorld() == this
+	 * @throws	IllegalArgumentException
+	 * 			this world cannot have the given worm as one of its worms.
+	 * 			|!canHaveAsWorm(worm)
+	 * @throws	IllegalArgumentException
+	 * 			The given worm is already attached to a world.
+	 * 			|( (worm != null) 
+	 * 			| && (worm.getWorld() != null) )
+	 */
+	public void addAsWorm(Worm worm)
+		throws IllegalArgumentException
+	{
+		if(! canHaveAsWorm(worm))
+			throw new IllegalArgumentException();
+		if(worm.getWorld() != null)
+			throw new IllegalArgumentException();
+		this.worms.add(worm);
+		worm.setWorld(this);
+	}
+	
+	/**
+	 * remove the given worm from the set of worms attached to this world
+	 * 
+	 * @param 	worm
+	 * 			the worm to be removed
+	 * @post	this world does not have the given worm as one of its worms
+	 * 			| !new.hasAsWorm(worm)
+	 * @post 	if this world has the given worm as one of its worms,
+	 * 			the given worm is no longer attached to any world.
+	 * 			|if (hasAsWorm(worm))
+	 * 			|	((new worm).getWorld() == null
+	 */
+	public void removeAsWorm(Worm worm){
+		if(hasAsWorm(worm)){
+			this.worms.remove(worm);
+			worm.setWorld(null);
+		}
+	}
+	
+	
+	/**
+	 * check whether this world has the given worm as one
+	 * of its worms attached to it.
+	 * 
+	 * @param 	worm
+	 * 			the worm to check
+	 */
+	@Basic  @Raw
+	public boolean hasAsWorm(Worm worm){
+		return this.worms.contains(worm);
+	}
+	
+	
+	/**
+	 * set collecting references to worms attached to this world.
+	 * 
+	 * @invar	each element in the set of worms references
+	 * 			a worm that is a acceptable worm for this world.
+	 * 			| for each worm in worms:
+	 * 			| 	canHaveAsWorm(worm)
+	 * @invar	Each worm in this set of worms references this world
+	 * 			as the world to which it is attached.
+	 * 			| for each worm in worms:
+	 * 			| 	(worm.getWorld() == this)
+	 */
+	LinkedHashSet<Worm> worms = new LinkedHashSet<Worm>();
+
 	//WORM
 	
 	
 	/**
 	 * Returns the active projectile in the world, or null if no active projectile exists.
 	 */
-	public Projectile getActiveProjectile(World world){
-		//TODO
+	public Projectile getActiveProjectile(){
+		return projectile;
 	}
 	
+	/**
+	 * sets the given projectile as the new active projectile in this world.
+	 */
+	public void setActiveProjectile(Projectile projectile){
+		this.projectile = projectile;
+	}
+	
+	Projectile projectile = null;
 	//PROJECTILE
-
+	
 }
