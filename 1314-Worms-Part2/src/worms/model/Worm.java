@@ -2,6 +2,13 @@
 // Laurens Loots 	Informatica
 // Pieter Vos		Informatica
 
+
+//TODO - movement (hoek aanpasse aan de grond eronder)
+//TODO - jump (zowel projectile als worm) met collision prediction
+//TODO - fall en canFall methode (met een gameIsStarted boolean)
+//TODO - add new worm and food in the world 
+//TODO documentatie aanvullen
+//TODO testklassen schrijven
 package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -19,6 +26,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 			| canHaveAsRadius(getRadius())
  * @invar	The name of each worm must be a valid name for any worm.
  * 			| canHaveAsName(getName())
+ * @invar 	The worms is never in an impassable location
+ * 			| !getWorld().isImpassable(getPosition().getX() , getPosition().getY(), getRadius())
  * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
@@ -113,7 +122,7 @@ public class Worm {
 	 * @post	| new.getWorld() == world
 	 */
 	@Raw
-	void setWorld(@Raw World world){
+	public void setWorld(@Raw World world){
 		assert(world == null || world.hasAsWorm(this));
 		assert(world != null || getWorld() == null || !getWorld().hasAsWorm(this));
 		this.world = world;
@@ -125,120 +134,15 @@ public class Worm {
 	 * Variable referencing the world to which this worm is attached.
 	 */
 	private World world = null;
-
-	/**
-	 * Return the x-coordinate of the position of the worm (in meter).
-	 */
-	@Basic @Raw
-	public double getX() {
-		return this.position.getX();
-	}
-
-	/**
-	 * Set the x-coordinate for this worm to the given x-coordinate.
-	 * 
-	 * @param 	x
-	 * 			The new x-coordinate for this worm (in meter).
-	 * @effect	The x position of this worm is set to the given coordinate.
-	 * 			|this.position.setX(x)
-	 */
-	@Model
-	private void setX(double x)
-	{
-		this.position.setX(x);
-	}
-
-	/**
-	 * Return the y-coordinate of the position of the worm (in meter).
-	 */
-	@Basic @Raw
-	public double getY() {
-		return this.position.getY();
-	}
-
-	/**
-	 * Set the y-coordinate for this worm to the given y-coordinate.
-	 * 
-	 * @param 	y
-	 * 			The new y-coordinate for this worm (in meter).
-	 * @effect	The y position of this worm is set to the given coordinate.
-	 * 			|this.position.setY(y)
-	 */
-	@Model
-	private void setY(double y)
-	{
-		this.position.setY(y);
-	}
-
-	/**
-	 * Check whether the given number of steps is a valid amount of steps for the worm.
-	 * 
-	 * @param 	nbSteps
-	 * 			The amount of steps to check.
-	 * @return	True if and only if the amount of steps is larger than zero 
-	 * 			and there are enough action points available for the move.
-	 * 			| result == this.position.canMove(nbSteps)
-	 */
-	@Raw
-	public boolean canMove(int nbSteps) 
-	{
-		return this.position.canMove(nbSteps);
-	}
-
-	/**
-	 * Return the position of the worm at a given time in a jump.
-	 * 
-	 * @param 	t
-	 * 			The time to check the position of the worm.
-	 * @return	The position of the worm at the given time in the jump.
-	 * 			| result == this.position.getJumpStep(t)
-	 */
-	public double[] getJumpStep(double t) 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
-		return this.position.getJumpStep(t);
-	}
-
-	/**
-	 * Calculate the jump time from a jump in the current direction with the number of remaining action points.
-	 * 
-	 * @return	The time needed for a jump in the current state of the worm.
-	 * 			| result == this.position.getJumpTime()
-	 */
-	public double getJumpTime() 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
-		return this.position.getJumpTime();
-	}
-
-	/**
-	 * Change the position of the worm as the result of a jump from the current position 
-	 * and with respect to the worm's orientation, his mass, the standard acceleration 
-	 * and the number of remaining action points.
-	 * 
-	 * @effect	A help method is executed.
-	 * 			| this.position.jump()
-	 */
-	public void jump() 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
-		this.position.jump();
-	}
-
-	/**
-	 * Moves the worm in the current direction with the given number of steps.
-	 * 
-	 * @param 	nbSteps
-	 * 			The number of steps to move.
-	 * @effect	A help method is executed.
-	 * 			| this.position.move(nbSteps)
-	 */
-	public void move(int nbSteps) 
-			throws IllegalArgumentException
-	{
-		this.position.move(nbSteps);
-	}
 	
+	/**
+	 * Returns the reference to the position of this worm.
+	 */
+	@Basic @Raw
+	public Position getPosition()
+	{
+		return this.position;
+	}
 	/**
 	 * Variable registering the position of the worm.
 	 */
@@ -663,16 +567,18 @@ public class Worm {
 	 */
 	@Model @Raw
 	protected void setCurrentHitPoints(long newHitPoints){
-		if(newHitPoints < 0)
+		if(newHitPoints <= 0)
 			{
 			this.currentHitPoints = 0;
-			this.isAlive = false;
+			this.wormDeath();
 			}
 		
 		if(newHitPoints > getMaxHitPoints())
 			return;
 		this.currentActionPoints = newHitPoints;
 	}
+	
+	
 	
 	private int currentHitPoints = 0;
 	
@@ -712,6 +618,11 @@ public class Worm {
 	 */
 	public boolean isAlive() {
 		return isAlive;
+	}
+	
+	public void wormDeath(){
+		this.getWorld().removeAsWorm(this);
+		this.isAlive = false;
 	}
 	
 	private boolean isAlive = true;

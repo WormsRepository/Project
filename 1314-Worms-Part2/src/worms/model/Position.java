@@ -1,4 +1,4 @@
-package worms.model;
+ package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;

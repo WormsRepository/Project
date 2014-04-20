@@ -216,8 +216,9 @@ public class World {
 	/**
 	 * Starts a game in the given world.
 	 */
-	void startGame(World world){
-		//TODO
+	public void startGame(){
+		Iterator<Worm> it = this.getWorms().iterator();
+		currentWorm = it.next();
 	}
 	
 	//start
@@ -410,7 +411,7 @@ public class World {
 	/**
 	 * Returns the active worm in the given world (i.e., the worm whose turn it is).
 	 */
-	Worm getCurrentWorm(World world){
+	Worm getCurrentWorm(){
 		return this.currentWorm;
 	}
 	
@@ -433,7 +434,6 @@ public class World {
 		Iterator<Worm> it = worms.iterator();
 		if (this.currentWorm == null)
 		{
-			lastWorm = currentWorm;
 			currentWorm = it.next();
 		}
 		else
@@ -448,7 +448,6 @@ public class World {
 					flag = true;
 								
 			}
-			lastWorm = testWorm;
 			
 			if(it.hasNext())
 				currentWorm = it.next();
@@ -480,11 +479,6 @@ public class World {
 		worm.setCurrentActionPoints(worm.getMaxActionPoints());
 	}
 	
-	/**
-	 * the last worm whose turn it was.
-	 */
-	
-	private Worm lastWorm = null;
 	
 	/**
 	 * Create and add a new worm to the given world.
