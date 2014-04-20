@@ -108,6 +108,9 @@ public class Position{
 						Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
 	}
 	
+
+
+	
 	/**
 	 * Return the position of the worm at a given time in a jump.
 	 * 
