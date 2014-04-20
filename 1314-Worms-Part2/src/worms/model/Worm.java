@@ -73,7 +73,53 @@ public class Worm {
 		return this.world;
 	}
 	
-	//TODO setter en checkers voor world...
+	
+	/**
+	 * Check whether this worm can be attached to the given world.
+	 * 
+	 * @param 	world
+	 * 			The world to check.
+	 * @return	| result == ( (world == null) || 
+	 * 			|				(world.canHaveAsWorm(this) )
+	 */
+	@Raw
+	public boolean canHaveAsWorld(World world){
+		return world == null || world.canHaveAsWorm(this);
+	}
+	
+	/**
+	 * Check whether this worm has a proper world to
+	 * which it is attached.
+	 * 
+	 * @return	| result == ( canHaveAsWorld(getWorld()) &&
+	 * 			|				( (getWorld() == null) ||
+	 * 			| 					getWorld().hasAsWorm(this)))
+	 */
+	@Raw
+	public boolean hasProperWorld(){
+		return canHaveAsWorld(getWorld()) && 
+				(getWorld() == null || getWorld().hasAsWorm(this));
+	}
+	
+	/**
+	 * Set the world to which this food is attached to the given world.
+	 * 
+	 * @param 	world
+	 * 			The world to attach this food to.
+	 * @pre		| if(world != null)
+	 * 			|	then world.hasAsWorm(this)
+	 * @pre		| if( (world == null) && (getWorld() != null) )
+	 * 			| 	then !getWorld().hasAsWorm(this)
+	 * @post	| new.getWorld() == world
+	 */
+	@Raw
+	void setWorld(@Raw World world){
+		assert(world == null || world.hasAsWorm(this));
+		assert(world != null || getWorld() == null || !getWorld().hasAsWorm(this));
+		this.world = world;
+	}
+	
+	
 	
 	/**
 	 * Variable referencing the world to which this worm is attached.
@@ -588,7 +634,7 @@ public class Worm {
 	{
 		if(this.weapon.equals(" "))
 			this.weapon = "Bazooka";
-		if(this.weapon.equals("Barooka"))
+		if(this.weapon.equals("Bazooka"))
 			this.weapon = "Rifle";
 		if(this.weapon.equals("Rifle"))
 			this.weapon = " ";
@@ -598,7 +644,7 @@ public class Worm {
 	/**
 	 * Returns the current number of hit points of the given worm.
 	 */
-	public int getHitPoints(Worm worm)
+	public int getCurrentHitPoints()
 	{
 		return this.currentHitPoints;
 	}
@@ -669,7 +715,18 @@ public class Worm {
 	}
 	
 	private boolean isAlive = true;
-	
+	/**
+	 * returns whether the given team is a valid team
+	 */
+	private boolean canHaveAsTeam(String team)
+	{
+		for( String teamName: this.getWorld().getTeamNames())
+		{
+			if (team.equals(teamName))
+					return true;
+		}
+		return false;
+	}
 	/**
 	 * returns the name the worm is in.
 	 */
@@ -682,14 +739,16 @@ public class Worm {
 	 * 
 	 * @param team the new team the worm is assigned to.
 	 */
+	//TODO documentatie
 	public void setTeam(String team)
+		throws IllegalArgumentException
 	{
+		if(!canHaveAsTeam(team))
+			throw new IllegalArgumentException();
 		this.team = team;
 	}
 	
 	private String team = " ";
 
-	public void setWorld(World world) {
-		this.world = world;
-	}
+	
 }

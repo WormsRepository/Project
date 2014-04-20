@@ -180,15 +180,16 @@ public class World {
 		{
 			// a location is adjacent to impassable terrain if the location itself is passable and
 			// the location's distance to impassable terrain is smaller than the game object's radius*0.1.
-			for(double angle = 0; angle > 2*Math.PI ; angle = angle + (Math.PI *2)/360)
+			for(double angle = 0; angle < 2*Math.PI ; angle = angle + (Math.PI *2)/360)
 			{
-				if (isImpassablePoint(x+(Math.cos(angle)*radius*0.1), y+(Math.sin(angle))*radius*0.1))
+				if (isImpassablePoint(x+(Math.cos(angle)*radius*1.1), y+(Math.sin(angle))*radius*1.1))
 					return true;
 			}
 			return false;
 		}
 	}
 	
+	//TODO documentatie.
 	private boolean isImpassablePoint(double x, double y){
 		double temp = x*getPassableMap().length/getWidth();
 		int intX = (int)temp;
@@ -272,9 +273,15 @@ public class World {
 	 * 
 	 * 
 	 */
-	void addEmptyTeam(World world, String newName){
-		//TODO
+	void addEmptyTeam(String newName){
+		teamNames.add(newName);
 	}
+	
+	public Collection<String> getTeamNames() {
+		return new HashSet<String>(this.teamNames);
+	}
+	
+	HashSet<String> teamNames = new HashSet<String>();
 	
 	//TEAMNAMES
 	
@@ -413,7 +420,7 @@ public class World {
 	 * Returns all the worms in the given world
 	 */
 	Collection<Worm> getWorms(){
-		return worms;
+		return new LinkedHashSet<Worm>(this.worms);
 	}
 	
 
@@ -422,14 +429,55 @@ public class World {
 	 * Starts the next turn in the given world
 	 */
 	//vorige worm checken, zoeken in linkedHashSet, en de volgende in de set nemen als current worm.
-	// TODO afmaken als je weet wat een 'turn' precies is.
 	public void startNextTurn(){
 		Iterator<Worm> it = worms.iterator();
 		if (this.currentWorm == null)
 		{
 			lastWorm = currentWorm;
+			currentWorm = it.next();
+		}
+		else
+		{
+			String lastWormName = currentWorm.getName();
+			boolean flag = false;
+			Worm testWorm = null;
+			while(!flag)
+			{
+				testWorm = it.next();
+				if(testWorm.getName().equals(lastWormName))
+					flag = true;
+								
+			}
+			lastWorm = testWorm;
+			
+			if(it.hasNext())
+				currentWorm = it.next();
+			else
+			{
+				Iterator<Worm> it2 = worms.iterator();
+				currentWorm = it2.next();		
+			}
 			
 		}
+		
+		this.startNextTurn_Aux(currentWorm);
+	}
+	
+	/**
+	 * resets the worms action points and gives it 10 extra hp if possible
+	 * 
+	 * @param worm
+	 * 				the given worm.
+	 */
+	public void startNextTurn_Aux(Worm worm)
+	{
+		if (worm.getMaxHitPoints() - worm.getCurrentHitPoints() < 10)
+			worm.setCurrentHitPoints(worm.getMaxHitPoints());
+		else{
+			worm.setCurrentHitPoints(worm.getCurrentHitPoints() + 10);
+		}
+		
+		worm.setCurrentActionPoints(worm.getMaxActionPoints());
 	}
 	
 	/**
@@ -547,5 +595,9 @@ public class World {
 	
 	Projectile projectile = null;
 	//PROJECTILE
+
+
+
+
 	
 }
