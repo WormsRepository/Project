@@ -5,7 +5,6 @@
 
 //TODO - movement (hoek aanpasse aan de grond eronder)
 //TODO - jump (zowel projectile als worm) met collision prediction
-//TODO - fall en canFall methode (met een gameIsStarted boolean)
 //TODO - add new worm and food in the world 
 //TODO documentatie aanvullen
 //TODO testklassen schrijven
