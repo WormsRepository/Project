@@ -268,6 +268,7 @@ public class Position{
 				tempY += temp;
 			temp = temp / 3;
 		}
+		//TODO hitpoints aanpassen als game gestart is.
 		setY(tempY);
 	}
 	
