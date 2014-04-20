@@ -135,6 +135,8 @@ public class Worm {
 	 */
 	private World world = null;
 	
+	
+	
 	/**
 	 * Returns the reference to the position of this worm.
 	 */
@@ -150,8 +152,6 @@ public class Worm {
 
 	
 	
-	
-
 	/**
 	 * Return the radius of this worm.
 	 * 	The radius expresses how big a worm actually is.
@@ -534,7 +534,7 @@ public class Worm {
 	/**
 	 * Activates the next weapon for the given worm
 	 */
-	private void selectNextWeapon()
+	public void selectNextWeapon()
 	{
 		if(this.weapon.equals(" "))
 			this.weapon = "Bazooka";
@@ -626,6 +626,7 @@ public class Worm {
 	}
 	
 	private boolean isAlive = true;
+	
 	/**
 	 * returns whether the given team is a valid team
 	 */
@@ -638,6 +639,7 @@ public class Worm {
 		}
 		return false;
 	}
+	
 	/**
 	 * returns the name the worm is in.
 	 */
@@ -645,6 +647,7 @@ public class Worm {
 	{
 		return this.team;
 	}
+	
 	/**
 	 * sets the team for a worm. 
 	 * 

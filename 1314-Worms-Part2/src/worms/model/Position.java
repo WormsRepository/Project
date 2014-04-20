@@ -45,6 +45,24 @@ public class Position{
 	private final Worm worm;
 	
 	
+	
+	
+	/**
+	 * Returns whether or not the game is started.
+	 */
+	@Basic @Raw
+	public boolean isStarted(){
+		return this.isStarted;
+	}
+	
+	/**
+	 * Variable registering whether or not the game is started.
+	 */
+	private boolean isStarted = false;
+	
+	
+	
+	
 	/**
 	 * Return the x-coordinate of the position of the worm (in meter).
 	 */
@@ -62,7 +80,7 @@ public class Position{
 	 * 			| new.getX() == x
 	 */
 	@Model
-	protected void setX(double x)
+	private void setX(double x)
 	{
 		this.x = x;
 	}
@@ -84,7 +102,7 @@ public class Position{
 	 * 			| new.getY() == y
 	 */
 	@Model
-	protected void setY(double y)
+	private void setY(double y)
 	{
 		this.y = y;
 	}
@@ -108,8 +126,32 @@ public class Position{
 						Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
 	}
 	
-
-
+	/**
+	 * Check whether the worm with the current position can fall.
+	 * 
+	 * @return	True if and only if the lower part of the worm is not adjacent to impassable
+	 * 			terrain.
+	 * 			| result == this.getWorm().getWorld().canFall(getX(),getY(),this.getWorm().getRadius())
+	 */
+	@Raw
+	public boolean canFall(){
+		return this.getWorm().getWorld().canFall(getX(),getY(),this.getWorm().getRadius());
+	}
+	
+	/**
+	 * Check whether the worm with the given position can fall.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate of the position to check.
+	 * @param 	y
+	 * 			The y-coordinate of the position to check.
+	 * @return	True if and only if the lower part of the worm with the given position to
+	 * 			check is not adjacent to impassable terrain.
+	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
+	 */
+	private boolean canFall(double x, double y){
+		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
+	}
 	
 	/**
 	 * Return the position of the worm at a given time in a jump.
@@ -211,6 +253,22 @@ public class Position{
 		long costOfActionPoints = (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
 				Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
 		worm.setCurrentActionPoints(worm.getCurrentActionPoints() - costOfActionPoints);
+	}
+	
+	//TODO moeilijke documentatie aanvullen lusinvarianten...
+	public void fall(){
+		double tempY = getY();
+		double temp = 10;
+		while(canFall(getX(),tempY)){
+			while(canFall(getX(),tempY))
+				tempY -= temp;
+			temp = temp / 3;
+			while(!canFall(getX(),tempY) &&
+					!!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
+				tempY += temp;
+			temp = temp / 3;
+		}
+		setY(tempY);
 	}
 	
 	/**
