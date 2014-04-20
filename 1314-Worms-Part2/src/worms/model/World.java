@@ -520,6 +520,9 @@ public class World {
 	}
 	
 	
+	//TODO hasProperWorlds aanmaken!
+	//TODO addAsFood(zie facade)
+	
 	/**
 	 * Create and add a new worm to the given world.
 	 * The new worm must be placed at a random adjacent location.
