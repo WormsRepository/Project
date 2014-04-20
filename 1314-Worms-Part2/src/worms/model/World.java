@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 public class World {
@@ -78,6 +79,33 @@ public class World {
 	 * Variable registering whether or not this world is active.
 	 */
 	private boolean isActive = true;
+	// TODO isTerminated van maken?
+	
+	
+	/**
+	 * Returns whether or not the game is started.
+	 */
+	@Basic @Raw
+	public boolean isStarted(){
+		return this.isStarted;
+	}
+	
+	/**
+	 * Start or stop the game.
+	 * 
+	 * @param	started
+	 * 			A boolean indicating whether to start or to stop the game.
+	 * @post	| new.isStarted() == started
+	 */
+	@Model @Raw
+	private void start(boolean started){
+		this.isStarted = started;
+	}
+	
+	/**
+	 * Variable registering whether or not the game is started.
+	 */
+	private boolean isStarted = false;
 	
 	
 	
@@ -230,6 +258,7 @@ public class World {
 	public void startGame(){
 		Iterator<Worm> it = this.getWorms().iterator();
 		currentWorm = it.next();
+		start(true);
 	}
 	
 	//start

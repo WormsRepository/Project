@@ -48,22 +48,6 @@ public class Position{
 	
 	
 	/**
-	 * Returns whether or not the game is started.
-	 */
-	@Basic @Raw
-	public boolean isStarted(){
-		return this.isStarted;
-	}
-	
-	/**
-	 * Variable registering whether or not the game is started.
-	 */
-	private boolean isStarted = false;
-	
-	
-	
-	
-	/**
 	 * Return the x-coordinate of the position of the worm (in meter).
 	 */
 	@Basic @Raw
@@ -268,7 +252,9 @@ public class Position{
 				tempY += temp;
 			temp = temp / 3;
 		}
-		//TODO hitpoints aanpassen als game gestart is.
+		if(this.getWorm().getWorld().isStarted())
+			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
+					(int)Math.floor(3 * (getY() - tempY)));
 		setY(tempY);
 	}
 	

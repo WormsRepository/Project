@@ -565,6 +565,7 @@ public class Worm {
 	 * 			Else the new amount of current hit points is equal to the given amount.
 	 * 			| else (new.getCurrentHitPoints() == newHitPoints)
 	 */
+	//TODO fout in documentatie
 	@Model @Raw
 	protected void setCurrentHitPoints(long newHitPoints){
 		if(newHitPoints <= 0)
