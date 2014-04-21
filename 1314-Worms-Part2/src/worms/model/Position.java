@@ -182,12 +182,46 @@ public class Position{
 	 * 			if the direction of the worm is greater than pi.
 	 * 			| Math.PI < worm.getDirection()
 	 */
+	//TODO documentatie veranderen!!!
 	public double getJumpTime() 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
-		if(worm.getDirection() == 0 || worm.getDirection() == Math.PI)
-			return 0;
-		return 2*getInitialVelocity()*Math.sin(worm.getDirection())/STANDARD_ACCELERATION;
+		double[] tempXY = {getX(),getY()};
+		double radius = this.getWorm().getRadius();
+		
+		// This temporary variable has to be incremented with a really small value, 
+		// with this part of the method we make sure the tempX and tempY are no longer
+		// at a adjacent location so we can detect to real collision in the next part 
+		// and not the initial position. We also check if the jump in the current 
+		// direction is worth to do it, if not, this method throws
+		// an IllegalDirectionException.
+		double tempTime = 0;
+		while(this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2)){
+			tempTime += (1/100);
+			tempXY = getJumpStep(tempTime);
+		}
+		if(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius))
+			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
+		//TODO nakijken of deze exception te snel gegooid word?
+		
+		// We have chosen 1/100 because with a maximum horizontal or vertical initial velocity
+		// of 25 the worm can only move +- 0.25 meter in the horizontal or vertical direction
+		// at the same time, this equals the minimum radius, so we will probably not skip 
+		// any adjacent point of the map.
+		double temp = 1/100;
+		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius)){
+			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+				tempTime += temp;
+				tempXY = getJumpStep(tempTime);
+			}
+			temp = temp / 3;
+			while(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+				tempTime -= temp;
+				tempXY = getJumpStep(tempTime);
+			}
+			temp = temp / 3;
+		}
+		return tempTime;
 	}
 	
 	/**
@@ -195,18 +229,20 @@ public class Position{
 	 * and with respect to the worm's orientation, his mass, the standard acceleration 
 	 * and the number of remaining action points.
 	 * 
-	 * @effect	The x coordinate is set to the old x coordinate incremented 
-	 * 			with the distance of the jump.
-	 * 			| this.setX(this.getX() + this.getDistance());
+	 * @effect	The x-coordinate is changed as an effect of the jump.
+	 * 			| setX(getJumpStep(getJumpTime())[0])
+	 * @effect	The y-coordinate is changed as an effect of the jump.
+	 * 			| setY(getJumpStep(getJumpTime())[1])
 	 * @effect	The new amount of current action points is set to zero.
 	 * 			| worm.setCurrentActionPoints(0)
 	 */
 	public void jump() 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
-		double distance = getDistance();
-		setX(getX() + distance);
-		worm.setCurrentActionPoints(0);
+		double[] tempXY = getJumpStep(getJumpTime());
+		setX(tempXY[0]);
+		setY(tempXY[1]);
+		this.getWorm().setCurrentActionPoints(0);
 	}
 	
 	/**
@@ -260,37 +296,6 @@ public class Position{
 		setY(tempY);
 	}
 	
-	private double getCollisionTime() 
-			throws IllegalDirectionException{
-		double tempX = getX();
-		double tempY = getY();
-		double radius = this.getWorm().getRadius();
-		// This temporary value has to be really small, with this part of the method we
-		// make sure the tempX and tempY are no longer at a adjacent location so we can
-		// detect to real collision in the next part and not the initial position. We 
-		// also check if the jump in the current direction is worth to do it, if not,
-		// this method throws an IllegalDirectionException.
-		double temp = 1/20;
-		while(this.getWorm().getWorld().isAdjacent(tempX, tempY, radius) && temp < (1/2)){
-			//TODO steeds getjumpstep oproepen en temp verhogen met 1/20
-		}
-		//TODO if isimpassable --> throw exception
-		//TODO if temp = 1/2 --> zet worm naar die locatie (als ze adjacent is)
-		// We have chosen 1/8 because with a maximum horizontal or vertical initial velocity
-		// of 25 the worm can only move +- 3 steps in the horizontal or vertical direction
-		// at the same time so we don't skip any adjacent point of the map.
-		double secondTemp = 1/8;
-		while(!this.getWorm().getWorld().isAdjacent(tempX, tempY, radius)){
-			while(!this.getWorm().getWorld().isImpassable(tempX, tempY, radius)){
-				//TODO getjumpstep oproepen en verhogen temp verhogen met secondTemp
-			}
-			//TODO secondTemp delen door 3
-			//TODO second while loop zolang als het impassable is en daar getjumpstep oproepen
-			//TODO en verhogen met secondTemp
-			//TODO secondTemp delen door 3
-		}
-	}
-	
 	/**
 	 * Calculate the distance covered by a jump in the current direction of the worm
 	 * and with respect to the worm's mass, the standard acceleration 
@@ -308,7 +313,7 @@ public class Position{
 	 * 			if the direction of the worm is greater than pi.
 	 * 			| Math.PI < worm.getDirection()
 	 */
-	@Model
+	//TODO getDistance weg?
 	private double getDistance() 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
