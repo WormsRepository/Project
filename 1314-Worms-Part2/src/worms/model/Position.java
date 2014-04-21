@@ -156,7 +156,7 @@ public class Position{
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
 		//max horizontalVelocity/verticalVelocity = 
-		//25 * 1 = 25 (see getinitialVelocity for more explanation)
+		//7.5 * 1 = 7.5 (see getinitialVelocity for more explanation)
 		double horizontalVelocity = getInitialVelocity() * Math.cos(worm.getDirection());
 		double xPosition = getX() + horizontalVelocity * t;
 		double verticalVelocity = getInitialVelocity() * Math.sin(worm.getDirection());
@@ -195,20 +195,21 @@ public class Position{
 		// and not the initial position. We also check if the jump in the current 
 		// direction is worth to do it, if not, this method throws
 		// an IllegalDirectionException.
+		
+		// We have chosen (1/4)/getInitialVelocity() because with the maximum horizontal or
+		// vertical velocity the worm can only move +- 0.25 meter in the horizontal or vertical
+		// direction per step, this equals the minimum radius, so we will probably not skip
+		// any adjacent point of the map.
+		double temp = (1/4)/getInitialVelocity();
 		double tempTime = 0;
 		while(this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2)){
-			tempTime += (1/100);
+			tempTime += temp;
 			tempXY = getJumpStep(tempTime);
 		}
 		if(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius))
 			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
 		//TODO nakijken of deze exception te snel gegooid word?
 		
-		// We have chosen 1/100 because with a maximum horizontal or vertical initial velocity
-		// of 25 the worm can only move +- 0.25 meter in the horizontal or vertical direction
-		// at the same time, this equals the minimum radius, so we will probably not skip 
-		// any adjacent point of the map.
-		double temp = 1/100;
 		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius)){
 			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
 				tempTime += temp;
@@ -346,10 +347,10 @@ public class Position{
 			throw new IllegalDirectionException(worm.getDirection(),worm);
 		double force = (5.0*(double)worm.getCurrentActionPoints()) + (worm.getMass() * STANDARD_ACCELERATION);
 		return (force/worm.getMass()) * 0.5;
-		// The highest possible double to return shall always be lower than 25,
+		// The highest possible double to return shall always be lower than 7.5,
 		// because if the current action points equals the max action points it 
 		// shall also be equal to the mass of the worm, in that case, the formula
-		// is simplified to (5.0*10)*0.5 = 25, if we take the standard acceleration
+		// is simplified to (5.0+10)*0.5 = 7.5, if we take the standard acceleration
 		// as 10.
 	}
 	
