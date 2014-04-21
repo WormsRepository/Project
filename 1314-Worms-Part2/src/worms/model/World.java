@@ -171,6 +171,7 @@ public class World {
 	
 	//each pixel of an image that is x pixels wide and y pixels high, shall be used to mark a rectangular area
 	// of width/x x height/y of the game world as either passable or impassable
+	@Raw
 	public boolean isImpassable(double x, double y, double radius){
 		if(x-radius<0 || x+radius>getWidth() || y-radius<0 || y+radius>getHeight() || radius <= 0)
 			return true;
@@ -201,6 +202,7 @@ public class World {
 	 * 
 	 * @return 	True if the given region is passable and adjacent to impassable terrain, false otherwise.
 	 */
+	@Raw
 	public boolean isAdjacent(double x, double y, double radius){
 		if(isImpassable(x,y,radius))
 			return false;
@@ -229,6 +231,7 @@ public class World {
 
 	
 	//TODO documentatie.
+	@Raw
 	private boolean isImpassablePoint(double x, double y){
 		double temp = x*getPassableMap().length/getWidth();
 		int intX = (int)temp;

@@ -155,6 +155,8 @@ public class Position{
 	public double[] getJumpStep(double t) 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
+		//max horizontalVelocity/verticalVelocity = 
+		//25 * 1 = 25 (see getinitialVelocity for more explanation)
 		double horizontalVelocity = getInitialVelocity() * Math.cos(worm.getDirection());
 		double xPosition = getX() + horizontalVelocity * t;
 		double verticalVelocity = getInitialVelocity() * Math.sin(worm.getDirection());
@@ -258,6 +260,37 @@ public class Position{
 		setY(tempY);
 	}
 	
+	private double getCollisionTime() 
+			throws IllegalDirectionException{
+		double tempX = getX();
+		double tempY = getY();
+		double radius = this.getWorm().getRadius();
+		// This temporary value has to be really small, with this part of the method we
+		// make sure the tempX and tempY are no longer at a adjacent location so we can
+		// detect to real collision in the next part and not the initial position. We 
+		// also check if the jump in the current direction is worth to do it, if not,
+		// this method throws an IllegalDirectionException.
+		double temp = 1/20;
+		while(this.getWorm().getWorld().isAdjacent(tempX, tempY, radius) && temp < (1/2)){
+			//TODO steeds getjumpstep oproepen en temp verhogen met 1/20
+		}
+		//TODO if isimpassable --> throw exception
+		//TODO if temp = 1/2 --> zet worm naar die locatie (als ze adjacent is)
+		// We have chosen 1/8 because with a maximum horizontal or vertical initial velocity
+		// of 25 the worm can only move +- 3 steps in the horizontal or vertical direction
+		// at the same time so we don't skip any adjacent point of the map.
+		double secondTemp = 1/8;
+		while(!this.getWorm().getWorld().isAdjacent(tempX, tempY, radius)){
+			while(!this.getWorm().getWorld().isImpassable(tempX, tempY, radius)){
+				//TODO getjumpstep oproepen en verhogen temp verhogen met secondTemp
+			}
+			//TODO secondTemp delen door 3
+			//TODO second while loop zolang als het impassable is en daar getjumpstep oproepen
+			//TODO en verhogen met secondTemp
+			//TODO secondTemp delen door 3
+		}
+	}
+	
 	/**
 	 * Calculate the distance covered by a jump in the current direction of the worm
 	 * and with respect to the worm's mass, the standard acceleration 
@@ -308,6 +341,11 @@ public class Position{
 			throw new IllegalDirectionException(worm.getDirection(),worm);
 		double force = (5.0*(double)worm.getCurrentActionPoints()) + (worm.getMass() * STANDARD_ACCELERATION);
 		return (force/worm.getMass()) * 0.5;
+		// The highest possible double to return shall always be lower than 25,
+		// because if the current action points equals the max action points it 
+		// shall also be equal to the mass of the worm, in that case, the formula
+		// is simplified to (5.0*10)*0.5 = 25, if we take the standard acceleration
+		// as 10.
 	}
 	
 	/**
