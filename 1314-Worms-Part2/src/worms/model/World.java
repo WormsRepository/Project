@@ -129,6 +129,21 @@ public class World {
 		return this.width;
 	}
 	
+	private double newX(double oldX)
+	{
+		if(oldX > this.getWidth()/2)
+			return oldX - 0.017;
+		if(oldX < this.getWidth()/2)
+			return oldX + 0.017;
+	
+		return oldX;
+	}
+	
+	private int randomStartX()
+	{
+		return random.nextInt((int)this.getWidth());		
+	}
+	
 	/**
 	 * Variable registering the width of this world.
 	 */
@@ -141,6 +156,21 @@ public class World {
 	 */
 	public double getHeight(){
 		return this.height;
+	}
+	
+	private double newY(double oldY)
+	{
+		if(oldY > this.getHeight()/2)
+			return oldY - 0.017;
+		if(oldY < this.getHeight()/2)
+			return oldY + 0.017;
+
+		return oldY;
+	}
+	
+	private int randomStartY()
+	{
+		return random.nextInt((int)this.getHeight());
 	}
 	
 	/**
@@ -406,61 +436,32 @@ public class World {
 				double testX = 0, testY = 0;
 				if(getal == 0){
 					testX = 0;
-					testY = addNewFood_RandomStartY();
+					testY = randomStartY();
 				}
 				if(getal == 1){
-					testX = (int) this.getWidth();
-					testY = addNewFood_RandomStartY();
+					testX = this.getWidth();
+					testY = randomStartY();
 				}
 				if(getal == 2){
-					testX = addNewFood_RandomStartX();
+					testX = randomStartX();
 					testY = 0;
 				}
 				if(getal == 3){
-					testX = addNewFood_RandomStartX();
-					testY = (int) this.getHeight();
+					testX = randomStartX();
+					testY = this.getHeight();
 				}
 				//determine the exact location by constantly checking a place, and going closer to the middle
 				// as suggested in the assignment.
 
 				while (! isAdjacent(testX, testY, 0.25 ))
 				{
-					testX = addNewFood_newX(testX);
-					testY = addNewFood_newY(testY);
+					testX = newX(testX);
+					testY = newY(testY);
 				}
 				//TODO minimal radius gebruike maar kweet nie hoe.
 				Food newFood = new Food(testX, testY);
 				//TODO me teams maar geen idee hoe.
 				this.addAsFood(newFood);
-	}
-	private double addNewFood_newX(double oldX)
-	{
-		if(oldX > this.getWidth()/2)
-			return oldX - 0.25;
-		if(oldX < this.getWidth()/2)
-			return oldX + 0.25;
-	
-		return oldX;
-	}
-	
-	private double addNewFood_newY(double oldY)
-	{
-		if(oldY > this.getHeight()/2)
-			return oldY - 0.25;
-		if(oldY < this.getHeight()/2)
-			return oldY + 0.25;
-
-		return oldY;
-	}
-
-	private int addNewFood_RandomStartX()
-	{
-		return random.nextInt((int)this.getWidth());		
-	}
-
-	private int addNewFood_RandomStartY()
-	{
-		return random.nextInt((int)this.getHeight());
 	}
 	
 	/**
@@ -610,18 +611,18 @@ public class World {
 		double testX = 0, testY = 0;
 		if(getal == 0){
 			testX = 0;
-			testY = addNewWorm_RandomStartY();
+			testY = randomStartY();
 		}
 		if(getal == 1){
 			testX = this.getWidth();
-			testY = addNewWorm_RandomStartY();
+			testY = randomStartY();
 		}
 		if(getal == 2){
-			testX = addNewWorm_RandomStartX();
+			testX = randomStartX();
 			testY = 0;
 		}
 		if(getal == 3){
-			testX = addNewWorm_RandomStartX();
+			testX = randomStartX();
 			testY = this.getHeight();
 		}
 		//determine the exact location by constantly checking a place, and going closer to the middle
@@ -629,8 +630,8 @@ public class World {
 
 		while (! isAdjacent(testX, testY, 0.25 ))
 		{
-			testX = addNewWorm_newX(testX);
-			testY = addNewWorm_newY(testY);
+			testX = newX(testX);
+			testY = newY(testY);
 		}
 		//TODO minimal radius gebruike maar kweet nie hoe.
 		Worm newWorm = new Worm(testX, testY, 0, 0.25, "NotYetNamed");
@@ -640,36 +641,6 @@ public class World {
 			newWorm.getPosition().fall();
 		}
 		catch(RuntimeException x){}
-	}
-	
-	private double addNewWorm_newX(double oldX)
-	{
-		if(oldX > this.getWidth()/2)
-			return oldX - 0.025;
-		if(oldX < this.getWidth()/2)
-			return oldX + 0.025;
-	
-		return oldX;
-	}
-	
-	private double addNewWorm_newY(double oldY)
-	{
-		if(oldY > this.getHeight()/2)
-			return oldY - 0.025;
-		if(oldY < this.getHeight()/2)
-			return oldY + 0.025;
-
-		return oldY;
-	}
-
-	private int addNewWorm_RandomStartX()
-	{
-		return random.nextInt((int)this.getWidth());		
-	}
-
-	private int addNewWorm_RandomStartY()
-	{
-		return random.nextInt((int)this.getHeight());
 	}
 	
 	public boolean canHaveAsWorm(Worm worm){
