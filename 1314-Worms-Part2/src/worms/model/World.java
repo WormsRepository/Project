@@ -397,7 +397,8 @@ public class World {
 	 * 
 	 * 
 	 */
-	public void addNewFood(){
+	public void addNewFood() 
+			throws IllegalArgumentException{
 		//find a location for the food
 				//determine at which wall we will start searching for a proper place
 				// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
@@ -600,8 +601,8 @@ public class World {
 	 * The new worm can have an arbitrary (but valid) radius and direction.
 	 * The new worm may (but isn't required to) have joined a team.
 	 */
-	public void addNewWorm()
-	{
+	public void addNewWorm() 
+			throws IllegalArgumentException{
 		//find a location for the worm
 		//determine at which wall we will start searching for a proper place
 		// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
@@ -632,7 +633,7 @@ public class World {
 			testY = addNewWorm_newY(testY);
 		}
 		//TODO minimal radius gebruike maar kweet nie hoe.
-		Worm newWorm = new Worm(testX, testY, 0, 0.25, "not yet named");
+		Worm newWorm = new Worm(testX, testY, 0, 0.25, "NotYetNamed");
 		//TODO me teams maar geen idee hoe.
 		this.addAsWorm(newWorm);
 	}
@@ -668,7 +669,7 @@ public class World {
 	}
 	
 	public boolean canHaveAsWorm(Worm worm){
-		return (worm != null);
+		return (worm != null) && worm.isAlive();
 	}
 	
 	/**

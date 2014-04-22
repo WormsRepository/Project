@@ -19,7 +19,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addNewWorm(World world) {
-		world.addNewWorm();
+		try{
+			world.addNewWorm();
+		}
+		catch(IllegalArgumentException x){
+			throw new ModelException("IllegalArgumentException");
+		}
 	}
 
 	@Override
