@@ -401,8 +401,8 @@ public class World {
 			throws IllegalArgumentException{
 		//find a location for the food
 				//determine at which wall we will start searching for a proper place
-				// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
-				double getal = random.nextInt(3);
+				// 0: left wall  1: right wall,  2: bottom wall,  3: top wall
+				double getal = random.nextInt(4);
 				double testX = 0, testY = 0;
 				if(getal == 0){
 					testX = 0;
@@ -605,8 +605,8 @@ public class World {
 			throws IllegalArgumentException{
 		//find a location for the worm
 		//determine at which wall we will start searching for a proper place
-		// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
-		double getal = random.nextInt(3);
+		// 0: left wall  1: right wall,  2: bottom wall,  3: top wall
+		double getal = random.nextInt(4);
 		double testX = 0, testY = 0;
 		if(getal == 0){
 			testX = 0;
