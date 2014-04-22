@@ -151,8 +151,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getName(Worm worm) {
-		// TODO Auto-generated method stub
-		return null;
+		return worm.getName();
 	}
 
 	@Override
@@ -199,8 +198,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Collection<Worm> getWorms(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getWorms();
 	}
 
 	@Override
