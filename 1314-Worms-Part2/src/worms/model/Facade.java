@@ -13,7 +13,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addNewFood(World world) {
-		// TODO Auto-generated method stub
+		try{
+			world.addNewFood();
+		}
+		catch(IllegalArgumentException x){
+			throw new ModelException("IllegalArgumentException");
+		}
 		
 	}
 
@@ -91,8 +96,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Collection<Food> getFood(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getFood();
 	}
 
 	@Override
@@ -203,8 +207,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getX(Food food) {
-		// TODO Auto-generated method stub
-		return 0;
+		return food.getX();
 	}
 
 	@Override
@@ -220,7 +223,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getY(Food food) {
-		return 0;
+		return food.getY();
 	}
 
 	@Override

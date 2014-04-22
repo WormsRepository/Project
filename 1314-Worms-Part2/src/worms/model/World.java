@@ -310,7 +310,7 @@ public class World {
 	// eindigt bij:
 	// - 1 worm over 
 	// - alle overige wormen aan hetzelfde team
-	boolean isGameFinished(World world){
+	boolean isGameFinished(){
 		if (worms.size() <= 1)
 				return true;
 		String winner = " ";
@@ -427,6 +427,7 @@ public class World {
 	 * 
 	 * 
 	 */
+	//TODO dubbele code addnewFood en addnewworm, in andere methode plaatsen
 	public void addNewFood() 
 			throws IllegalArgumentException{
 		//find a location for the food
@@ -453,7 +454,7 @@ public class World {
 				//determine the exact location by constantly checking a place, and going closer to the middle
 				// as suggested in the assignment.
 
-				while (! isAdjacent(testX, testY, 0.25 ))
+				while (! isAdjacent(testX, testY, 0.20 ))
 				{
 					testX = newX(testX);
 					testY = newY(testY);
@@ -533,7 +534,7 @@ public class World {
 	/**
 	 * Returns all the worms in the given world
 	 */
-	Collection<Worm> getWorms(){
+	public Collection<Worm> getWorms(){
 		return new LinkedHashSet<Worm>(this.worms);
 	}
 	
@@ -634,7 +635,13 @@ public class World {
 			testY = newY(testY);
 		}
 		//TODO minimal radius gebruike maar kweet nie hoe.
-		Worm newWorm = new Worm(testX, testY, 0, 0.25, "NotYetNamed");
+		int grootte = worms.size() + 1;
+		String name = "NotYetNamed";
+		for(int i=0;i<grootte;i++){
+			name += "I";
+		}
+				
+		Worm newWorm = new Worm(testX, testY, 0, 0.25, name);
 		//TODO me teams maar geen idee hoe.
 		this.addAsWorm(newWorm);
 		try{
