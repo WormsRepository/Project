@@ -104,7 +104,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getActionPoints(Worm worm) {
-		return (int)worm.getCurrentActionPoints();
+		return worm.getCurrentActionPoints();
 	}
 
 	@Override
@@ -176,14 +176,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getMaxActionPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getMaxActionPoints();
 	}
 
 	@Override
 	public int getMaxHitPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getMaxHitPoints();
 	}
 
 	@Override

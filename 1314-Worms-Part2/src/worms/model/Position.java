@@ -267,7 +267,7 @@ public class Position{
 		setX(getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps);
 		setY(getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps);
 
-		long costOfActionPoints = (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
+		int costOfActionPoints = (int)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
 				Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
 		worm.setCurrentActionPoints(worm.getCurrentActionPoints() - costOfActionPoints);
 	}

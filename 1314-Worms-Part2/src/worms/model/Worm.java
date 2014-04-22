@@ -57,9 +57,10 @@ public class Worm {
 	 * 			| this.setDirection(direction)
 	 * @effect	The radius of this new worm, the mass of this new worm, the maximum and current amount of action points of this new worm
 	 * 			is set, some of them depend on the radius of this new worm. There is only a mass, a maximum and a current
-	 * 			amount of action points if the radius is a valid radius for any worm.
+	 * 			amount of action points and hit points if the radius is a valid radius for any worm.
 	 * 			| this.setRadius(radius)
 	 * 			| this.setCurrentActionPoints(new.getMaxActionPoints())
+	 * 			| this.setCurrentHitPoints(new.getMaxHitPoints())
 	 * @effect	The name of this new worm is set to the given name.
 	 * 			| this.setName(name)
 	 */
@@ -70,6 +71,7 @@ public class Worm {
 		setDirection(direction);
 		setRadius(radius);
 		setCurrentActionPoints(getMaxActionPoints());
+		setCurrentHitPoints(getMaxHitPoints());
 		setName(name);
 	}
 
@@ -186,6 +188,7 @@ public class Worm {
 		this.radius = radius;
 		setMass();
 		setMaxActionPoints();
+		setMaxHitPoints();
 	}
 
 	/**
@@ -407,7 +410,7 @@ public class Worm {
 	 * 		The maximum amount of action points a worm has is represented by the variable maxActionPoints.
 	 */
 	@Basic @Raw
-	public long getMaxActionPoints()
+	public int getMaxActionPoints()
 	{
 		return this.maxActionPoints;
 	}
@@ -426,7 +429,7 @@ public class Worm {
 	@Raw @Model
 	private void setMaxActionPoints()
 	{
-		maxActionPoints = Math.round(getMass());
+		maxActionPoints = (int)Math.round(getMass());
 		if(getCurrentActionPoints() > getMaxActionPoints())
 			setCurrentActionPoints(getMaxActionPoints());
 	}
@@ -434,7 +437,7 @@ public class Worm {
 	/**
 	 * variable registering the maximum of action points of a worm, derived from the worm's mass.
 	 */
-	private long maxActionPoints = 0;
+	private int maxActionPoints = 0;
 
 
 
@@ -443,7 +446,7 @@ public class Worm {
 	 * Return the current amount of action points of this worm.
 	 */
 	@Basic @Raw
-	public long getCurrentActionPoints() {
+	public int getCurrentActionPoints() {
 		return this.currentActionPoints;
 	}
 
@@ -460,7 +463,7 @@ public class Worm {
 	 * 			| else (new.getCurrentActionPoints() == newActionPoints)
 	 */
 	@Model @Raw
-	protected void setCurrentActionPoints(long newActionPoints){
+	protected void setCurrentActionPoints(int newActionPoints){
 		if(newActionPoints < 0 || newActionPoints > getMaxActionPoints())
 			return;
 		this.currentActionPoints = newActionPoints;
@@ -469,7 +472,7 @@ public class Worm {
 	/**
 	 * variable registering the current amount of aciton points of a worm.
 	 */
-	private long currentActionPoints = 0;
+	private int currentActionPoints = 0;
 
 
 
@@ -567,7 +570,7 @@ public class Worm {
 	 */
 	//TODO fout in documentatie
 	@Model @Raw
-	protected void setCurrentHitPoints(long newHitPoints){
+	protected void setCurrentHitPoints(int newHitPoints){
 		if(newHitPoints <= 0)
 			{
 			this.currentHitPoints = 0;
@@ -597,7 +600,7 @@ public class Worm {
 	@Raw @Model
 	private void setMaxHitPoints()
 	{
-		maxHitPoints = Math.round(getMass());
+		maxHitPoints = (int)Math.round(getMass());
 		if(getCurrentActionPoints() > getMaxActionPoints())
 			setCurrentActionPoints(getMaxActionPoints());
 	}
@@ -607,12 +610,12 @@ public class Worm {
 	 * 		The maximum amount of hit points a worm has is represented by the variable maxHitPoints.
 	 */
 	@Basic @Raw
-	public long getMaxHitPoints()
+	public int getMaxHitPoints()
 	{
 		return this.maxHitPoints;
 	}
 	
-	private long maxHitPoints = 0;
+	private int maxHitPoints = 0;
 	
 	/**
 	 * returns if the worm is alive or not.
