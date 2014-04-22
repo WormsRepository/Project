@@ -135,7 +135,8 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public double[] getJumpStep(Worm worm, double t) {
+	public double[] getJumpStep(Worm worm, double t) 
+			throws ModelException{
 		try{
 			return worm.getPosition().getJumpStep(t);
 		}
@@ -154,9 +155,17 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public double getJumpTime(Worm worm, double timeStep) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getJumpTime(Worm worm, double timeStep) 
+			throws ModelException{
+		try{
+			return worm.getPosition().getJumpTime();
+		}
+		catch(IllegalActionPointsException x){
+			throw new ModelException("IllegalActionPointsException");
+		}
+		catch(IllegalDirectionException x){
+			throw new ModelException("IllegalDirectionException");
+		}
 	}
 
 	@Override
