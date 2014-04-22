@@ -133,8 +133,16 @@ public class Position{
 	 * 			check is not adjacent to impassable terrain.
 	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
 	 */
+	@Model
 	private boolean canFall(double x, double y){
 		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
+	}
+	
+	//TODO documentation
+	private boolean inMap(double x, double y){
+		double radius = this.getWorm().getRadius();
+		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
+				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
 	}
 	
 	/**

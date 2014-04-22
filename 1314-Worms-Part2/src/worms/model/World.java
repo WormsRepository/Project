@@ -42,6 +42,7 @@ public class World {
 			boolean[][] passableMap, Random random){
 		if(!canHaveAsWidthOrHeight(width) || !canHaveAsWidthOrHeight(height))
 			throw new IllegalArgumentException("The given width or height is invalid.");
+		//TODO checken of width en height tussen 0 en upperbound liggen?
 		this.width = width;
 		this.height = height;
 		this.passableMap = passableMap;
