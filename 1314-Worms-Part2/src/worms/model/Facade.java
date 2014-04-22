@@ -7,12 +7,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addEmptyTeam(World world, String newName) {
-		// TODO Auto-generated method stub
-		
+		world.addEmptyTeam(newName);
 	}
 
 	@Override
-	public void addNewFood(World world) {
+	public void addNewFood(World world) 
+			throws ModelException{
 		try{
 			world.addNewFood();
 		}
@@ -22,7 +22,8 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public void addNewWorm(World world) {
+	public void addNewWorm(World world) 
+			throws ModelException{
 		try{
 			world.addNewWorm();
 		}
@@ -33,33 +34,44 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean canFall(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
+		return worm.getPosition().canFall();
 	}
 
 	@Override
 	public boolean canMove(Worm worm) {
-		// TODO Auto-generated method stub
+		//TODO implement...
 		return false;
 	}
 
 	@Override
 	public boolean canTurn(Worm worm, double angle) {
-		// TODO Auto-generated method stub
-		return false;
+		return worm.canTurn(angle);
 	}
 
 	@Override
-	public Food createFood(World world, double x, double y) {
-		// TODO Auto-generated method stub
-		return null;
+	public Food createFood(World world, double x, double y) 
+			throws ModelException{
+		try{
+			Food food = new Food(x,y);
+			world.addAsFood(food);
+			return food;
+		}
+		catch(IllegalArgumentException z){
+			throw new ModelException("IllegalArgumentException");
+		}
 	}
 
 	@Override
 	public World createWorld(double width, double height,
-			boolean[][] passableMap, Random random) {
-		World world = new World(width, height, passableMap, random);
-		return world;
+			boolean[][] passableMap, Random random) 
+					throws ModelException{
+		try{
+			World world = new World(width, height, passableMap, random);
+			return world;
+		}
+		catch(IllegalArgumentException x){
+			throw new ModelException("IllegalArgumentException");
+		}
 	}
 
 	@Override

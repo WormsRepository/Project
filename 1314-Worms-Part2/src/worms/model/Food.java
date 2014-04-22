@@ -155,6 +155,8 @@ public class Food {
 	}
 	
 	//TODO moeilijke documentatie aanvullen lusinvarianten...
+	//TODO hulpfuncties fall() van worm en food naar world verplaatsen? 
+	//TODO (veel minder methodes in food & position)
 	public void fall() throws RuntimeException{
 		if(!canFall(getX(),getY()))
 			throw new RuntimeException();
