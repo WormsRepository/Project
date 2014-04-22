@@ -132,9 +132,9 @@ public class World {
 	private double newX(double oldX)
 	{
 		if(oldX > this.getWidth()/2)
-			return oldX - 0.017;
+			return oldX - 0.014;
 		if(oldX < this.getWidth()/2)
-			return oldX + 0.017;
+			return oldX + 0.014;
 	
 		return oldX;
 	}
@@ -161,9 +161,9 @@ public class World {
 	private double newY(double oldY)
 	{
 		if(oldY > this.getHeight()/2)
-			return oldY - 0.017;
+			return oldY - 0.014;
 		if(oldY < this.getHeight()/2)
-			return oldY + 0.017;
+			return oldY + 0.014;
 
 		return oldY;
 	}

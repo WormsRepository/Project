@@ -19,7 +19,6 @@ public class Facade implements IFacade {
 		catch(IllegalArgumentException x){
 			throw new ModelException("IllegalArgumentException");
 		}
-		
 	}
 
 	@Override
@@ -239,8 +238,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isActive(Food food) {
-		// TODO Auto-generated method stub
-		return false;
+		return food.isActive();
 	}
 
 	@Override

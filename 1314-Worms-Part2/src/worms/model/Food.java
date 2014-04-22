@@ -131,11 +131,11 @@ public class Food {
 	 * 			The x-coordinate to check.
 	 * @param 	y
 	 * 			The y-coordinate to check.
-	 * @return	|world.isAdjacent(x,y,this.getRadius())
+	 * @return	| x >= 0 && y >= 0
 	 */
 	@Raw
 	public boolean isValidPosition(double x, double y){
-		return world.isAdjacent(x,y,getRadius());
+		return x >= 0 && y >= 0;
 	}
 	
 	/**
