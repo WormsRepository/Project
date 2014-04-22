@@ -154,6 +154,53 @@ public class Food {
 		return this.y;
 	}
 	
+	//TODO moeilijke documentatie aanvullen lusinvarianten...
+	public void fall() throws RuntimeException{
+		if(!canFall(getX(),getY()))
+			throw new RuntimeException();
+		double tempY = getY();
+		double temp = 0.4;
+		while(canFall(getX(),tempY) && temp >= (1/500)){
+			while(inMap(getX(),tempY) && canFall(getX(),tempY))
+				tempY -= temp;
+			if(!inMap(getX(),tempY))
+				tempY += temp;
+			temp = temp / 3;
+			while(!canFall(getX(),tempY) &&
+					!getWorld().isAdjacent(getX(), tempY, RADIUS) )
+				tempY += temp;
+			temp = temp / 3;
+		}
+		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
+		// the worm will fall of the world and die.
+		if(temp < (1/500))
+			this.deactivate();
+			
+		setPosition(getX(), tempY);
+	}
+	
+	//TODO documentation
+	private boolean inMap(double x, double y){
+		return x>RADIUS && x<this.getWorld().getWidth() - RADIUS &&
+				y>RADIUS && y<this.getWorld().getHeight() - RADIUS;
+	}
+	
+	/**
+	 * Check whether the food with the given position can fall.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate of the position to check.
+	 * @param 	y
+	 * 			The y-coordinate of the position to check.
+	 * @return	True if and only if the lower part of the food with the given position to
+	 * 			check is not adjacent to impassable terrain.
+	 * 			| result == this.getWorld().canFall(x, y, Food.getRadius())
+	 */
+	@Model
+	private boolean canFall(double x, double y){
+		return this.getWorld().canFall(x, y, RADIUS);
+	}
+	
 	/**
 	 * Sets the x-coordinate and y-coordinate to the given coordinates.
 	 * 

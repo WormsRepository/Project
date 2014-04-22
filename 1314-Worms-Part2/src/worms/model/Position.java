@@ -123,29 +123,6 @@ public class Position{
 	}
 	
 	/**
-	 * Check whether the worm with the given position can fall.
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate of the position to check.
-	 * @param 	y
-	 * 			The y-coordinate of the position to check.
-	 * @return	True if and only if the lower part of the worm with the given position to
-	 * 			check is not adjacent to impassable terrain.
-	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
-	 */
-	@Model
-	private boolean canFall(double x, double y){
-		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
-	}
-	
-	//TODO documentation
-	private boolean inMap(double x, double y){
-		double radius = this.getWorm().getRadius();
-		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
-				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
-	}
-	
-	/**
 	 * Return the position of the worm at a given time in a jump.
 	 * 
 	 * @param 	t
@@ -300,7 +277,7 @@ public class Position{
 		if(!canFall())
 			throw new RuntimeException();
 		double tempY = getY();
-		double temp = 10;
+		double temp = 0.5;
 		while(canFall(getX(),tempY) && temp >= (1/300)){
 			while(inMap(getX(),tempY) && canFall(getX(),tempY))
 				tempY -= temp;
@@ -378,6 +355,29 @@ public class Position{
 		// shall also be equal to the mass of the worm, in that case, the formula
 		// is simplified to (5.0+10)*0.5 = 7.5, if we take the standard acceleration
 		// as 10.
+	}
+	
+	/**
+	 * Check whether the worm with the given position can fall.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate of the position to check.
+	 * @param 	y
+	 * 			The y-coordinate of the position to check.
+	 * @return	True if and only if the lower part of the worm with the given position to
+	 * 			check is not adjacent to impassable terrain.
+	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
+	 */
+	@Model
+	private boolean canFall(double x, double y){
+		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
+	}
+	
+	//TODO documentation
+	private boolean inMap(double x, double y){
+		double radius = this.getWorm().getRadius();
+		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
+				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
 	}
 	
 	/**

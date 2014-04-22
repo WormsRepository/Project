@@ -463,6 +463,11 @@ public class World {
 				Food newFood = new Food(testX, testY);
 				//TODO me teams maar geen idee hoe.
 				this.addAsFood(newFood);
+				
+				try{
+					newFood.fall();
+				}
+				catch(RuntimeException x){}
 	}
 	
 	/**
