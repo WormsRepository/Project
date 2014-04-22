@@ -529,7 +529,8 @@ public class World {
 	/**
 	 * Returns the active worm in the given world (i.e., the worm whose turn it is).
 	 */
-	Worm getCurrentWorm(){
+	@Basic @Raw
+	public Worm getCurrentWorm(){
 		return this.currentWorm;
 	}
 	

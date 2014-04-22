@@ -115,8 +115,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Worm getCurrentWorm(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getCurrentWorm();
 	}
 
 	@Override
