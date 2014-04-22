@@ -432,7 +432,8 @@ public class World {
 	 * @throws	IllegalArgumentException()
 	 * 			| !hasAsFood(food)
 	 */
-	public void removeAsFood(Food food){
+	public void removeAsFood(Food food) 
+			throws IllegalArgumentException{
 		if(!hasAsFood(food))
 			throw new IllegalArgumentException();
 		this.foodRations.remove(food);
@@ -582,12 +583,15 @@ public class World {
 	 * 			the given worm is no longer attached to any world.
 	 * 			|if (hasAsWorm(worm))
 	 * 			|	((new worm).getWorld() == null
+	 * @throws	IllegalArgumentException()
+	 * 			| !hasAsWorm(worm)
 	 */
-	public void removeAsWorm(Worm worm){
-		if(hasAsWorm(worm)){
-			this.worms.remove(worm);
-			worm.setWorld(null);
-		}
+	public void removeAsWorm(Worm worm) 
+			throws IllegalArgumentException{
+		if(!hasAsWorm(worm))
+			throw new IllegalArgumentException();
+		this.worms.remove(worm);
+		worm.setWorld(null);
 	}
 	
 	
