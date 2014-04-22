@@ -76,9 +76,18 @@ public class Facade implements IFacade {
 
 	@Override
 	public Worm createWorm(World world, double x, double y, double direction,
-			double radius, String name) {
-		// TODO Auto-generated method stub
-		return null;
+			double radius, String name) throws ModelException{
+		try{
+			Worm worm = new Worm(x,y,direction,radius,name);
+			world.addAsWorm(worm);
+			return worm;
+		}
+		catch(IllegalRadiusException ex){
+			throw new ModelException("IllegalRadiusException");
+		}
+		catch(IllegalNameException ex){
+			throw new ModelException("IllegalNameException");
+		}
 	}
 
 	@Override
