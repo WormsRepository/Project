@@ -429,12 +429,14 @@ public class World {
 	 * @post	| !new.hasAsFood(food)
 	 * @post	| if (hasAsFood(food))
 	 * 			|	((new food).getWorld() == null)
+	 * @throws	IllegalArgumentException()
+	 * 			| !hasAsFood(food)
 	 */
 	public void removeAsFood(Food food){
-		if(hasAsFood(food)){
-			this.foodRations.remove(food);
-			food.setWorld(null);
-		}
+		if(!hasAsFood(food))
+			throw new IllegalArgumentException();
+		this.foodRations.remove(food);
+		food.setWorld(null);
 	}
 	
 	
