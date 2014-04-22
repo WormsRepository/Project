@@ -46,6 +46,7 @@ public class World {
 		this.width = width;
 		this.height = height;
 		this.passableMap = passableMap;
+		this.random = random;
 	}
 	
 	
@@ -538,7 +539,69 @@ public class World {
 	 */
 	public void addNewWorm()
 	{
-		//TODO
+		//find a location for the worm
+		//determine at which wall we will start searching for a proper place
+		// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
+		double getal = random.nextInt(3);
+		double testX = 0, testY = 0;
+		if(getal == 0){
+			testX = 0;
+			testY = addNewWorm_RandomStartY();
+		}
+		if(getal == 1){
+			testX = (int) this.getWidth();
+			testY = addNewWorm_RandomStartY();
+		}
+		if(getal == 2){
+			testX = addNewWorm_RandomStartX();
+			testY = 0;
+		}
+		if(getal == 3){
+			testX = addNewWorm_RandomStartX();
+			testY = (int) this.getHeight();
+		}
+		//determine the exact location by constantly checking a place, and going closer to the middle
+		// as suggested in the assignment.
+
+		while (! isAdjacent(testX, testY, 0.25 ))
+		{
+			testX = addNewWorm_newX(testX);
+			testY = addNewWorm_newY(testY);
+		}
+		//TODO minimal radius gebruike maar kweet nie hoe.
+		Worm newWorm = new Worm(testX, testY, 0, 0.25, "not yet named");
+		//TODO me teams maar geen idee hoe.
+		this.addAsWorm(newWorm);
+	}
+	
+	private double addNewWorm_newX(double oldX)
+	{
+		if(oldX > this.getWidth()/2)
+			return oldX - 0.25;
+		if(oldX < this.getWidth()/2)
+			return oldX + 0.25;
+	
+		return oldX;
+	}
+	
+	private double addNewWorm_newY(double oldY)
+	{
+		if(oldY > this.getHeight()/2)
+			return oldY - 0.25;
+		if(oldY < this.getHeight()/2)
+			return oldY + 0.25;
+
+		return oldY;
+	}
+
+	private int addNewWorm_RandomStartX()
+	{
+		return random.nextInt((int)this.getWidth());		
+	}
+
+	private int addNewWorm_RandomStartY()
+	{
+		return random.nextInt((int)this.getHeight());
 	}
 	
 	public boolean canHaveAsWorm(Worm worm){
@@ -643,8 +706,8 @@ public class World {
 	Projectile projectile = null;
 	//PROJECTILE
 
-
-
+	private Random random = null;
+	//RANDOM
 
 	
 }
