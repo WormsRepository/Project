@@ -1,6 +1,7 @@
 package worms.model;
 
-
+//TODO food opeten na move, jump en fall
+//TODO team restricties (zie opgave)
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -396,7 +397,68 @@ public class World {
 	 * 
 	 */
 	public void addNewFood(){
-		//TODO
+		//find a location for the food
+				//determine at which wall we will start searching for a proper place
+				// 0: left wall  1: right wall,  2: top wall,  3: bottom wall
+				double getal = random.nextInt(3);
+				double testX = 0, testY = 0;
+				if(getal == 0){
+					testX = 0;
+					testY = addNewFood_RandomStartY();
+				}
+				if(getal == 1){
+					testX = (int) this.getWidth();
+					testY = addNewFood_RandomStartY();
+				}
+				if(getal == 2){
+					testX = addNewFood_RandomStartX();
+					testY = 0;
+				}
+				if(getal == 3){
+					testX = addNewFood_RandomStartX();
+					testY = (int) this.getHeight();
+				}
+				//determine the exact location by constantly checking a place, and going closer to the middle
+				// as suggested in the assignment.
+
+				while (! isAdjacent(testX, testY, 0.25 ))
+				{
+					testX = addNewFood_newX(testX);
+					testY = addNewFood_newY(testY);
+				}
+				//TODO minimal radius gebruike maar kweet nie hoe.
+				Food newFood = new Food(testX, testY);
+				//TODO me teams maar geen idee hoe.
+				this.addAsFood(newFood);
+	}
+	private double addNewFood_newX(double oldX)
+	{
+		if(oldX > this.getWidth()/2)
+			return oldX - 0.25;
+		if(oldX < this.getWidth()/2)
+			return oldX + 0.25;
+	
+		return oldX;
+	}
+	
+	private double addNewFood_newY(double oldY)
+	{
+		if(oldY > this.getHeight()/2)
+			return oldY - 0.25;
+		if(oldY < this.getHeight()/2)
+			return oldY + 0.25;
+
+		return oldY;
+	}
+
+	private int addNewFood_RandomStartX()
+	{
+		return random.nextInt((int)this.getWidth());		
+	}
+
+	private int addNewFood_RandomStartY()
+	{
+		return random.nextInt((int)this.getHeight());
 	}
 	
 	/**
