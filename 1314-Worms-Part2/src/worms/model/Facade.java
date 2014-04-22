@@ -317,6 +317,9 @@ public class Facade implements IFacade {
 		catch(IllegalDirectionException x){
 			throw new ModelException("IllegalDirectionException");
 		}
+		catch(NullPointerException x){
+			throw new ModelException("NullPointerException");
+		}
 	}
 
 	@Override

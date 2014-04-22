@@ -169,8 +169,10 @@ public class Position{
 	 */
 	//TODO documentatie veranderen!!!
 	public double getJumpTime() 
-			throws IllegalActionPointsException, IllegalDirectionException
+			throws IllegalActionPointsException, IllegalDirectionException, NullPointerException
 	{
+		if(this.getWorm().getWorld() == null)
+			throw new NullPointerException();
 		double[] tempXY = {getX(),getY()};
 		double radius = this.getWorm().getRadius();
 		
@@ -185,10 +187,10 @@ public class Position{
 		// vertical velocity the worm can only move +- 0.25 meter in the horizontal or vertical
 		// direction per step, this equals the minimum radius, so we will probably not skip
 		// any adjacent point of the map.
-		double temp = (1/4)/getInitialVelocity();
-		double tempTime = 0;
-		while(this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2)){
-			tempTime += temp;
+		double temp = (1/4.0)/getInitialVelocity();
+		double tempTime = 0.0;
+		while(this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2.0)){
+			tempTime = tempTime + temp;
 			tempXY = getJumpStep(tempTime);
 		}
 		if(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius))
@@ -197,23 +199,25 @@ public class Position{
 		
 		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
 		// possible adjacent position.
-		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300)){
+		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300.0)){
 			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
-				tempTime += temp;
+				tempTime = tempTime + temp;
 				tempXY = getJumpStep(tempTime);
 			}
-			temp = temp / 3;
+			temp = temp / 3.0;
 			while(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
-				tempTime -= temp;
+				tempTime = tempTime - temp;
 				tempXY = getJumpStep(tempTime);
 			}
-			temp = temp / 3;
+			temp = temp / 3.0;
 		}
-		if(temp < (1/300))
+		if(temp < (1/300.0))
 			this.getWorm().wormDeath();
 		
 		return tempTime;
 	}
+
+
 	
 	/**
 	 * Change the position of the worm as the result of a jump from the current position 
