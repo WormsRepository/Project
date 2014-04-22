@@ -266,8 +266,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isImpassable(World world, double x, double y, double radius) {
-		// TODO Auto-generated method stub
-		return false;
+		return world.isImpassable(x, y, radius);
 	}
 
 	@Override

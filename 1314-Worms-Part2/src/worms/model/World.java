@@ -178,15 +178,9 @@ public class World {
 	public boolean isImpassable(double x, double y, double radius){
 		if(x-radius<0 || x+radius>getWidth() || y-radius<0 || y+radius>getHeight() || radius <= 0)
 			return true;
-		double eindX = x + radius;
-		double eindY = y + radius;
-		for(double huidigeX = x - radius; huidigeX <= eindX; huidigeX += 0.025){
-			for(double huidigeY = y - radius; huidigeY <= eindY; huidigeY += 0.025){
-				if(Math.pow(Math.pow(x-huidigeX,2) + Math.pow(y-huidigeY,2),(1/2)) <= radius){
-					if(isImpassablePoint(huidigeX,huidigeY))
-						return true;
-				}
-			}
+		for(double angle = 0;angle<2*Math.PI;angle+=(Math.PI/180)){
+			if (isImpassablePoint(x+(Math.cos(angle)*radius), y+(Math.sin(angle))*radius))
+				return true;
 		}
 		return false;
 	}
@@ -213,7 +207,7 @@ public class World {
 		{
 			// a location is adjacent to impassable terrain if the location itself is passable and
 			// the location's distance to impassable terrain is smaller than the game object's radius*0.1.
-			for(double angle = 0; angle < 2*Math.PI ; angle = angle + (Math.PI *2)/360)
+			for(double angle = 0; angle < 2*Math.PI ; angle = angle + (Math.PI/180))
 			{
 				if (isImpassablePoint(x+(Math.cos(angle)*radius*1.1), y+(Math.sin(angle))*radius*1.1))
 					return true;
@@ -237,10 +231,19 @@ public class World {
 	//TODO documentatie.
 	@Raw
 	private boolean isImpassablePoint(double x, double y){
-		double temp = x*getPassableMap().length/getWidth();
-		int intX = (int)temp;
-		temp = y*getPassableMap()[0].length/getHeight();
-		int intY = (int)temp;
+		int intX, intY;
+		if(x == getWidth())
+			intX = getPassableMap().length - 1;
+		else{
+			double temp = x*getPassableMap().length/getWidth();
+			intX = (int)Math.floor(temp);
+		}
+		if(y == getHeight())
+			intY = getPassableMap()[0].length - 1;
+		else{
+			double temp = y*getPassableMap()[0].length/getHeight();
+			intY = (int)Math.floor(temp);
+		}
 		return !getPassableMap()[intX][intY];
 	}
 	
@@ -613,7 +616,7 @@ public class World {
 			testY = addNewWorm_RandomStartY();
 		}
 		if(getal == 1){
-			testX = (int) this.getWidth();
+			testX = this.getWidth();
 			testY = addNewWorm_RandomStartY();
 		}
 		if(getal == 2){
@@ -622,7 +625,7 @@ public class World {
 		}
 		if(getal == 3){
 			testX = addNewWorm_RandomStartX();
-			testY = (int) this.getHeight();
+			testY = this.getHeight();
 		}
 		//determine the exact location by constantly checking a place, and going closer to the middle
 		// as suggested in the assignment.
@@ -636,14 +639,18 @@ public class World {
 		Worm newWorm = new Worm(testX, testY, 0, 0.25, "NotYetNamed");
 		//TODO me teams maar geen idee hoe.
 		this.addAsWorm(newWorm);
+		try{
+			newWorm.getPosition().fall();
+		}
+		catch(RuntimeException x){}
 	}
 	
 	private double addNewWorm_newX(double oldX)
 	{
 		if(oldX > this.getWidth()/2)
-			return oldX - 0.25;
+			return oldX - 0.025;
 		if(oldX < this.getWidth()/2)
-			return oldX + 0.25;
+			return oldX + 0.025;
 	
 		return oldX;
 	}
@@ -651,9 +658,9 @@ public class World {
 	private double addNewWorm_newY(double oldY)
 	{
 		if(oldY > this.getHeight()/2)
-			return oldY - 0.25;
+			return oldY - 0.025;
 		if(oldY < this.getHeight()/2)
-			return oldY + 0.25;
+			return oldY + 0.025;
 
 		return oldY;
 	}
