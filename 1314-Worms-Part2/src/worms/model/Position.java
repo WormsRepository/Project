@@ -169,10 +169,8 @@ public class Position{
 	 */
 	//TODO documentatie veranderen!!!
 	public double getJumpTime() 
-			throws IllegalActionPointsException, IllegalDirectionException, NullPointerException
+			throws IllegalActionPointsException, IllegalDirectionException
 	{
-		if(this.getWorm().getWorld() == null)
-			throw new NullPointerException();
 		double[] tempXY = {getX(),getY()};
 		double radius = this.getWorm().getRadius();
 		
@@ -186,7 +184,7 @@ public class Position{
 		// We have chosen (1/4)/getInitialVelocity() because with the maximum horizontal or
 		// vertical velocity the worm can only move +- 0.25 meter in the horizontal or vertical
 		// direction per step, this equals the minimum radius, so we will probably not skip
-		// any adjacent point of the map.
+		// any impassable point of the map.
 		double temp = (1/4.0)/getInitialVelocity();
 		double tempTime = 0.0;
 		while(this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2.0)){
@@ -199,7 +197,7 @@ public class Position{
 		
 		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
 		// possible adjacent position.
-		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300.0)){
+		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/8100.0)){
 			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
 				tempTime = tempTime + temp;
 				tempXY = getJumpStep(tempTime);
@@ -211,8 +209,12 @@ public class Position{
 			}
 			temp = temp / 3.0;
 		}
-		if(temp < (1/300.0))
-			this.getWorm().wormDeath();
+		if(temp < (1/8100.0)){
+			if(tempTime < Math.PI)
+				return Math.PI;
+			else
+				return 2*Math.PI;
+		}
 		
 		return tempTime;
 	}
@@ -234,13 +236,17 @@ public class Position{
 	public void jump() 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
-		double[] tempXY = getJumpStep(getJumpTime());
+		double time = getJumpTime();
+		double[] tempXY = getJumpStep(time);
 		setX(tempXY[0]);
 		setY(tempXY[1]);
 		try{
 			this.fall();
 		}
 		catch (RuntimeException x){}
+		this.getWorm().getWorld().startNextTurn();
+		if(time == Math.PI || time == 2*Math.PI)
+			this.getWorm().wormDeath();
 		this.getWorm().setCurrentActionPoints(0);
 	}
 	
