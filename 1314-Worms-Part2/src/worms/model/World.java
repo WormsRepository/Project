@@ -218,7 +218,8 @@ public class World {
 	
 	//TODO documentation
 	public boolean canFall(double x, double y, double radius){
-		
+		if(isImpassable(x,y,radius))
+			return false;
 		for(double angle = Math.PI + (Math.PI *2)/360; angle < 2*Math.PI ; angle = angle + (Math.PI *2)/360)
 		{
 			if (isImpassablePoint(x+Math.cos(angle)*radius*1.1, y+(Math.sin(angle))*radius*1.1))
@@ -232,18 +233,14 @@ public class World {
 	@Raw
 	private boolean isImpassablePoint(double x, double y){
 		int intX, intY;
-		if(x == getWidth())
+		double temp = x*getPassableMap().length/getWidth();
+		intX = (int)Math.floor(temp);
+		temp = y*getPassableMap()[0].length/getHeight();
+		intY = (int)Math.floor(temp);
+		if(intX >= getPassableMap().length)
 			intX = getPassableMap().length - 1;
-		else{
-			double temp = x*getPassableMap().length/getWidth();
-			intX = (int)Math.floor(temp);
-		}
-		if(y == getHeight())
+		if(intY >= getPassableMap()[0].length)
 			intY = getPassableMap()[0].length - 1;
-		else{
-			double temp = y*getPassableMap()[0].length/getHeight();
-			intY = (int)Math.floor(temp);
-		}
 		return !getPassableMap()[intX][intY];
 	}
 	
