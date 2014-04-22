@@ -360,8 +360,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void startGame(World world) {
-		// TODO Auto-generated method stub
-		
+		world.startGame();
 	}
 
 	@Override

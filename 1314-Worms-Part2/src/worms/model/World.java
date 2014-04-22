@@ -292,8 +292,7 @@ public class World {
 	 * Starts a game in the given world.
 	 */
 	public void startGame(){
-		Iterator<Worm> it = this.getWorms().iterator();
-		currentWorm = it.next();
+		startNextTurn();
 		start(true);
 	}
 	
@@ -534,21 +533,11 @@ public class World {
 		return this.currentWorm;
 	}
 	
-	private Worm currentWorm;
-	
-	/**
-	 * Returns all the worms in the given world
-	 */
-	public Collection<Worm> getWorms(){
-		return new LinkedHashSet<Worm>(this.worms);
-	}
-	
-
-	
 	/**
 	 * Starts the next turn in the given world
 	 */
 	//vorige worm checken, zoeken in linkedHashSet, en de volgende in de set nemen als current worm.
+	//TODO documentation
 	public void startNextTurn(){
 		Iterator<Worm> it = worms.iterator();
 		if (this.currentWorm == null)
@@ -598,6 +587,16 @@ public class World {
 		
 		worm.setCurrentActionPoints(worm.getMaxActionPoints());
 	}
+	
+	private Worm currentWorm = null;
+	
+	/**
+	 * Returns all the worms in the given world
+	 */
+	public Collection<Worm> getWorms(){
+		return new LinkedHashSet<Worm>(this.worms);
+	}
+	
 	
 	
 	//TODO hasProperWorlds aanmaken!
