@@ -61,8 +61,8 @@ public class WormTest {
 	public void constructor_LegalCase()
 		throws Exception	{
 		Worm myWorm = new Worm(0.0 , 0.0 , Math.PI/2 , 0.30 , "Pieter");
-		assertTrue(myWorm.getX() == 0);
-		assertTrue(myWorm.getY() == 0);
+		assertTrue(myWorm.getPosition().getX() == 0);
+		assertTrue(myWorm.getPosition().getY() == 0);
 		assertTrue(myWorm.getDirection()== Math.PI/2);
 		assertTrue(myWorm.getRadius() == 0.30);
 		assertEquals("Pieter" , myWorm.getName());	
@@ -98,69 +98,46 @@ public class WormTest {
 
 	@Test
 	public void canMove_legalCase() {
-		assertTrue(wormRadius1.canMove(1));
+		assertTrue(wormRadius1.getPosition().canMove(1));
 	}
 
 	@Test
 	public void canMove_IllegalCase() {
-		assertFalse(wormRadius1.canMove(Integer.MAX_VALUE));
+		assertFalse(wormRadius1.getPosition().canMove(Integer.MAX_VALUE));
 	}
 
 	@Test
 	public void canMove_NegativeSteps() {
-		assertFalse(wormRadius1.canMove(-1));
+		assertFalse(wormRadius1.getPosition().canMove(-1));
 	}
 	
-	@Test
-	public void getJumpTime_Zero()
-		throws Exception{
-		assertTrue(wormDirection0.getJumpTime() == 0);
-	}
+	//TODO jumps testen!
 	
-	@Test
-	public void getJumpTime_Vertical()
-		throws Exception{
-		wormDirection0.turn(Math.PI/2);
-		assertTrue(wormDirection0.getDirection() == Math.PI/2);
-		assertTrue(wormDirection0.getJumpTime() != 0);
-	}
+	//TODO : getJumpTime testen
 	
-	@Test
-	public void jump_LegalCase() 
-		throws Exception	{
-		wormDirection2.jump();
-		assertTrue(wormDirection2.getY() == 0);
-		assertTrue(wormDirection2.getX() < 0);
-		assertTrue(wormDirection2.getCurrentActionPoints() == 0);
-	}
+	//TODO : jump testen
 
-	@Test(expected = IllegalActionPointsException.class)
-	public void jump_ZeroActionPoints()
-		throws Exception
-	{
-		wormDirection2.jump();
-		wormDirection2.jump();
-	}
+	//TODO : jumps testen
 
 
 	@Test(expected = RuntimeException.class)
 	public void jump_IllegalDirection()
 		throws Exception	{
-		wormDirection4.jump();
+		wormDirection4.getPosition().jump();
 	}
 
 	@Test
 	public void move_legalCase()
 		throws Exception	{
-		wormDirection2.move(1);
-		assertTrue(wormDirection2.getX() == Math.cos(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
-		assertTrue(wormDirection2.getY() == Math.sin(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
+		wormDirection2.getPosition().move(1);
+		assertTrue(wormDirection2.getPosition().getX() == Math.cos(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
+		assertTrue(wormDirection2.getPosition().getY() == Math.sin(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void move_IllegalNumberOfSteps()
 		throws Exception	{
-		wormDirection2.move(Integer.MAX_VALUE);
+		wormDirection2.getPosition().move(Integer.MAX_VALUE);
 	}
 
 	@Test
