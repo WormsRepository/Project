@@ -63,8 +63,10 @@ public class WormTest {
 		Worm myWorm = new Worm(0.0 , 0.0 , Math.PI/2 , 0.30 , "Pieter");
 		assertTrue(myWorm.getPosition().getX() == 0);
 		assertTrue(myWorm.getPosition().getY() == 0);
-		assertTrue(myWorm.getDirection()== Math.PI/2);
+		assertTrue(myWorm.getDirection() == Math.PI/2);
 		assertTrue(myWorm.getRadius() == 0.30);
+		assertTrue(myWorm.getCurrentActionPoints() == (int)Math.round(myWorm.getMass()));
+		assertTrue(myWorm.getCurrentHitPoints() == (int)Math.round(myWorm.getMass()));
 		assertEquals("Pieter" , myWorm.getName());	
 	}
 

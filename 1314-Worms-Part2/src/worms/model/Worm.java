@@ -579,12 +579,22 @@ public class Worm {
 		
 		if(newHitPoints > getMaxHitPoints())
 			return;
-		this.currentActionPoints = newHitPoints;
+		this.currentHitPoints = newHitPoints;
 	}
 	
 	
 	
 	private int currentHitPoints = 0;
+	
+	/**
+	 * Returns the variable maxHitPoints.
+	 * 		The maximum amount of hit points a worm has is represented by the variable maxHitPoints.
+	 */
+	@Basic @Raw
+	public int getMaxHitPoints()
+	{
+		return this.maxHitPoints;
+	}
 	
 	/**
 	 * Set the max action points of this worm according to the mass, 
@@ -603,16 +613,6 @@ public class Worm {
 		maxHitPoints = (int)Math.round(getMass());
 		if(getCurrentActionPoints() > getMaxActionPoints())
 			setCurrentActionPoints(getMaxActionPoints());
-	}
-	
-	/**
-	 * Returns the variable maxHitPoints.
-	 * 		The maximum amount of hit points a worm has is represented by the variable maxHitPoints.
-	 */
-	@Basic @Raw
-	public int getMaxHitPoints()
-	{
-		return this.maxHitPoints;
 	}
 	
 	private int maxHitPoints = 0;
