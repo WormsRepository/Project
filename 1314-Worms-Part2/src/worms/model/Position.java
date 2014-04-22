@@ -311,30 +311,6 @@ public class Position{
 	}
 	
 	/**
-	 * Calculate the distance covered by a jump in the current direction of the worm
-	 * and with respect to the worm's mass, the standard acceleration 
-	 * and the number of remaining action points.
-	 * 
-	 * @return	The distance covered by a jump in the current direction and with respect to the worm's
-	 * 			mass, the standard acceleration and the number of remaining action points.
-	 * 			| (Math.pow(getInitialVelocity(), 2) * Math.sin(2*getDirection()))/STANDARD_ACCELERATION
-	 * @throws	IllegalActionPointsException(0,worm)
-	 * 			It is not possible to perform a jump (and have an initial velocity for a jump)
-	 * 			if the amount of current action points of the worm is zero.
-	 * 			| worm.getCurrentActionPoints() == 0
-	 * @throws 	IllegalDirectionException(worm.getDirection(),worm)
-	 * 			It is not possible to perform a jump (and have an initial velocity for a jump)
-	 * 			if the direction of the worm is greater than pi.
-	 * 			| Math.PI < worm.getDirection()
-	 */
-	//TODO getDistance weg?
-	private double getDistance() 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
-		return (Math.pow(getInitialVelocity(), 2) * Math.sin(2*worm.getDirection()))/STANDARD_ACCELERATION;
-	}
-	
-	/**
 	 * Calculate the initial velocity for a jump with the current amount of 
 	 * action points of the worm, the mass of the worm and the standard acceleration.
 	 * 
