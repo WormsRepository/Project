@@ -91,15 +91,20 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public void fall(Worm worm) {
-		// TODO Auto-generated method stub
+	public void fall(Worm worm) 
+			throws ModelException{
+		try{
+			worm.getPosition().fall();
+		}
+		catch(RuntimeException ex){
+			throw new ModelException("RuntimeException");
+		}
 		
 	}
 
 	@Override
 	public int getActionPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)worm.getCurrentActionPoints();
 	}
 
 	@Override
