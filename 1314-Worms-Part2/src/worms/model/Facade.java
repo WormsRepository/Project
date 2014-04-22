@@ -125,8 +125,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getHitPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getCurrentHitPoints();
 	}
 
 	@Override
@@ -137,8 +136,15 @@ public class Facade implements IFacade {
 
 	@Override
 	public double[] getJumpStep(Worm worm, double t) {
-		// TODO Auto-generated method stub
-		return null;
+		try{
+			return worm.getPosition().getJumpStep(t);
+		}
+		catch(IllegalActionPointsException x){
+			throw new ModelException("IllegalActionPointsException");
+		}
+		catch(IllegalDirectionException x){
+			throw new ModelException("IllegalDirectionException");
+		}
 	}
 
 	@Override

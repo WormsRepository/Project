@@ -547,6 +547,7 @@ public class Worm {
 	/**
 	 * Returns the current number of hit points of the given worm.
 	 */
+	@Basic @Raw
 	public int getCurrentHitPoints()
 	{
 		return this.currentHitPoints;
