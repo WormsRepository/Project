@@ -170,8 +170,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getMass(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getMass();
 	}
 
 	@Override
@@ -186,8 +185,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getMinimalRadius(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getMinimalRadius();
 	}
 
 	@Override
@@ -197,14 +195,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getOrientation(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getDirection();
 	}
 
 	@Override
 	public double getRadius(Food food) {
-		// TODO Auto-generated method stub
-		return 0;
+		return Food.getRadius();
 	}
 
 	@Override
@@ -215,20 +211,17 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getRadius(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.getRadius();
 	}
 
 	@Override
 	public String getSelectedWeapon(Worm worm) {
-		// TODO Auto-generated method stub
-		return null;
+		return worm.getSelectedWeapon();
 	}
 
 	@Override
 	public String getTeamName(Worm worm) {
-		// TODO Auto-generated method stub
-		return null;
+		return worm.getTeamName();
 	}
 
 	@Override
@@ -287,14 +280,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isAdjacent(World world, double x, double y, double radius) {
-		// TODO Auto-generated method stub
-		return false;
+		return world.isAdjacent(x, y, radius);
 	}
 
 	@Override
 	public boolean isAlive(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
+		return worm.isAlive();
 	}
 
 	@Override
@@ -315,9 +306,17 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public void jump(Worm worm, double timeStep) {
-		// TODO Auto-generated method stub
-		
+	public void jump(Worm worm, double timeStep) 
+			throws ModelException{
+		try{
+			worm.getPosition().jump();
+		}
+		catch(IllegalActionPointsException x){
+			throw new ModelException("IllegalActionPointsException");
+		}
+		catch(IllegalDirectionException x){
+			throw new ModelException("IllegalDirectionException");
+		}
 	}
 
 	@Override
@@ -327,21 +326,30 @@ public class Facade implements IFacade {
 	}
 
 	@Override
-	public void rename(Worm worm, String newName) {
-		// TODO Auto-generated method stub
-		
+	public void rename(Worm worm, String newName) 
+			throws ModelException{
+		try{
+			worm.setName(newName);
+		}
+		catch(IllegalNameException x){
+			throw new ModelException("IllegalNameException");
+		}
 	}
 
 	@Override
 	public void selectNextWeapon(Worm worm) {
-		// TODO Auto-generated method stub
-		
+		worm.selectNextWeapon();
 	}
 
 	@Override
-	public void setRadius(Worm worm, double newRadius) {
-		// TODO Auto-generated method stub
-		
+	public void setRadius(Worm worm, double newRadius) 
+			throws ModelException{
+		try{
+			worm.setRadius(newRadius);
+		}
+		catch(IllegalRadiusException x){
+			throw new ModelException("IllegalRadiusException");
+		}
 	}
 
 	@Override
@@ -358,14 +366,13 @@ public class Facade implements IFacade {
 
 	@Override
 	public void startNextTurn(World world) {
-		// TODO Auto-generated method stub
-		
+		world.startNextTurn();
 	}
 
 	@Override
 	public void turn(Worm worm, double angle) {
-		// TODO Auto-generated method stub
-		
+		if(worm.canTurn(angle))
+			worm.turn(angle);
 	}
 
 }

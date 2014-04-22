@@ -582,12 +582,13 @@ public class World {
 	}
 	
 	/**
-	 * resets the worms action points and gives it 10 extra hp if possible
+	 * Resets the worms action points and gives it 10 extra hp if possible.
 	 * 
-	 * @param worm
-	 * 				the given worm.
+	 * @param 	worm
+	 * 			The given worm.
 	 */
-	public void startNextTurn_Aux(Worm worm)
+	//TODO documentation
+	private void startNextTurn_Aux(Worm worm)
 	{
 		if (worm.getMaxHitPoints() - worm.getCurrentHitPoints() < 10)
 			worm.setCurrentHitPoints(worm.getMaxHitPoints());
