@@ -243,6 +243,10 @@ public class Position{
 		double[] tempXY = getJumpStep(getJumpTime());
 		setX(tempXY[0]);
 		setY(tempXY[1]);
+		try{
+			this.fall();
+		}
+		catch (RuntimeException x){}
 		this.getWorm().setCurrentActionPoints(0);
 	}
 	
@@ -279,7 +283,9 @@ public class Position{
 	}
 	
 	//TODO moeilijke documentatie aanvullen lusinvarianten...
-	public void fall(){
+	public void fall() throws RuntimeException{
+		if(!canFall())
+			throw new RuntimeException();
 		double tempY = getY();
 		double temp = 10;
 		while(canFall(getX(),tempY)){
