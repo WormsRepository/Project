@@ -262,9 +262,9 @@ public class World {
 	@Raw
 	private boolean isImpassablePoint(double x, double y){
 		int intX, intY;
-		double temp = x*getPassableMap().length/getWidth();
-		intX = (int)Math.floor(temp);
-		temp = y*getPassableMap()[0].length/getHeight();
+		double temp = y*getPassableMap().length/getHeight();
+		intX = getPassableMap().length - (int)Math.ceil(temp);
+		temp = x*getPassableMap()[0].length/getWidth();
 		intY = (int)Math.floor(temp);
 		if(intX >= getPassableMap().length)
 			intX = getPassableMap().length - 1;
