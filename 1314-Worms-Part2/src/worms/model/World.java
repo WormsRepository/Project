@@ -222,6 +222,7 @@ public class World {
 		}
 	}
 	
+	//TODO documentation
 	public boolean canFall(double x, double y, double radius){
 		
 		for(double angle = Math.PI + (Math.PI *2)/360; angle < 2*Math.PI ; angle = angle + (Math.PI *2)/360)

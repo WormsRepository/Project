@@ -218,7 +218,9 @@ public class Position{
 			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
 		//TODO nakijken of deze exception te snel gegooid word?
 		
-		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius)){
+		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
+		// possible adjacent position.
+		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300)){
 			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
 				tempTime += temp;
 				tempXY = getJumpStep(tempTime);
@@ -230,6 +232,9 @@ public class Position{
 			}
 			temp = temp / 3;
 		}
+		if(temp < (1/300))
+			this.getWorm().wormDeath();
+		
 		return tempTime;
 	}
 	
@@ -296,15 +301,22 @@ public class Position{
 			throw new RuntimeException();
 		double tempY = getY();
 		double temp = 10;
-		while(canFall(getX(),tempY)){
-			while(canFall(getX(),tempY))
+		while(canFall(getX(),tempY) && temp >= (1/300)){
+			while(inMap(getX(),tempY) && canFall(getX(),tempY))
 				tempY -= temp;
+			if(!inMap(getX(),tempY))
+				tempY += temp;
 			temp = temp / 3;
 			while(!canFall(getX(),tempY) &&
-					!!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
+					!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
 				tempY += temp;
 			temp = temp / 3;
 		}
+		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
+		// the worm will fall of the world and die.
+		if(temp < (1/300))
+			this.getWorm().wormDeath();
+			
 		if(this.getWorm().getWorld().isStarted())
 			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
 					(int)Math.floor(3 * (getY() - tempY)));
