@@ -152,6 +152,7 @@ public class Facade implements IFacade {
 			return projectile.getJumpTime();
 		}
 		catch(NullPointerException exc){
+			exc.printStackTrace(System.out);
 			throw new ModelException("NullPointerException");
 		}
 	}
@@ -217,8 +218,6 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getSelectedWeapon(Worm worm) {
-		if(worm.getWeapon().getCurrentWeapon().equals(" "))
-			return null;
 		return worm.getWeapon().getCurrentWeapon();
 	}
 
@@ -305,6 +304,7 @@ public class Facade implements IFacade {
 			projectile.jump();
 		}
 		catch(NullPointerException exc){
+			exc.printStackTrace(System.out);
 			throw new ModelException("NullPointerException");
 		}
 	}
@@ -362,12 +362,15 @@ public class Facade implements IFacade {
 			worm.getWeapon().shoot(yield);
 		}
 		catch(NullPointerException x){
+			x.printStackTrace(System.out);
 			throw new ModelException("NullPointerException");
 		}
 		catch(IllegalRadiusException x){
+			x.printStackTrace(System.out);
 			throw new ModelException("IllegalRadiusException");
 		}
 		catch(IllegalArgumentException x){
+			x.printStackTrace(System.out);
 			throw new ModelException("IllegalArgumentException");
 		}
 	}

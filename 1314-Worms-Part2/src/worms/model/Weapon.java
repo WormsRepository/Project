@@ -34,6 +34,8 @@ public class Weapon {
 	 */
 	@Basic @Raw
 	public String getCurrentWeapon(){
+		if(this.currentWeapon.equals(" "))
+			return null;
 		return this.currentWeapon;
 	}
 	
@@ -51,12 +53,12 @@ public class Weapon {
 	public double getRadiusOfWeapon() 
 			throws IllegalRadiusException{
 		double newRadius;
-		if(this.getMassOfWeapon() > 0){
-			newRadius = Math.pow((3/4)*this.getMassOfWeapon()/
-					(DENSITY * Math.PI), (1/3));
+		if(this.getMassOfWeapon() > 0.0){
+			newRadius = Math.pow((3.0/4.0)*this.getMassOfWeapon()/
+					(DENSITY * Math.PI), (1/3.0));
 		}
 		else
-			newRadius = 0;
+			newRadius = 0.0;
 		if(!canHaveAsRadius(newRadius))
 			throw new IllegalRadiusException(newRadius);
 		return newRadius;
@@ -68,25 +70,27 @@ public class Weapon {
 	//TODO documentation
 	public void selectNextWeapon()
 	{
-		if(this.getCurrentWeapon().equals(" "))
+		if(this.getCurrentWeapon() == null)
 			setCurrentWeapon("Bazooka");
-		if(this.getCurrentWeapon().equals("Bazooka"))
+		else if(this.getCurrentWeapon().equals("Bazooka"))
 			setCurrentWeapon("Rifle");
-		if(this.getCurrentWeapon().equals("Rifle"))
+		else if(this.getCurrentWeapon().equals("Rifle"))
 			setCurrentWeapon(" ");
 	}
 	
 	public void shoot(double propulsion) 
 			throws NullPointerException, IllegalRadiusException, IllegalArgumentException{
+		if(getCurrentWeapon() == null)
+			throw new NullPointerException();
 		Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
 		projectile.jump();
 	}
 	
 	//TODO documentation
 	private double getInitialVelocity(double propulsion){
-		double initialVelocity = 0;
+		double initialVelocity = 0.0;
 		if(this.getCurrentWeapon().equals("Bazooka"))
-			initialVelocity = 2.5 + 7*(propulsion/100);
+			initialVelocity = 2.5 + 7.0*(propulsion/100.0);
 		else if(this.getCurrentWeapon().equals("Rifle"))
 			initialVelocity = 1.5;
 		
@@ -121,10 +125,10 @@ public class Weapon {
 	/**
 	 * Variable referencing the weapon of a worm.
 	 */
-	String currentWeapon = " ";
+	private String currentWeapon = " ";
 	
 	/**
 	 * Final class variable registering the density of all weapons (in kg/m^3).
 	 */
-	private final static double DENSITY = 7800;
+	private final static double DENSITY = 7800.0;
 }

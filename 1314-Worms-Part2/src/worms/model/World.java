@@ -292,8 +292,10 @@ public class World {
 	 * Starts a game in the given world.
 	 */
 	public void startGame(){
-		startNextTurn();
-		start(true);
+		if(worms.size() > 1){
+			startNextTurn();
+			start(true);
+		}
 	}
 	
 	//start

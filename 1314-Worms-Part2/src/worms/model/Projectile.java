@@ -9,8 +9,8 @@ public class Projectile {
 	public Projectile(Worm worm, double initialVelocity) 
 			throws IllegalRadiusException, IllegalArgumentException{
 		this.weapon = worm.getWeapon();
-		this.mass = weapon.getMassOfWeapon();
-		this.radius = weapon.getRadiusOfWeapon();
+		this.mass = this.weapon.getMassOfWeapon();
+		this.radius = this.weapon.getRadiusOfWeapon();
 		this.direction = worm.getDirection();
 		this.initialVelocity = initialVelocity;
 		
@@ -92,9 +92,9 @@ public class Projectile {
 		// vertical velocity the worm can only move the minimum radius in the horizontal or vertical
 		// direction per step, this equals the minimum radius, so we will probably not skip
 		// any impassable point of the map.
-		double temp = (1/150)/getInitialVelocity();
+		double temp = (1/150.0)/getInitialVelocity();
 		double tempTime = 0.0;
-		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/4.0)){
+		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2.0)){
 			tempTime = tempTime + temp;
 			tempXY = getJumpStep(tempTime);
 		}
@@ -127,12 +127,6 @@ public class Projectile {
 		
 		deactivate();
 	}
-
-	private boolean inMap(double x, double y){
-		double radius = this.getRadius();
-		return x>radius && x<this.getWorld().getWidth() - radius &&
-				y>radius && y<this.getWorld().getHeight() - radius;
-	}
 	
 	//TODO documenation
 	@Model
@@ -144,8 +138,10 @@ public class Projectile {
 	@Model @Raw
 	private void setPosition(double x, double y) 
 			throws IllegalArgumentException{
-		if(!isValidPosition(x,y))
-			throw new IllegalArgumentException("Invalid Position");
+		if(!isValidPosition(x,y)){
+			String z = "Invalid Position: x-pos: " + x + " y-pos: "+ y + " radius: " + getRadius();
+			throw new IllegalArgumentException(z);
+		}
 		this.x = x;
 		this.y = y;
 	}
