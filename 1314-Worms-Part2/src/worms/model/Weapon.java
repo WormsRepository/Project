@@ -37,20 +37,6 @@ public class Weapon {
 		return this.currentWeapon;
 	}
 	
-	/**
-	 * Activates the next weapon for the worm.
-	 */
-	//TODO documentation
-	public void selectNextWeapon()
-	{
-		if(this.getCurrentWeapon().equals(" "))
-			setCurrentWeapon("Bazooka");
-		if(this.getCurrentWeapon().equals("Bazooka"))
-			setCurrentWeapon("Rifle");
-		if(this.getCurrentWeapon().equals("Rifle"))
-			setCurrentWeapon(" ");
-	}
-	
 	//TODO documentation
 	public double getMassOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
@@ -76,6 +62,27 @@ public class Weapon {
 		return newRadius;
 	}
 	
+	/**
+	 * Activates the next weapon for the worm.
+	 */
+	//TODO documentation
+	public void selectNextWeapon()
+	{
+		if(this.getCurrentWeapon().equals(" "))
+			setCurrentWeapon("Bazooka");
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			setCurrentWeapon("Rifle");
+		if(this.getCurrentWeapon().equals("Rifle"))
+			setCurrentWeapon(" ");
+	}
+	
+	public void shoot(double propulsion) 
+			throws NullPointerException, IllegalRadiusException, IllegalArgumentException{
+		Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
+		projectile.jump();
+	}
+	
+	//TODO documentation
 	private double getInitialVelocity(double propulsion){
 		double initialVelocity = 0;
 		if(this.getCurrentWeapon().equals("Bazooka"))

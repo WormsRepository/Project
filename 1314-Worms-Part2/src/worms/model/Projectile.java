@@ -120,7 +120,8 @@ public class Projectile {
 		return tempTime;
 	}
 	//TODO documentation
-	public void jump() {
+	public void jump() 
+			throws NullPointerException{
 		double[] tempXY = getJumpStep(getJumpTime());
 		setPosition(tempXY[0],tempXY[1]);
 		

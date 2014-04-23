@@ -217,6 +217,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getSelectedWeapon(Worm worm) {
+		if(worm.getWeapon().getCurrentWeapon().equals(" "))
+			return null;
 		return worm.getWeapon().getCurrentWeapon();
 	}
 
@@ -356,8 +358,18 @@ public class Facade implements IFacade {
 
 	@Override
 	public void shoot(Worm worm, int yield) {
-		// TODO Auto-generated method stub
-		
+		try{
+			worm.getWeapon().shoot(yield);
+		}
+		catch(NullPointerException x){
+			throw new ModelException("NullPointerException");
+		}
+		catch(IllegalRadiusException x){
+			throw new ModelException("IllegalRadiusException");
+		}
+		catch(IllegalArgumentException x){
+			throw new ModelException("IllegalArgumentException");
+		}
 	}
 
 	@Override
