@@ -743,14 +743,17 @@ public class World {
 	/**
 	 * Returns the active projectile in the world, or null if no active projectile exists.
 	 */
-	public Projectile getActiveProjectile(){
-		return projectile;
+	public Projectile getProjectile(){
+		return this.projectile;
 	}
 	
 	/**
 	 * Sets the given projectile as the new active projectile in this world.
 	 */
+	//TODO documentation
 	public void setActiveProjectile(Projectile projectile){
+		assert(projectile == null || projectile.getWorld() == this);
+		assert(projectile != null || getProjectile() == null || !(getProjectile().getWorld() == this));
 		this.projectile = projectile;
 	}
 	

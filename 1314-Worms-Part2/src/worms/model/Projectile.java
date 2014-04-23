@@ -11,12 +11,18 @@ public class Projectile {
 		this.weapon = worm.getWeapon();
 		this.mass = weapon.getMassOfWeapon();
 		this.radius = weapon.getRadiusOfWeapon();
-		this.world = worm.getWorld();
-		//TODO associatie met world aanvullen
+		this.setWorld(worm.getWorld());
 		this.direction = worm.getDirection();
-		this.setInitialPosition(worm.getPosition().getX(), 
-				worm.getPosition().getY(), worm.getRadius());
+		try{
+			this.setInitialPosition(worm.getPosition().getX(), 
+					worm.getPosition().getY(), worm.getRadius());
+		}
+		catch(IllegalArgumentException exc){
+			this.deactivate();
+			throw exc;
+		}
 	}
+	
 	
 	/**
 	 * Returns whether or not this projectile is still active.
@@ -24,6 +30,12 @@ public class Projectile {
 	@Basic @Raw
 	public boolean isActive() {
 		return this.isActive;
+	}
+	
+	//TODO documentation
+	public void deactivate(){
+		setWorld(null);
+		this.isActive = false;
 	}
 	
 	/**
@@ -90,8 +102,8 @@ public class Projectile {
 	private void setInitialPosition(double xWorm, double yWorm, double wormRadius) 
 			throws IllegalArgumentException{
 		double resultingRadius = this.getRadius() + wormRadius;
-		double xPos = xWorm + Math.cos(this.getDirection())*resultingRadius;
-		double yPos = yWorm + Math.sin(this.getDirection())*resultingRadius;
+		double xPos = xWorm + Math.cos(this.getDirection())*resultingRadius*1.05;
+		double yPos = yWorm + Math.sin(this.getDirection())*resultingRadius*1.05;
 		setPosition(xPos, yPos);
 	}
 	
@@ -175,8 +187,14 @@ public class Projectile {
 		return this.world;
 	}
 	
+	//TODO documentation
+	public void setWorld(World world){
+		this.world = world;
+		world.setActiveProjectile(this);
+	}
+	
 	/**
 	 * Variable referencing the world to which this projectile belongs.
 	 */
-	private final World world;
+	private World world;
 }

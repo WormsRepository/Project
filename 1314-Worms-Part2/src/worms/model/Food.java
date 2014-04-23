@@ -35,6 +35,14 @@ public class Food {
 	
 	
 	/**
+	 * Returns whether or not this food ration is alive (active), i.e., not eaten.
+	 */
+	@Basic @Raw
+	public boolean isActive(){
+		return this.isActive;
+	}
+	
+	/**
 	 * Deactivate this food.
 	 * 
 	 * @post	| ( !new.isActive() )
@@ -44,14 +52,6 @@ public class Food {
 	public void deactivate(){
 		world.removeAsFood(this);
 		this.isActive = false;
-	}
-	
-	/**
-	 * Returns whether or not this food ration is alive (active), i.e., not eaten.
-	 */
-	@Basic @Raw
-	public boolean isActive(){
-		return this.isActive;
 	}
 	
 	/**
