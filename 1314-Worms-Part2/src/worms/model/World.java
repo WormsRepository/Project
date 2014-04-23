@@ -748,7 +748,7 @@ public class World {
 	}
 	
 	/**
-	 * sets the given projectile as the new active projectile in this world.
+	 * Sets the given projectile as the new active projectile in this world.
 	 */
 	public void setActiveProjectile(Projectile projectile){
 		this.projectile = projectile;
