@@ -1,6 +1,7 @@
 package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 public class Weapon {
@@ -60,6 +61,34 @@ public class Weapon {
 			return 0;
 	}
 	
+	//TODO documentation
+	public double getRadiusOfWeapon() 
+			throws IllegalRadiusException{
+		double newRadius;
+		if(this.getMassOfWeapon() > 0){
+			newRadius = Math.pow((3/4)*this.getMassOfWeapon()/
+					(DENSITY * Math.PI), (1/3));
+		}
+		else
+			newRadius = 0;
+		if(!canHaveAsRadius(newRadius))
+			throw new IllegalRadiusException(newRadius);
+		return newRadius;
+	}
+	
+	/**
+	 * Check whether the given radius is a valid radius for this projectile.
+	 * 
+	 * @param 	radius
+	 * 			The radius to check.
+	 * @return	True if and only if the given radius is larger than zero.
+	 * 			| radius > 0
+	 */
+	@Raw @Model
+	private boolean canHaveAsRadius(double radius){
+		return radius > 0;
+	}
+	
 	private double getCostOfActionPointsOfWeapon(){
 		return 0;
 		//TODO implementeren
@@ -76,5 +105,9 @@ public class Weapon {
 	 * Variable referencing the weapon of a worm.
 	 */
 	String currentWeapon = " ";
-
+	
+	/**
+	 * Final class variable registering the density of all weapons (in kg/m^3).
+	 */
+	private final static double DENSITY = 7800;
 }

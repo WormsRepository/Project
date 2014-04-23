@@ -6,8 +6,11 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 public class Projectile {
 	
-	public Projectile(Worm worm){
+	public Projectile(Worm worm) 
+			throws IllegalRadiusException{
 		this.weapon = worm.getWeapon();
+		this.mass = weapon.getMassOfWeapon();
+		this.radius = weapon.getRadiusOfWeapon();
 	}
 	
 	/**
@@ -68,18 +71,7 @@ public class Projectile {
 	private double y;
 	
 	
-	/**
-	 * Check whether the given radius is a valid radius for this projectile.
-	 * 
-	 * @param 	radius
-	 * 			The radius to check.
-	 * @return	True if and only if the given radius is larger than zero.
-	 * 			| radius > 0
-	 */
-	@Raw
-	public boolean canHaveAsRadius(double radius){
-		return radius > 0;
-	}
+
 	/**
 	 * Return the radius of this projectile (in meter).
 	 */
@@ -92,20 +84,20 @@ public class Projectile {
 	private void setRadius(double radius){
 		if(!canHaveAsRadius(radius))
 			throw new IllegalRadiusException(radius);
-		//TODO setradius
+		this.radius = radius;
 	}
 	
 	/**
 	 * 	Variable registering the radius of a projectile.
 	 */
-	private final double radius = 0;
+	private final double radius;
 	
 	
 	
 	/**
 	 * Variable registering the mass of a projectile (in kilograms).
 	 */
-	private final double mass = 0;
+	private final double mass;
 	
 	
 	/**
@@ -121,11 +113,4 @@ public class Projectile {
 	 * Variable referencing the weapon that this projectile represents.
 	 */
 	private final Weapon weapon;
-	
-	
-	
-	/**
-	 * Final class variable registering the density of all projectiles (in kg/m^3).
-	 */
-	private final static double DENSITY = 7800;
 }
