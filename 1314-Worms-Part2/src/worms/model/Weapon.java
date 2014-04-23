@@ -53,9 +53,9 @@ public class Weapon {
 	
 	//TODO documentation
 	public double getMassOfWeapon(){
-		if(this.currentWeapon.equals("Bazooka"))
+		if(this.getCurrentWeapon().equals("Bazooka"))
 			return 0.300;
-		else if(this.currentWeapon.equals("Rifle"))
+		else if(this.getCurrentWeapon().equals("Rifle"))
 			return 0.010;
 		else
 			return 0;
@@ -74,6 +74,15 @@ public class Weapon {
 		if(!canHaveAsRadius(newRadius))
 			throw new IllegalRadiusException(newRadius);
 		return newRadius;
+	}
+	
+	private double getInitialForce(double propulsion){
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			return 2.5 + 7*(propulsion/100);
+		else if(this.getCurrentWeapon().equals("Rifle"))
+			return 1.5;
+		else
+			return 0;
 	}
 	
 	/**

@@ -6,13 +6,15 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 public class Projectile {
 	
-	public Projectile(Worm worm) 
+	public Projectile(Worm worm, double initialForce) 
 			throws IllegalRadiusException, IllegalArgumentException{
 		this.weapon = worm.getWeapon();
 		this.mass = weapon.getMassOfWeapon();
 		this.radius = weapon.getRadiusOfWeapon();
-		this.setWorld(worm.getWorld());
 		this.direction = worm.getDirection();
+		this.initialForce = initialForce;
+		
+		this.setWorld(worm.getWorld());
 		try{
 			this.setInitialPosition(worm.getPosition().getX(), 
 					worm.getPosition().getY(), worm.getRadius());
@@ -163,6 +165,21 @@ public class Projectile {
 	 * Variable registering the direction of the projectile (in radians).
 	 */
 	private final double direction;
+	
+	
+	
+	/**
+	 * Return the initial force of this projectile.
+	 */
+	@Basic @Raw
+	public double getInitialForce(){
+		return this.initialForce;
+	}
+	
+	/**
+	 * Variable registering the initial force of the projectile (in N).
+	 */
+	private final double initialForce;
 	
 	
 	
