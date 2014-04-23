@@ -351,7 +351,7 @@ public class Worm {
 	}
 
 	/**
-	 * variable registering the direction of a worm.
+	 * Variable registering the direction of a worm.
 	 */
 	private double direction = 0;
 

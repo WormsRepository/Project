@@ -7,11 +7,15 @@ import be.kuleuven.cs.som.annotate.Raw;
 public class Projectile {
 	
 	public Projectile(Worm worm) 
-			throws IllegalRadiusException{
+			throws IllegalRadiusException, IllegalArgumentException{
 		this.weapon = worm.getWeapon();
 		this.mass = weapon.getMassOfWeapon();
 		this.radius = weapon.getRadiusOfWeapon();
 		this.world = worm.getWorld();
+		//TODO associatie met world aanvullen
+		this.direction = worm.getDirection();
+		this.setInitialPosition(worm.getPosition().getX(), 
+				worm.getPosition().getY(), worm.getRadius());
 	}
 	
 	/**
@@ -44,6 +48,11 @@ public class Projectile {
 		return this.y;
 	}
 
+	public double[] getJumpStep(double t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public double getJumpTime(double timeStep) {
 		// TODO methode maken
 		return 0;
@@ -54,11 +63,36 @@ public class Projectile {
 		
 	}
 
-
+	private boolean inMap(double x, double y){
+		double radius = this.getRadius();
+		return x>radius && x<this.getWorld().getWidth() - radius &&
+				y>radius && y<this.getWorld().getHeight() - radius;
+	}
 	
+	//TODO documenation
+	@Model
+	private boolean isValidPosition(double x, double y){
+		return !this.getWorld().isImpassable(x,y,this.getRadius());
+	}
+	
+	//TODO documentation
 	@Model @Raw
-	private void setPosition(double x, double y){
-		//TODO methode maken
+	private void setPosition(double x, double y) 
+			throws IllegalArgumentException{
+		if(!isValidPosition(x,y))
+			throw new IllegalArgumentException("Invalid Position");
+		this.x = x;
+		this.y = y;
+	}
+	
+	//TODO documentation
+	@Model @Raw
+	private void setInitialPosition(double xWorm, double yWorm, double wormRadius) 
+			throws IllegalArgumentException{
+		double resultingRadius = this.getRadius() + wormRadius;
+		double xPos = xWorm + Math.cos(this.getDirection())*resultingRadius;
+		double yPos = yWorm + Math.sin(this.getDirection())*resultingRadius;
+		setPosition(xPos, yPos);
 	}
 	
 	/**
@@ -97,9 +131,25 @@ public class Projectile {
 	}
 	
 	/**
-	 * Variable registering the mass of a projectile (in kilograms).
+	 * Variable registering the mass of the projectile (in kilograms).
 	 */
 	private final double mass;
+	
+	
+	
+	/**
+	 * Return the direction of this projectile.
+	 */
+	@Basic @Raw
+	public double getDirection(){
+		return this.direction;
+	}
+	
+	/**
+	 * Variable registering the direction of the projectile (in radians).
+	 */
+	private final double direction;
+	
 	
 	
 	/**
