@@ -78,7 +78,7 @@ public class Weapon {
 			setCurrentWeapon(" ");
 	}
 	
-	public void shoot(double propulsion) 
+	public void shoot(int propulsion) 
 			throws NullPointerException, IllegalRadiusException, IllegalArgumentException{
 		if(getCurrentWeapon() == null)
 			throw new NullPointerException();
@@ -87,7 +87,7 @@ public class Weapon {
 	}
 	
 	//TODO documentation
-	private double getInitialVelocity(double propulsion){
+	private double getInitialVelocity(int propulsion){
 		double initialVelocity = 0.0;
 		if(this.getCurrentWeapon().equals("Bazooka"))
 			initialVelocity = 2.5 + 7.0*(propulsion/100.0);
