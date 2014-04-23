@@ -6,13 +6,13 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 public class Projectile {
 	
-	public Projectile(Worm worm, double initialForce) 
+	public Projectile(Worm worm, double initialVelocity) 
 			throws IllegalRadiusException, IllegalArgumentException{
 		this.weapon = worm.getWeapon();
 		this.mass = weapon.getMassOfWeapon();
 		this.radius = weapon.getRadiusOfWeapon();
 		this.direction = worm.getDirection();
-		this.initialForce = initialForce;
+		this.initialVelocity = initialVelocity;
 		
 		this.setWorld(worm.getWorld());
 		try{
@@ -65,13 +65,64 @@ public class Projectile {
 	}
 
 	public double[] getJumpStep(double t) {
-		// TODO Auto-generated method stub
-		return null;
+		double horizontalVelocity = getInitialVelocity() * Math.cos(this.getDirection());
+		double xPosition = getX() + horizontalVelocity * t;
+		double verticalVelocity = getInitialVelocity() * Math.sin(this.getDirection());
+		double yPosition = getY() + verticalVelocity*t - (STANDARD_ACCELERATION*Math.pow(t,2))/2.0;
+		double[] position = {xPosition, yPosition};
+		return position;
 	}
 	
-	public double getJumpTime(double timeStep) {
-		// TODO methode maken
-		return 0;
+	
+	public double getJumpTime() 
+			throws IllegalActionPointsException, IllegalDirectionException
+	{
+		double[] tempXY = {getX(),getY()};
+		double radius = this.getRadius();
+		
+		// This temporary variable has to be incremented with a really small value, 
+		// with this part of the method we make sure the tempX and tempY are no longer
+		// at a adjacent location so we can detect to real collision in the next part 
+		// and not the initial position. We also check if the jump in the current 
+		// direction is worth to do it, if not, this method throws
+		// an IllegalDirectionException.
+		
+		// We have chosen (1/4)/getInitialVelocity() because with the maximum horizontal or
+		// vertical velocity the worm can only move the minimum radius in the horizontal or vertical
+		// direction per step, this equals the minimum radius, so we will probably not skip
+		// any impassable point of the map.
+		double temp = (1/150)/getInitialVelocity();
+		double tempTime = 0.0;
+		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/4.0)){
+			tempTime = tempTime + temp;
+			tempXY = getJumpStep(tempTime);
+		}
+		if(this.getWorld().isImpassable(tempXY[0], tempXY[1], radius))
+			throw new IllegalDirectionException(this.getDirection());
+		//TODO nakijken of deze exception te snel gegooid word?
+		
+		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
+		// possible adjacent position.
+		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300000.0)){
+			while(!this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+				tempTime = tempTime + temp;
+				tempXY = getJumpStep(tempTime);
+			}
+			temp = temp / 3.0;
+			while(this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+				tempTime = tempTime - temp;
+				tempXY = getJumpStep(tempTime);
+			}
+			temp = temp / 3.0;
+		}
+		if(temp < (1/300000.0)){
+			if(tempTime < Math.PI)
+				return Math.PI;
+			else
+				return 2*Math.PI;
+		}
+		
+		return tempTime;
 	}
 	
 	public void jump(double timeStep) {
@@ -169,17 +220,17 @@ public class Projectile {
 	
 	
 	/**
-	 * Return the initial force of this projectile.
+	 * Return the initial velocity of this projectile.
 	 */
 	@Basic @Raw
-	public double getInitialForce(){
-		return this.initialForce;
+	public double getInitialVelocity(){
+		return this.initialVelocity;
 	}
 	
 	/**
-	 * Variable registering the initial force of the projectile (in N).
+	 * Variable registering the initial velocity of the projectile (in N).
 	 */
-	private final double initialForce;
+	private final double initialVelocity;
 	
 	
 	
@@ -222,4 +273,11 @@ public class Projectile {
 	 * Variable referencing the world to which this projectile belongs.
 	 */
 	private World world;
+	
+	
+	
+	/**
+	 * Final class variable registering the standard acceleration (m/(s*s)).
+	 */
+	private final static double STANDARD_ACCELERATION = 9.80665;
 }

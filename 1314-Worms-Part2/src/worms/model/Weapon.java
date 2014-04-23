@@ -76,13 +76,14 @@ public class Weapon {
 		return newRadius;
 	}
 	
-	private double getInitialForce(double propulsion){
+	private double getInitialVelocity(double propulsion){
+		double initialVelocity = 0;
 		if(this.getCurrentWeapon().equals("Bazooka"))
-			return 2.5 + 7*(propulsion/100);
+			initialVelocity = 2.5 + 7*(propulsion/100);
 		else if(this.getCurrentWeapon().equals("Rifle"))
-			return 1.5;
-		else
-			return 0;
+			initialVelocity = 1.5;
+		
+		return initialVelocity * 0.5;
 	}
 	
 	/**
