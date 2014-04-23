@@ -34,7 +34,9 @@ public class Projectile {
 	
 	//TODO documentation
 	public void deactivate(){
-		setWorld(null);
+		World tempWorld = getWorld();
+		this.world = null;
+		tempWorld.setProjectile(null);
 		this.isActive = false;
 	}
 	
@@ -177,7 +179,9 @@ public class Projectile {
 	 */
 	private final Weapon weapon;
 	
-	
+	public boolean isValidWorld(World world){
+		return world != null;
+	}
 	
 	/**
 	 * Return the reference to the world to which this projectile belongs
@@ -189,8 +193,12 @@ public class Projectile {
 	
 	//TODO documentation
 	public void setWorld(World world){
+		if(!isValidWorld(world))
+			throw new IllegalArgumentException();
+		if(world.getProjectile() != null && world != null)
+			throw new IllegalArgumentException();
 		this.world = world;
-		world.setActiveProjectile(this);
+		world.setProjectile(this);
 	}
 	
 	/**

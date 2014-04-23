@@ -751,7 +751,7 @@ public class World {
 	 * Sets the given projectile as the new active projectile in this world.
 	 */
 	//TODO documentation
-	public void setActiveProjectile(Projectile projectile){
+	public void setProjectile(Projectile projectile){
 		assert(projectile == null || projectile.getWorld() == this);
 		assert(projectile != null || getProjectile() == null || !(getProjectile().getWorld() == this));
 		this.projectile = projectile;
