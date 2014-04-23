@@ -146,6 +146,7 @@ public class Worm {
 	{
 		return this.position;
 	}
+	
 	/**
 	 * Variable registering the position of the worm.
 	 */
@@ -391,7 +392,7 @@ public class Worm {
 	}
 
 	/**
-	 * Variable registering the mass of a worm.
+	 * Variable registering the mass of a worm (in kilograms).
 	 */
 	private double mass = 0;
 
@@ -470,7 +471,7 @@ public class Worm {
 	}
 
 	/**
-	 * variable registering the current amount of aciton points of a worm.
+	 * Variable registering the current amount of aciton points of a worm.
 	 */
 	private int currentActionPoints = 0;
 
@@ -520,32 +521,25 @@ public class Worm {
 		this.name = name;
 	}
 
+	/**
+	 * A variable referencing the name of a worm.
+	 */
 	private String name = " ";
 	
+
+	
 	/**
-	 * Returns the name of the weapon that is currently active for the given worm,
-	 * or null if no weapon is active.
+	 * Returns the reference to the weapon of this worm.
 	 */
-	public String getSelectedWeapon()
-	{
-		if(this.weapon.equals(" "))
-			return null;
+	@Basic @Raw
+	public Weapon getWeapon(){
 		return this.weapon;
 	}
 	
 	/**
-	 * Activates the next weapon for the given worm
+	 * Variable referencing the weapon of the worm.
 	 */
-	public void selectNextWeapon()
-	{
-		if(this.weapon.equals(" "))
-			this.weapon = "Bazooka";
-		if(this.weapon.equals("Bazooka"))
-			this.weapon = "Rifle";
-		if(this.weapon.equals("Rifle"))
-			this.weapon = " ";
-	}
-	private String weapon = " ";
+	private final Weapon weapon = new Weapon(this);
 	
 	/**
 	 * Returns the current number of hit points of the given worm.
@@ -666,6 +660,9 @@ public class Worm {
 		this.team = team;
 	}
 	
+	/**
+	 * A variable referencing the team name of a worm.
+	 */
 	private String team = " ";
 
 	

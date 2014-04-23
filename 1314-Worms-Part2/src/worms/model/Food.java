@@ -55,7 +55,7 @@ public class Food {
 	}
 	
 	/**
-	 * Variable registering whether or not this food is active
+	 * Variable registering whether or not this food is active.
 	 */
 	private boolean isActive = true;
 	
@@ -196,7 +196,7 @@ public class Food {
 	 * 			The y-coordinate of the position to check.
 	 * @return	True if and only if the lower part of the food with the given position to
 	 * 			check is not adjacent to impassable terrain.
-	 * 			| result == this.getWorld().canFall(x, y, Food.getRadius())
+	 * 			| result == this.getWorld().canFall(x, y, RADIUS)
 	 */
 	@Model
 	private boolean canFall(double x, double y){
@@ -241,11 +241,10 @@ public class Food {
 	public static double getRadius(){
 		return RADIUS;
 	}
+	//TODO methode verwijderen want radius is static final?
 	
 	/**
 	 * The radius of a food ration.
 	 */
 	private static final double RADIUS = 0.20;
-	
-	//TODO set equals and hashcode (afstanden tot middelpunten groter dan 3*radius)
 }

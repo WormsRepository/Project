@@ -216,7 +216,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getSelectedWeapon(Worm worm) {
-		return worm.getSelectedWeapon();
+		return worm.getWeapon().getCurrentWeapon();
 	}
 
 	@Override
@@ -338,7 +338,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void selectNextWeapon(Worm worm) {
-		worm.selectNextWeapon();
+		worm.getWeapon().selectNextWeapon();
 	}
 
 	@Override

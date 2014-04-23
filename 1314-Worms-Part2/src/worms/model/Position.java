@@ -35,6 +35,8 @@ public class Position{
 		setY(y);
 	}
 	
+	//TODO documentation
+	@Basic @Raw
 	protected Worm getWorm(){
 		return this.worm;
 	}
