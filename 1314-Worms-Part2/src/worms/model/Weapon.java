@@ -5,6 +5,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 public class Weapon {
 	
+	//TODO documentation
 	public Weapon(Worm worm){
 		this.worm = worm;
 	}
@@ -21,14 +22,17 @@ public class Weapon {
 	private final Worm worm;
 	
 	//TODO documentation
+	private boolean isValidWeapon(String weapon){
+		return (weapon.equals(" ") || weapon.equals("Bazooka") || weapon.equals("Rifle"));
+	}
+	
+	//TODO documentation
 	/**
 	 * Returns the name of the weapon that is currently active for the given worm,
 	 * or null if no weapon is active.
 	 */
 	@Basic @Raw
 	public String getCurrentWeapon(){
-		if(this.currentWeapon.equals(" "))
-			return null;
 		return this.currentWeapon;
 	}
 	
@@ -38,12 +42,34 @@ public class Weapon {
 	//TODO documentation
 	public void selectNextWeapon()
 	{
-		if(this.currentWeapon.equals(" "))
-			this.currentWeapon = "Bazooka";
+		if(this.getCurrentWeapon().equals(" "))
+			setCurrentWeapon("Bazooka");
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			setCurrentWeapon("Rifle");
+		if(this.getCurrentWeapon().equals("Rifle"))
+			setCurrentWeapon(" ");
+	}
+	
+	//TODO documentation
+	public double getMassOfWeapon(){
 		if(this.currentWeapon.equals("Bazooka"))
-			this.currentWeapon = "Rifle";
-		if(this.currentWeapon.equals("Rifle"))
-			this.currentWeapon = " ";
+			return 0.300;
+		else if(this.currentWeapon.equals("Rifle"))
+			return 0.010;
+		else
+			return 0;
+	}
+	
+	private double getCostOfActionPointsOfWeapon(){
+		return 0;
+		//TODO implementeren
+	}
+	
+	//TODO documentation
+	@Raw
+	private void setCurrentWeapon(String weapon){
+		if(isValidWeapon(weapon))
+			this.currentWeapon = weapon;
 	}
 	
 	/**
