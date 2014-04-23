@@ -523,7 +523,7 @@ public class World {
 	 * @invar	| for each foodRations in foodRations
 	 * 			|	(foodRations.getWorld() == this)
 	 */
-	HashSet<Food> foodRations = new HashSet<Food>();
+	private HashSet<Food> foodRations = new HashSet<Food>();
 	//FOOD
 	
 	
@@ -737,7 +737,7 @@ public class World {
 	 * 			| for each worm in worms:
 	 * 			| 	(worm.getWorld() == this)
 	 */
-	LinkedHashSet<Worm> worms = new LinkedHashSet<Worm>();
+	private LinkedHashSet<Worm> worms = new LinkedHashSet<Worm>();
 
 	//WORM
 	
