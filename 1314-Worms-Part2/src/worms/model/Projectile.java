@@ -75,8 +75,9 @@ public class Projectile {
 	
 	
 	public double getJumpTime() 
-			throws IllegalActionPointsException, IllegalDirectionException
-	{
+			throws NullPointerException{
+		if(this.getWorld() == null)
+			throw new NullPointerException();
 		double[] tempXY = {getX(),getY()};
 		double radius = this.getRadius();
 		
@@ -115,19 +116,15 @@ public class Projectile {
 			}
 			temp = temp / 3.0;
 		}
-		if(temp < (1/300000.0)){
-			if(tempTime < Math.PI)
-				return Math.PI;
-			else
-				return 2*Math.PI;
-		}
 		
 		return tempTime;
 	}
-	
-	public void jump(double timeStep) {
-		// TODO methode maken
+	//TODO documentation
+	public void jump() {
+		double[] tempXY = getJumpStep(getJumpTime());
+		setPosition(tempXY[0],tempXY[1]);
 		
+		deactivate();
 	}
 
 	private boolean inMap(double x, double y){

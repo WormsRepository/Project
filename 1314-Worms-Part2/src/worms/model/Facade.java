@@ -109,8 +109,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public Projectile getActiveProjectile(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getProjectile();
 	}
 
 	@Override
@@ -130,8 +129,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double[] getJumpStep(Projectile projectile, double t) {
-		// TODO Auto-generated method stub
-		return null;
+		return projectile.getJumpStep(t);
 	}
 
 	@Override
@@ -150,8 +148,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getJumpTime(Projectile projectile, double timeStep) {
-		// TODO Auto-generated method stub
-		return 0;
+		try{
+			return projectile.getJumpTime();
+		}
+		catch(NullPointerException exc){
+			throw new ModelException("NullPointerException");
+		}
 	}
 
 	@Override
@@ -205,8 +207,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getRadius(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getRadius();
 	}
 
 	@Override
@@ -242,8 +243,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getX(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getX();
 	}
 
 	@Override
@@ -258,8 +258,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getY(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getY();
 	}
 
 	@Override
@@ -274,8 +273,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isActive(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return false;
+		return projectile.isActive();
 	}
 
 	@Override
@@ -301,8 +299,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void jump(Projectile projectile, double timeStep) {
-		// TODO Auto-generated method stub
-		
+		try{
+			projectile.jump();
+		}
+		catch(NullPointerException exc){
+			throw new ModelException("NullPointerException");
+		}
 	}
 
 	@Override
