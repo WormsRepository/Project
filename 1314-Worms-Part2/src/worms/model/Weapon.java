@@ -13,7 +13,7 @@ public class Weapon {
 	
 	//TODO documentation
 	@Basic @Raw
-	protected Worm getWorm(){
+	private Worm getWorm(){
 		return this.worm;
 	}
 	

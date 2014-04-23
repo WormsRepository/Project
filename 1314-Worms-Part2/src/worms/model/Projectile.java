@@ -11,6 +11,7 @@ public class Projectile {
 		this.weapon = worm.getWeapon();
 		this.mass = weapon.getMassOfWeapon();
 		this.radius = weapon.getRadiusOfWeapon();
+		this.world = worm.getWorld();
 	}
 	
 	/**
@@ -80,13 +81,6 @@ public class Projectile {
 		return this.radius;
 	}
 	
-	@Model @Raw
-	private void setRadius(double radius){
-		if(!canHaveAsRadius(radius))
-			throw new IllegalRadiusException(radius);
-		this.radius = radius;
-	}
-	
 	/**
 	 * 	Variable registering the radius of a projectile.
 	 */
@@ -95,15 +89,22 @@ public class Projectile {
 	
 	
 	/**
+	 * Return the mass of this projectile (in kilogram).
+	 */
+	@Basic @Raw
+	public double getMass(){
+		return this.mass;
+	}
+	
+	/**
 	 * Variable registering the mass of a projectile (in kilograms).
 	 */
 	private final double mass;
 	
 	
 	/**
-	 * 
+	 * Return the reference to the actual weapon this projectile represents.
 	 */
-	//TODO documentation
 	@Basic @Raw
 	public Weapon getWeapon(){
 		return this.weapon;
@@ -113,4 +114,19 @@ public class Projectile {
 	 * Variable referencing the weapon that this projectile represents.
 	 */
 	private final Weapon weapon;
+	
+	
+	
+	/**
+	 * Return the reference to the world to which this projectile belongs
+	 */
+	@Basic @Raw
+	public World getWorld(){
+		return this.world;
+	}
+	
+	/**
+	 * Variable referencing the world to which this projectile belongs.
+	 */
+	private final World world;
 }
