@@ -332,18 +332,21 @@ public class Position{
 	{
 		//find the highest possible distance which is in a passable location.
 			//initialize the testDistance with the maximum distance
-		double testDistance = this.getWorm().getRadius();
+		
 			//keep reducing the testDistance by a small amount
 			//untill it finds a passable location.
 		boolean flag = false;
 		double testX = 0, testY = 0;
-		while(testDistance >= 0.1 && flag == false)
+		double testDistance;
+		for(testDistance = this.getWorm().getRadius(); testDistance >= 0.1 && flag == false ; testDistance -= 0.02)
 		{
 			testX = move_CalculateX(direction, testDistance);
 			testY = move_CalculateY(direction, testDistance);
-			if(! this.getWorm().getWorld().isImpassable(testX, testY, this.getWorm().getRadius()))
+			if(canMove_Aux (direction) &&! this.getWorm().getWorld().isImpassable(testX, testY, this.getWorm().getRadius()))
+			{
 				flag = true;
-			testDistance -= 0.02;
+				return testDistance;
+			}
 		}
 		if(flag == false)
 			return 0;
