@@ -8,9 +8,8 @@ public class Projectile {
 	
 	public Projectile(Worm worm, double initialVelocity) 
 			throws IllegalRadiusException, IllegalArgumentException{
-		this.weapon = worm.getWeapon();
-		this.mass = this.weapon.getMassOfWeapon();
-		this.radius = this.weapon.getRadiusOfWeapon();
+		this.mass = worm.getWeapon().getMassOfWeapon();
+		this.radius = worm.getWeapon().getRadiusOfWeapon();
 		this.direction = worm.getDirection();
 		this.initialVelocity = initialVelocity;
 		
@@ -74,7 +73,7 @@ public class Projectile {
 	}
 	
 	
-	public double getJumpTime() 
+	public double getJumpTime(double timeStep) 
 			throws NullPointerException{
 		if(this.getWorld() == null)
 			throw new NullPointerException();
@@ -92,9 +91,9 @@ public class Projectile {
 		// vertical velocity the worm can only move the minimum radius in the horizontal or vertical
 		// direction per step, this equals the minimum radius, so we will probably not skip
 		// any impassable point of the map.
-		double temp = (1/150.0)/getInitialVelocity();
+		double temp = timeStep;
 		double tempTime = 0.0;
-		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/2.0)){
+		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/8.0)){
 			tempTime = tempTime + temp;
 			tempXY = getJumpStep(tempTime);
 		}
@@ -104,7 +103,7 @@ public class Projectile {
 		
 		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
 		// possible adjacent position.
-		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/300000.0)){
+		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/400000.0)){
 			while(!this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
 				tempTime = tempTime + temp;
 				tempXY = getJumpStep(tempTime);
@@ -120,9 +119,9 @@ public class Projectile {
 		return tempTime;
 	}
 	//TODO documentation
-	public void jump() 
+	public void jump(double timeStep) 
 			throws NullPointerException{
-		double[] tempXY = getJumpStep(getJumpTime());
+		double[] tempXY = getJumpStep(getJumpTime(timeStep));
 		setPosition(tempXY[0],tempXY[1]);
 		
 		deactivate();
@@ -199,6 +198,20 @@ public class Projectile {
 	
 	
 	/**
+	 * Check whether the given direction is a valid direction for any projectile.
+	 * 
+	 * @param 	direction
+	 * 			The direction to check.
+	 * @return	True if and only if the given direction is not below zero and not above or equal to 2 pi.
+	 * 			| result == ( (direction >= 0) && (direction < 2*Math.PI) )
+	 */
+	@Raw
+	public boolean isValidDirection(double direction)
+	{
+		return ( (direction >= 0) && (direction < 2*Math.PI) );
+	}
+	
+	/**
 	 * Return the direction of this projectile.
 	 */
 	@Basic @Raw
@@ -227,19 +240,6 @@ public class Projectile {
 	private final double initialVelocity;
 	
 	
-	
-	/**
-	 * Return the reference to the actual weapon this projectile represents.
-	 */
-	@Basic @Raw
-	public Weapon getWeapon(){
-		return this.weapon;
-	}
-	
-	/**
-	 * Variable referencing the weapon that this projectile represents.
-	 */
-	private final Weapon weapon;
 	
 	public boolean isValidWorld(World world){
 		return world != null;

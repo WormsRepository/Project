@@ -79,11 +79,13 @@ public class Weapon {
 	}
 	
 	public void shoot(int propulsion) 
-			throws NullPointerException, IllegalRadiusException, IllegalArgumentException{
+			throws IllegalRadiusException, IllegalArgumentException{
 		if(getCurrentWeapon() == null)
 			throw new NullPointerException();
-		Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
-		projectile.jump();
+		if(getCostOfActionPointsOfWeapon() <= getWorm().getCurrentActionPoints()){
+			Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
+			this.getWorm().reduceCurrentActionPoints(getCostOfActionPointsOfWeapon());
+		}
 	}
 	
 	//TODO documentation
@@ -94,7 +96,7 @@ public class Weapon {
 		else if(this.getCurrentWeapon().equals("Rifle"))
 			initialVelocity = 1.5;
 		
-		return initialVelocity * 0.5;
+		return (initialVelocity / getMassOfWeapon()) * 0.5;
 	}
 	
 	/**
@@ -110,9 +112,13 @@ public class Weapon {
 		return radius > 0;
 	}
 	
-	private double getCostOfActionPointsOfWeapon(){
-		return 0;
-		//TODO implementeren
+	private int getCostOfActionPointsOfWeapon(){
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			return 50;
+		else if(this.getCurrentWeapon().equals("Rifle"))
+			return 10;
+		else
+			return 0;
 	}
 	
 	//TODO documentation

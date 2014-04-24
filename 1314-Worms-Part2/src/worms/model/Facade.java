@@ -149,7 +149,7 @@ public class Facade implements IFacade {
 	@Override
 	public double getJumpTime(Projectile projectile, double timeStep) {
 		try{
-			return projectile.getJumpTime();
+			return projectile.getJumpTime(timeStep);
 		}
 		catch(NullPointerException exc){
 			exc.printStackTrace(System.out);
@@ -301,7 +301,7 @@ public class Facade implements IFacade {
 	@Override
 	public void jump(Projectile projectile, double timeStep) {
 		try{
-			projectile.jump();
+			projectile.jump(timeStep);
 		}
 		catch(NullPointerException exc){
 			exc.printStackTrace(System.out);
@@ -360,10 +360,6 @@ public class Facade implements IFacade {
 	public void shoot(Worm worm, int yield) {
 		try{
 			worm.getWeapon().shoot(yield);
-		}
-		catch(NullPointerException x){
-			x.printStackTrace(System.out);
-			throw new ModelException("NullPointerException");
 		}
 		catch(IllegalRadiusException x){
 			x.printStackTrace(System.out);
