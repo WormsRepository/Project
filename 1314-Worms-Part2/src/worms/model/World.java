@@ -93,6 +93,16 @@ public class World {
 	}
 	
 	/**
+	 * Starts a game in the given world.
+	 */
+	public void startGame(){
+		if(worms.size() > 1){
+			startNextTurn();
+			start(true);
+		}
+	}
+	
+	/**
 	 * Start or stop the game.
 	 * 
 	 * @param	started
@@ -287,21 +297,14 @@ public class World {
 	private static final double UPPER_BOUND = Double.MAX_VALUE; 
 	
 	
-	
-	/**
-	 * Starts a game in the given world.
-	 */
-	public void startGame(){
-		if(worms.size() > 1){
-			startNextTurn();
-			start(true);
-		}
-	}
+
 	
 	//start
 	
 
-	
+	public Collection<String> getTeamNames() {
+		return new HashSet<String>(this.teamNames);
+	}
 	
 	/**
 	 * Returns whether the game in the given world has finished.
@@ -310,7 +313,7 @@ public class World {
 	// eindigt bij:
 	// - 1 worm over 
 	// - alle overige wormen aan hetzelfde team
-	boolean isGameFinished(){
+	public boolean isGameFinished(){
 		if (worms.size() <= 1)
 				return true;
 		String winner = " ";
@@ -355,11 +358,7 @@ public class World {
 		teamNames.add(newName);
 	}
 	
-	public Collection<String> getTeamNames() {
-		return new HashSet<String>(this.teamNames);
-	}
-	
-	HashSet<String> teamNames = new HashSet<String>();
+	private HashSet<String> teamNames = new HashSet<String>();
 	
 	//TEAMNAMES
 	
@@ -599,7 +598,7 @@ public class World {
 			return false;
 		for(Worm worm: worms){
 			if(Math.pow(Math.pow((worm.getPosition().getX() - x), 2) + 
-				Math.pow((worm.getPosition().getY() - y), 2),(1/2)) <= 
+				Math.pow((worm.getPosition().getY() - y), 2),(1/2.0)) <= 
 					(worm.getRadius() + radius)){
 				worm.setCurrentHitPoints(0);
 				return true;
@@ -775,7 +774,7 @@ public class World {
 		this.projectile = projectile;
 	}
 	
-	Projectile projectile = null;
+	private Projectile projectile = null;
 	//PROJECTILE
 
 	private Random random = null;

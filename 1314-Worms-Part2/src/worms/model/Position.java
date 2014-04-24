@@ -308,7 +308,8 @@ public class Position{
 		
 		setX(this.move_CalculateX(bestDirection, bestDistance));
 		setY(this.move_CalculateY(bestDirection, bestDistance));
-		this.getWorm().setCurrentActionPoints((int) (this.getWorm().getCurrentActionPoints() - (Math.abs(Math.cos(bestDirection))+ Math.abs(Math.sin(4*bestDirection)))));
+		this.getWorm().setCurrentActionPoints((int) (this.getWorm().getCurrentActionPoints() - 
+				(Math.abs(Math.cos(bestDirection))+ Math.abs(Math.sin(4*bestDirection)))));
 	}
 	
 	
