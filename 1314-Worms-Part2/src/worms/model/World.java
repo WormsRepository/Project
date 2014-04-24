@@ -257,13 +257,8 @@ public class World {
 	
 	//TODO documentation
 	public boolean canFall(double x, double y, double radius){
-		if(isImpassable(x,y,radius))
+		if(isImpassable(x,y,radius) || isAdjacent(x,y,radius))
 			return false;
-		for(double angle = Math.PI + (Math.PI *2)/360; angle < 2*Math.PI ; angle = angle + (Math.PI *2)/360)
-		{
-			if (isImpassablePoint(x+Math.cos(angle)*radius*1.1, y+(Math.sin(angle))*radius*1.1))
-				return false;
-		}
 		return true;
 	}
 
