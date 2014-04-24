@@ -74,7 +74,7 @@ public class Projectile {
 	
 	
 	public double getJumpTime(double timeStep) 
-			throws NullPointerException{
+			throws NullPointerException, IllegalDirectionException{
 		if(this.getWorld() == null)
 			throw new NullPointerException();
 		double[] tempXY = {getX(),getY()};
