@@ -100,18 +100,12 @@ public class WormTest {
 
 	@Test
 	public void canMove_legalCase() {
-		assertTrue(wormRadius1.getPosition().canMove(1));
+		assertTrue(wormRadius1.getPosition().canMove());
 	}
 
-	@Test
-	public void canMove_IllegalCase() {
-		assertFalse(wormRadius1.getPosition().canMove(Integer.MAX_VALUE));
-	}
+	//TODO canMove testen!
 
-	@Test
-	public void canMove_NegativeSteps() {
-		assertFalse(wormRadius1.getPosition().canMove(-1));
-	}
+	//TODO caMove testen!
 	
 	//TODO jumps testen!
 	
@@ -128,19 +122,9 @@ public class WormTest {
 		wormDirection4.getPosition().jump();
 	}
 
-	@Test
-	public void move_legalCase()
-		throws Exception	{
-		wormDirection2.getPosition().move(1);
-		assertTrue(wormDirection2.getPosition().getX() == Math.cos(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
-		assertTrue(wormDirection2.getPosition().getY() == Math.sin(wormDirection2.getDirection()) * wormDirection2.getRadius() * 1);
-	}
+	//TODO move testen!
 
-	@Test(expected = IllegalArgumentException.class)
-	public void move_IllegalNumberOfSteps()
-		throws Exception	{
-		wormDirection2.getPosition().move(Integer.MAX_VALUE);
-	}
+	//TODO move testen!
 
 	@Test
 	public void setRadius_legalCase()
