@@ -361,25 +361,25 @@ public class Position{
 			throw new RuntimeException();
 		double tempY = getY();
 		double temp = 0.5;
-		while(canFall(getX(),tempY) && temp >= (1/300)){
+		while(canFall(getX(),tempY) && temp >= (1/300.0)){
 			while(inMap(getX(),tempY) && canFall(getX(),tempY))
 				tempY -= temp;
 			if(!inMap(getX(),tempY))
 				tempY += temp;
-			temp = temp / 3;
+			temp = temp / 3.0;
 			while(!canFall(getX(),tempY) &&
 					!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
 				tempY += temp;
-			temp = temp / 3;
+			temp = temp / 3.0;
 		}
 		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
 		// the worm will fall of the world and die.
-		if(temp < (1/300))
+		if(temp < (1/300.0))
 			this.getWorm().wormDeath();
 			
 		if(this.getWorm().getWorld().isStarted())
 			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
-					(int)Math.floor(3 * (getY() - tempY)));
+					(int)Math.floor(3.0 * (getY() - tempY)));
 		setY(tempY);
 	}
 	
