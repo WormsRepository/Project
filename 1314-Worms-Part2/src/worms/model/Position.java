@@ -272,7 +272,7 @@ public class Position{
 			// and store the direction with the highest distance in bestDirection
 				//initiate the bestDirection with an invalid direction.
 		double bestDirection = -1; 
-		double tempDirection = worm.getDirection() - 0.7875;
+		double tempDirection = getWorm().getDirection() - 0.7875;
 		double tempDistance = -1;
 		double bestDistance = -1;
 	
@@ -282,7 +282,7 @@ public class Position{
 			throw new IllegalDirectionException(this.getWorm().getDirection(), this.getWorm());
 		
 		//cycle through the different possible directions.
-		while(tempDirection <= worm.getDirection() + 0.7875)
+		while(tempDirection <= getWorm().getDirection() + 0.7875)
 		{
 			tempDistance = move_newDistance(tempDirection);
 			if( tempDistance > bestDistance )
@@ -290,7 +290,7 @@ public class Position{
 				bestDistance = tempDistance; 
 				bestDirection = tempDirection ;
 			}
-			if(bestDistance == tempDistance && (Math.abs(worm.getDirection() - bestDirection) > Math.abs(worm.getDirection() - tempDirection)))
+			if(bestDistance == tempDistance && (Math.abs(getWorm().getDirection() - bestDirection) > Math.abs(getWorm().getDirection() - tempDirection)))
 				bestDirection = tempDirection;	
 							
 			tempDirection += 0.0175;
