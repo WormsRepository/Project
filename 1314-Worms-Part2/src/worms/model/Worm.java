@@ -377,7 +377,7 @@ public class Worm {
 	 * Set the mass of the worm according to the radius.
 	 * 
 	 * @post	The new mass is calculated with the radius and the density.
-	 * 			| new.mass = DENSITY * ((4/3) * Math.PI * Math.pow(getRadius(),3))
+	 * 			| new.mass = DENSITY * ((4.0/3.0) * Math.PI * Math.pow(getRadius(),3.0))
 	 * @throws	IllegalRadiusException(getRadius(),this)
 	 * 			The given radius is not a valid radius for this worm.
 	 * 			| !canHaveAsRadius(getRadius())
@@ -388,7 +388,7 @@ public class Worm {
 	{
 		if(! canHaveAsRadius(getRadius()))
 			throw new IllegalRadiusException(getRadius(), this);
-		mass = DENSITY * ((4/3) * Math.PI * Math.pow(getRadius(),3));
+		mass = DENSITY * ((4.0/3.0) * Math.PI * Math.pow(getRadius(),3.0));
 	}
 
 	/**

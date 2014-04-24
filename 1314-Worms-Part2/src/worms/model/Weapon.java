@@ -81,6 +81,7 @@ public class Weapon {
 	public void shoot(int propulsion){
 		if(getCostOfActionPointsOfWeapon() <= getWorm().getCurrentActionPoints()){
 			try{
+				@SuppressWarnings("unused")
 				Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
 				this.getWorm().reduceCurrentActionPoints(getCostOfActionPointsOfWeapon());
 			}
@@ -122,7 +123,7 @@ public class Weapon {
 			return 0;
 	}
 	
-	private int getHitPointsOfWeapon(){
+	private int getDamageOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
 			return 80;
 		else if(this.getCurrentWeapon().equals("Rifle"))
