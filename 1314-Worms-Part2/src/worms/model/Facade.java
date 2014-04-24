@@ -95,10 +95,9 @@ public class Facade implements IFacade {
 		try{
 			worm.getPosition().fall();
 		}
-		catch(RuntimeException ex){
+		catch(RuntimeException x){
 			throw new ModelException("RuntimeException");
 		}
-		
 	}
 
 	@Override
