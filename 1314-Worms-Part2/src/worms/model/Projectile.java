@@ -118,7 +118,7 @@ public class Projectile {
 		}
 		if(this.getWorld().isImpassable(tempXY[0], tempXY[1], radius))
 			throw new IllegalDirectionException(this.getDirection());
-		//TODO nakijken of deze exception te snel gegooid word?
+		//TODO deze exception verschillend aanpakken als een worm gehit is...
 		
 		// if 'temp' is smaller than 1/400000 the projectile will leave the world because there is no
 		// possible adjacent position.

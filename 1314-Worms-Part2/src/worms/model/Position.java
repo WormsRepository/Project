@@ -256,12 +256,7 @@ public class Position{
 			setX(tempXY[0]);
 			setY(tempXY[1]);
 		}
-		try{
-			this.fall();
-		}
-		catch (RuntimeException x){}
 		this.getWorm().setCurrentActionPoints(0);
-		this.getWorm().getWorld().startNextTurn();
 		if(time == Math.PI || time == 2*Math.PI)
 			this.getWorm().wormDeath();
 	}
