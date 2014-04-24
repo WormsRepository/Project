@@ -255,35 +255,87 @@ public class Position{
 	}
 	
 	/**
-	 * Moves the worm in the current direction of the worm with the given number of steps.
-	 * 
-	 * @param 	nbSteps
-	 * 			The number of steps to move.
-	 * @post 	The x position and the y position are changed based on the number of steps, the radius,
-	 * 			the direction and the starting values of x and y of the worm. 
-	 * 			The new amount of current action points of the worm is the old amount of 
-	 * 			action points minus the used action points.
-	 * 			| new.getX() == getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps
-	 * 			| new.getY() == getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps
-	 * 			| new.worm.getCurrentActionPoints() ==
-	 * 			|		 worm.getCurrentActionPoints() - (long)Math.ceil((Math.abs(Math.cos(worm.getDirection())) 
-	 * 			|			+ Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps)
-	 * @Throws	IllegalArgumentException("The argument 'number of steps' is invalid.")
-	 * 			The given amount of steps is not a valid amount of steps.
-	 * 			| !canMove(nbSteps)
+	 * Moves the worm in the current direction of the worm. 
 	 */
-	public void move(int nbSteps) 
-			throws IllegalArgumentException
+	public void move()
+		throws IllegalDirectionException
 	{
-		if(! canMove(nbSteps))
-			throw new IllegalArgumentException("The argument 'number of steps' is invalid.");
-
-		setX(getX() + Math.cos(worm.getDirection()) * worm.getRadius() * nbSteps);
-		setY(getY() + Math.sin(worm.getDirection()) * worm.getRadius() * nbSteps);
-
-		int costOfActionPoints = (int)Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
-				Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
-		worm.setCurrentActionPoints(worm.getCurrentActionPoints() - costOfActionPoints);
+		//find the highest possible distance in a valid direction.
+			//use tempDirection to cycle through all the valid directions
+			// and store the direction with the highest distance in bestDirection
+				//initiate the bestDirection with an invalid direction.
+		double bestDirection = -1; 
+		double tempDirection = worm.getDirection() - 0.7875;
+		double tempDistance = -1;
+		double bestDistance = -1;
+		//cycle through the different possible directions.
+		
+		while(tempDirection <= worm.getDirection() + 0.7875)
+		{
+			tempDistance = move_newDistance(tempDirection);
+			if( tempDistance > bestDistance )
+			{
+				bestDistance = tempDistance; 
+				bestDirection = tempDirection ;
+			}
+			if(bestDistance == tempDistance && (Math.abs(worm.getDirection() - bestDirection) > Math.abs(worm.getDirection() - tempDirection)))
+				bestDirection = tempDirection;	
+							
+			tempDirection += 0.0175;
+		}
+		//throw exception if no proper distance was found.
+		if(bestDistance == -1)
+			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
+	
+		//find the proper x and y coordinate and move the worm to this place.
+		
+		setX(this.move_CalculateX(bestDirection, bestDistance));
+		setY(this.move_CalculateY(bestDirection, bestDistance));
+		this.getWorm().setCurrentActionPoints((int) (this.getWorm().getCurrentActionPoints() - (Math.abs(Math.cos(bestDirection))+ Math.abs(Math.sin(4*bestDirection)))));
+	}
+	
+	
+	/**
+	 * calculates the proper x-coordinate for a gives direction and distance
+	 */
+	private double move_CalculateX(double direction, double distance)
+	{
+		return this.getX() + (Math.cos(direction)*distance);
+	}
+	
+	/**
+	 * calculates the proper y-coordinate for a gives direction and distance
+	 */
+	private double move_CalculateY(double direction, double distance)
+	{
+		return this.getY() + (Math.sin(direction)*distance);
+	}
+	/**
+	 * calculates the next possible distance for the move method in a certain direction.
+	 * returns 0 if there is no possible distance
+	 */
+	
+	private double move_newDistance(double direction)
+	{
+		//find the highest possible distance which is in a passable location.
+			//initialize the testDistance with the maximum distance
+		double testDistance = this.getWorm().getRadius();
+			//keep reducing the testDistance by a small amount
+			//untill it finds a passable location.
+		boolean flag = false;
+		double testX = 0, testY = 0;
+		while(testDistance >= 0.1 && flag == false)
+		{
+			testX = move_CalculateX(direction, testDistance);
+			testY = move_CalculateY(direction, testDistance);
+			if(! this.getWorm().getWorld().isImpassable(testX, testY, this.getWorm().getRadius()))
+				flag = true;
+			testDistance -= 0.02;
+		}
+		if(flag == false)
+			return 0;
+		
+		return testDistance;
 	}
 	
 	//TODO moeilijke documentatie aanvullen lusinvarianten...

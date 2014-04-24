@@ -40,7 +40,7 @@ public class Facade implements IFacade {
 	@Override
 	public boolean canMove(Worm worm) {
 		//TODO implement...
-		return false;
+		return true;
 	}
 
 	@Override
@@ -324,8 +324,13 @@ public class Facade implements IFacade {
 
 	@Override
 	public void move(Worm worm) {
-		// TODO Auto-generated method stub
-		
+		try
+		{
+			worm.getPosition().move();
+		}
+		catch(IllegalDirectionException x){
+			throw new ModelException("IllegalDirectionException");
+		}
 	}
 
 	@Override
