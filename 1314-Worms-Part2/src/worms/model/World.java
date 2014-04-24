@@ -307,6 +307,18 @@ public class World {
 	}
 	
 	/**
+	 * check whether this world has the given team as one
+	 * of its teams.
+	 * 
+	 * @param 	team
+	 * 			the team to check
+	 */
+	@Basic  @Raw
+	public boolean hasAsteam(String team){
+		return this.worms.contains(team);
+	}
+	
+	/**
 	 * Returns whether the game in the given world has finished.
 	 */
 	
@@ -316,12 +328,12 @@ public class World {
 	public boolean isGameFinished(){
 		if (worms.size() <= 1)
 				return true;
-		String winner = " ";
+		String winner = "noTeamAssigned";
 		for(Worm worm : worms)
 		{
-			if (!worm.getTeamName().equals(" ") && winner.equals(" ") )
+			if (hasAsteam(worm.getTeamName())&& winner.equals("noTeamAssigned") )
 				winner = worm.getTeamName();
-			if (!worm.getTeamName().equals(winner))
+			if (!worm.getTeamName().equals(winner) || (worm.getTeamName().equals(winner)&& winner.equals("noTeamAssigned")))
 				return false;
 		}
 		return true;
@@ -335,19 +347,24 @@ public class World {
 	 * (For single-student groups that do not implement teams, this method should always return the name of the winning worm, or null if there is no winner)
 	 */
 	public String getWinner(){
-		if (worms.size() >= 1)
+		
+		for( Worm worm : worms)
 		{
-			for( Worm worm : worms)
+			if(worm != null)
 			{
-				if (worm.getTeamName().equals(" "))
+				if (!this.hasAsteam(worm.getTeamName()))
 					return worm.getName();
 				else
 					return worm.getTeamName();
 			}
 		}
+		
+
 		return null;
 		
 	}
+	
+	
 	
 	/**
 	 * Create and add an empty team with the given name to the given world.
@@ -565,7 +582,18 @@ public class World {
 				Iterator<Worm> it2 = worms.iterator();
 				currentWorm = it2.next();		
 			}
-			
+			while(currentWorm == null&& it.hasNext())
+			{
+				currentWorm = it.next();
+			}
+			if(currentWorm == null)
+			{
+				Iterator<Worm> it3 = worms.iterator();
+				while(currentWorm == null &&it3.hasNext())
+				{
+					currentWorm = it3.next();
+				}
+			}
 		}
 		
 		this.startNextTurn_Aux(currentWorm);
