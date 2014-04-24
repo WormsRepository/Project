@@ -78,13 +78,14 @@ public class Weapon {
 			setCurrentWeapon(" ");
 	}
 	
-	public void shoot(int propulsion) 
-			throws IllegalRadiusException, IllegalArgumentException{
-		if(getCurrentWeapon() == null)
-			throw new NullPointerException();
+	public void shoot(int propulsion){
 		if(getCostOfActionPointsOfWeapon() <= getWorm().getCurrentActionPoints()){
-			Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
-			this.getWorm().reduceCurrentActionPoints(getCostOfActionPointsOfWeapon());
+			try{
+				Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
+				this.getWorm().reduceCurrentActionPoints(getCostOfActionPointsOfWeapon());
+			}
+			catch(IllegalRadiusException exc){}
+			catch(IllegalArgumentException exc){}
 		}
 	}
 	
