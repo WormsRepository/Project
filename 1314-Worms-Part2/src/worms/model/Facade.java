@@ -39,8 +39,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean canMove(Worm worm) {
-		//TODO implement...
-		return true;
+		return worm.getPosition().canMove();
 	}
 
 	@Override

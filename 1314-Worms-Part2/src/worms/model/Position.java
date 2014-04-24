@@ -94,22 +94,34 @@ public class Position{
 	}
 	
 	/**
-	 * Check whether the given number of steps is a valid amount of steps for the worm.
-	 * 
-	 * @param 	nbSteps
-	 * 			The amount of steps to check.
-	 * @return	True if and only if the amount of steps is larger than zero 
-	 * 			and there are enough action points available for the move.
-	 * 			| nbSteps > 0 && 
-	 * 			| worm.getCurrentActionPoints() >= Math.ceil((Math.abs(Math.cos(worm.getDirection())) 
-	 * 			|	+ Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps)
+	 * Check whether the worm can move or not.
 	 */
 	@Raw
-	public boolean canMove(int nbSteps) 
+	public boolean canMove() 
 	{
-		return nbSteps > 0 && 
-				worm.getCurrentActionPoints() >= Math.ceil((Math.abs(Math.cos(worm.getDirection())) + 
-						Math.abs(4*Math.sin(worm.getDirection()))) * nbSteps);
+		double testDirection = this.getWorm().getDirection() + 0.7875;
+		
+		while(testDirection >= this.getWorm().getDirection() - 0.7875)
+		{
+			if(this.canMove_Aux(testDirection))
+				return true;
+			else{
+				testDirection -= 0.0175;
+			}
+		}
+		return false;
+	}
+	 
+	/**
+	 * check whether a worm has enough action points to move to the given location.
+	 */
+	//TODO docu
+	private boolean canMove_Aux(double direction)
+	{
+		if (  (Math.abs(Math.cos(direction)) + Math.abs(Math.sin(direction)*4)  ) >
+								this.getWorm().getCurrentActionPoints() )
+			return false;
+		return true;
 	}
 	
 	/**
@@ -268,8 +280,13 @@ public class Position{
 		double tempDirection = worm.getDirection() - 0.7875;
 		double tempDistance = -1;
 		double bestDistance = -1;
-		//cycle through the different possible directions.
+	
 		
+		//check whether the worm can Move
+		if(!this.canMove())
+			throw new IllegalDirectionException(this.getWorm().getDirection(), this.getWorm());
+		
+		//cycle through the different possible directions.
 		while(tempDirection <= worm.getDirection() + 0.7875)
 		{
 			tempDistance = move_newDistance(tempDirection);
@@ -334,8 +351,9 @@ public class Position{
 		}
 		if(flag == false)
 			return 0;
-		
-		return testDistance;
+		if(canMove_Aux(direction))
+			return testDistance;
+		return 0;
 	}
 	
 	//TODO moeilijke documentatie aanvullen lusinvarianten...
