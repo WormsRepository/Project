@@ -43,6 +43,19 @@ public class Projectile {
 		this.isActive = false;
 	}
 	
+	private Worm getHittedWorm(){
+		return this.hittedWorm;
+	}
+	
+	private void setHittedWorm(Worm worm){
+		this.hittedWorm = worm;
+	}
+	
+	/**
+	 * Worm referencing the hitted worm, if there is one.
+	 */
+	private Worm hittedWorm = null;
+	
 	/**
 	 * Variable registering whether or not this projectile is active.
 	 */
@@ -124,9 +137,7 @@ public class Projectile {
 			temp = temp / 3.0;
 		}
 		
-		if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) != null)
-			this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius).
-			reduceCurrentHitPoints(getDamage());
+		setHittedWorm(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius));
 		
 		return tempTime;
 	}
@@ -135,6 +146,8 @@ public class Projectile {
 			throws NullPointerException{
 		double[] tempXY = getJumpStep(getJumpTime(timeStep));
 		setPosition(tempXY[0],tempXY[1]);
+		if(getHittedWorm() != null)
+			getHittedWorm().reduceCurrentHitPoints(this.getDamage());
 		
 		deactivate();
 	}
