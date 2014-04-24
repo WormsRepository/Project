@@ -503,7 +503,7 @@ public class Worm {
 	@Raw
 	public boolean canHaveAsName(String name)
 	{
-		return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z '\"]+");
+		return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z0-9 '\"]+");
 	}
 
 	/**

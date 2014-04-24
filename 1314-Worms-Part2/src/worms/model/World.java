@@ -701,10 +701,7 @@ public class World {
 		}
 		//TODO minimal radius gebruike maar kweet nie hoe.
 		int grootte = worms.size() + 1;
-		String name = "NotYetNamed";
-		for(int i=0;i<grootte;i++){
-			name += "I";
-		}
+		String name = "Not Yet Named " + grootte;
 				
 		Worm newWorm = new Worm(testX, testY, 0, 0.25, name);
 		//TODO me teams maar geen idee hoe.
