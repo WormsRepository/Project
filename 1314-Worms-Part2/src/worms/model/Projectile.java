@@ -6,12 +6,14 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 public class Projectile {
 	
-	public Projectile(Worm worm, double initialVelocity) 
+	public Projectile(Worm worm, double initialVelocity, double radius, int damage) 
 			throws IllegalRadiusException, IllegalArgumentException{
-		this.mass = worm.getWeapon().getMassOfWeapon();
-		this.radius = worm.getWeapon().getRadiusOfWeapon();
 		this.direction = worm.getDirection();
 		this.initialVelocity = initialVelocity;
+		if(!canHaveAsRadius(radius))
+			throw new IllegalRadiusException(radius);
+		this.radius = radius;
+		this.damage = damage;
 		
 		this.setWorld(worm.getWorld());
 		try{
@@ -93,8 +95,9 @@ public class Projectile {
 		// any impassable point of the map.
 		double temp = timeStep;
 		double tempTime = 0.0;
-		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/8.0)){
-			if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius)){
+		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/8.0)
+				&& this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) == null){
+			if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) != null){
 				return tempTime;
 			}
 			tempTime = tempTime + temp;
@@ -107,10 +110,9 @@ public class Projectile {
 		// if 'temp' is smaller than 1/400000 the projectile will leave the world because there is no
 		// possible adjacent position.
 		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/400000.0)
-				&& !this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius)){
-			while(!this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
-				if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius))
-					return tempTime;
+				&& this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) == null){
+			while(!this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)
+					&& this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) == null){
 				tempTime = tempTime + temp;
 				tempXY = getJumpStep(tempTime);
 			}
@@ -121,6 +123,10 @@ public class Projectile {
 			}
 			temp = temp / 3.0;
 		}
+		
+		if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) != null)
+			this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius).
+			reduceCurrentHitPoints(getDamage());
 		
 		return tempTime;
 	}
@@ -182,6 +188,19 @@ public class Projectile {
 	}
 	
 	/**
+	 * Check whether the given radius is a valid radius for this projectile.
+	 * 
+	 * @param 	radius
+	 * 			The radius to check.
+	 * @return	True if and only if the given radius is larger than zero.
+	 * 			| radius > 0
+	 */
+	@Raw @Model
+	private boolean canHaveAsRadius(double radius){
+		return radius > 0;
+	}
+	
+	/**
 	 * 	Variable registering the radius of a projectile.
 	 */
 	private final double radius;
@@ -189,17 +208,17 @@ public class Projectile {
 	
 	
 	/**
-	 * Return the mass of this projectile (in kilogram).
+	 * Return the damage of this projectile.
 	 */
 	@Basic @Raw
-	public double getMass(){
-		return this.mass;
+	public int getDamage(){
+		return this.damage;
 	}
 	
 	/**
-	 * Variable registering the mass of the projectile (in kilograms).
+	 * Variable registering the possible damage of the weapon this projectile represents.
 	 */
-	private final double mass;
+	private final int damage;
 	
 	
 	

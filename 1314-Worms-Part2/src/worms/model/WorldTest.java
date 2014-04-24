@@ -48,8 +48,6 @@ public class WorldTest {
 		for(Worm worm: testWorld1.getWorms()){
 			assertTrue(testWorld1.isAdjacent(worm.getPosition().getX(),
 					worm.getPosition().getY(),worm.getRadius()) == true);
-			assertTrue(!testWorld1.canFall(worm.getPosition().getX(),
-					worm.getPosition().getY(),worm.getRadius()) == true);
 			assertTrue(worm.getRadius() == 0.25);
 		}
 	}
@@ -61,8 +59,6 @@ public class WorldTest {
 		}
 		for(Food food: testWorld1.getFood()){
 			assertTrue(testWorld1.isAdjacent(food.getX(),
-					food.getY(),Food.getRadius()) == true);
-			assertTrue(!testWorld1.canFall(food.getX(),
 					food.getY(),Food.getRadius()) == true);
 			assertTrue(Food.getRadius() == 0.20);
 		}

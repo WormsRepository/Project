@@ -564,6 +564,19 @@ public class Worm {
 	}
 	
 	/**
+	 * Decrements the value of the current amount of hit points with
+	 * the given value.
+	 * 
+	 * @param 	valueToReduce
+	 * 			The value in order to reduce.
+	 * @effect	| setCurrentHitPoints(getCurrentHitPoints() - valueToReduce)
+	 */
+	@Raw
+	public void reduceCurrentHitPoints(int valueToReduce){
+		setCurrentHitPoints(getCurrentHitPoints() - valueToReduce);
+	}
+	
+	/**
 	 * Set the amount of current action points of this worm to the given amount.
 	 * 
 	 * @param 	newHitPoints

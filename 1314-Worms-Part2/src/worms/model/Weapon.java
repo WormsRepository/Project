@@ -39,31 +39,6 @@ public class Weapon {
 		return this.currentWeapon;
 	}
 	
-	//TODO documentation
-	public double getMassOfWeapon(){
-		if(this.getCurrentWeapon().equals("Bazooka"))
-			return 0.300;
-		else if(this.getCurrentWeapon().equals("Rifle"))
-			return 0.010;
-		else
-			return 0;
-	}
-	
-	//TODO documentation
-	public double getRadiusOfWeapon() 
-			throws IllegalRadiusException{
-		double newRadius;
-		if(this.getMassOfWeapon() > 0.0){
-			newRadius = Math.pow((3.0/4.0)*this.getMassOfWeapon()/
-					(DENSITY * Math.PI), (1/3.0));
-		}
-		else
-			newRadius = 0.0;
-		if(!canHaveAsRadius(newRadius))
-			throw new IllegalRadiusException(newRadius);
-		return newRadius;
-	}
-	
 	/**
 	 * Activates the next weapon for the worm.
 	 */
@@ -82,12 +57,38 @@ public class Weapon {
 		if(getCostOfActionPointsOfWeapon() <= getWorm().getCurrentActionPoints()){
 			try{
 				@SuppressWarnings("unused")
-				Projectile projectile = new Projectile(this.getWorm(), this.getInitialVelocity(propulsion));
+				Projectile projectile = new Projectile(this.getWorm(),this.getInitialVelocity(propulsion),
+						this.getRadiusOfWeapon(), this.getDamageOfWeapon());
 				this.getWorm().reduceCurrentActionPoints(getCostOfActionPointsOfWeapon());
 			}
 			catch(IllegalRadiusException exc){}
 			catch(IllegalArgumentException exc){}
 		}
+	}
+	
+
+	
+	//TODO documentation
+	private double getRadiusOfWeapon() 
+			throws IllegalRadiusException{
+		double newRadius;
+		if(this.getMassOfWeapon() > 0.0){
+			newRadius = Math.pow((3.0/4.0)*this.getMassOfWeapon()/
+					(DENSITY * Math.PI), (1/3.0));
+		}
+		else
+			newRadius = 0.0;
+		return newRadius;
+	}
+	
+	//TODO documentation
+	private double getMassOfWeapon(){
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			return 0.300;
+		else if(this.getCurrentWeapon().equals("Rifle"))
+			return 0.010;
+		else
+			return 0;
 	}
 	
 	//TODO documentation
@@ -99,19 +100,6 @@ public class Weapon {
 			initialVelocity = 1.5;
 		
 		return (initialVelocity / getMassOfWeapon()) * 0.5;
-	}
-	
-	/**
-	 * Check whether the given radius is a valid radius for this projectile.
-	 * 
-	 * @param 	radius
-	 * 			The radius to check.
-	 * @return	True if and only if the given radius is larger than zero.
-	 * 			| radius > 0
-	 */
-	@Raw @Model
-	private boolean canHaveAsRadius(double radius){
-		return radius > 0;
 	}
 	
 	private int getCostOfActionPointsOfWeapon(){

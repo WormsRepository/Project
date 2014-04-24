@@ -593,18 +593,17 @@ public class World {
 	
 	
 	
-	public boolean hitAnyWorm(double x, double y, double radius){
+	public Worm hitAnyWorm(double x, double y, double radius){
 		if(isImpassable(x,y,radius))
-			return false;
+			return null;
 		for(Worm worm: worms){
 			if(Math.pow(Math.pow((worm.getPosition().getX() - x), 2) + 
 				Math.pow((worm.getPosition().getY() - y), 2),(1/2.0)) <= 
 					(worm.getRadius() + radius)){
-				worm.setCurrentHitPoints(0);
-				return true;
+				return worm;
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	//TODO documentation
