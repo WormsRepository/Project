@@ -122,6 +122,15 @@ public class Weapon {
 			return 0;
 	}
 	
+	private int getHitPointsOfWeapon(){
+		if(this.getCurrentWeapon().equals("Bazooka"))
+			return 80;
+		else if(this.getCurrentWeapon().equals("Rifle"))
+			return 20;
+		else
+			return 0;
+	}
+	
 	//TODO documentation
 	@Raw
 	private void setCurrentWeapon(String weapon){

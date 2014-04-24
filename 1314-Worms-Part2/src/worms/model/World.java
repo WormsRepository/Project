@@ -592,13 +592,45 @@ public class World {
 	
 	private Worm currentWorm = null;
 	
+	
+	
+	public boolean hitAnyWorm(double x, double y, double radius){
+		if(isImpassable(x,y,radius))
+			return false;
+		for(Worm worm: worms){
+			if(Math.pow(Math.pow((worm.getPosition().getX() - x), 2) + 
+				Math.pow((worm.getPosition().getY() - y), 2),(1/2)) <= 
+					(worm.getRadius() + radius)){
+				worm.setCurrentHitPoints(0);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//TODO documentation
+	public boolean canHaveAsWorm(Worm worm){
+		return (worm != null) && worm.isAlive();
+	}
+	
+	/**
+	 * check whether this world has the given worm as one
+	 * of its worms attached to it.
+	 * 
+	 * @param 	worm
+	 * 			the worm to check
+	 */
+	@Basic  @Raw
+	public boolean hasAsWorm(Worm worm){
+		return this.worms.contains(worm);
+	}
+	
 	/**
 	 * Returns all the worms in the given world
 	 */
 	public Collection<Worm> getWorms(){
 		return new LinkedHashSet<Worm>(this.worms);
 	}
-	
 	
 	
 	//TODO hasProperWorlds aanmaken!
@@ -657,9 +689,7 @@ public class World {
 		catch(RuntimeException x){}
 	}
 	
-	public boolean canHaveAsWorm(Worm worm){
-		return (worm != null) && worm.isAlive();
-	}
+
 	
 	/**
 	 * add the given worm to the set of worms attached to this world.
@@ -710,20 +740,6 @@ public class World {
 		this.worms.remove(worm);
 		worm.setWorld(null);
 	}
-	
-	
-	/**
-	 * check whether this world has the given worm as one
-	 * of its worms attached to it.
-	 * 
-	 * @param 	worm
-	 * 			the worm to check
-	 */
-	@Basic  @Raw
-	public boolean hasAsWorm(Worm worm){
-		return this.worms.contains(worm);
-	}
-	
 	
 	/**
 	 * set collecting references to worms attached to this world.

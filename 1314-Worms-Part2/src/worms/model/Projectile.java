@@ -94,6 +94,9 @@ public class Projectile {
 		double temp = timeStep;
 		double tempTime = 0.0;
 		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/8.0)){
+			if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius)){
+				return tempTime;
+			}
 			tempTime = tempTime + temp;
 			tempXY = getJumpStep(tempTime);
 		}
@@ -101,10 +104,13 @@ public class Projectile {
 			throw new IllegalDirectionException(this.getDirection());
 		//TODO nakijken of deze exception te snel gegooid word?
 		
-		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
+		// if 'temp' is smaller than 1/400000 the projectile will leave the world because there is no
 		// possible adjacent position.
-		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/400000.0)){
+		while(!this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/400000.0)
+				&& !this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius)){
 			while(!this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+				if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius))
+					return tempTime;
 				tempTime = tempTime + temp;
 				tempXY = getJumpStep(tempTime);
 			}
