@@ -95,6 +95,7 @@ public class World {
 	/**
 	 * Starts a game in the given world.
 	 */
+	//TODO (not to do) no formal or informal documentation needed!
 	public void startGame(){
 		if(worms.size() > 1){
 			startNextTurn();
