@@ -15,9 +15,11 @@ import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * A class of worms involving an x-coordinate, an y-coordinate, a direction in radians, a radius (in meter),
- * a minimum radius, a name, a mass (in kilogram), current amount of action points,
- * maximum amount of action points, a density, the standard acceleration and a world.
+ * A class of worms involving a position, a direction (in radians), 
+ * a radius (in meter), a minimum radius, a name, a teamname, a mass (in kilogram), 
+ * current amount of action points, maximum amount of action points, 
+ * current amount of hit points, maximum amount of hit points, a density, 
+ * the standard acceleration, a weapon and a world.
  *
  * @invar	The direction of each worm must be a valid direction for any worm.
  * 			| isValidDirection(getDirection())
@@ -39,7 +41,8 @@ public class Worm {
 	/**
 	 * Create a new worm that is positioned at the given position,
 	 * looks in the given direction, has the given radius, the given name,
-	 * the right mass and the right amount of maximum action points.
+	 * the right mass and the right amount of action points, maximum action
+	 * points, hit points and maximum hit points.
 	 * 
 	 * @param	x
 	 * 			The x-coordinate of the position of the new worm (in meter).

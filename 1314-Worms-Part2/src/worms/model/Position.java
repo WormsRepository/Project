@@ -8,6 +8,9 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of positions involving the worm to which the position belongs,
  * an x coordinate and and y coordinate.
  * 
+ * @invar	The position of each worm must lie fully within the map.
+ * 			| inMap(getX(),getY())
+ * 
  * @version	1.0
  * @author 	Laurens Loots, Pieter Vos
  */
@@ -35,7 +38,9 @@ public class Position{
 		setY(y);
 	}
 	
-	//TODO documentation
+	/**
+	 * Return the worm to which this position is attached.
+	 */
 	@Basic @Raw
 	protected Worm getWorm(){
 		return this.worm;
@@ -104,6 +109,7 @@ public class Position{
 	/**
 	 * Check whether the worm can move or not.
 	 */
+	//TODO documentation
 	@Raw
 	public boolean canMove() 
 	{
@@ -123,8 +129,8 @@ public class Position{
 	/**
 	 * Check whether the worm with the current position can fall.
 	 * 
-	 * @return	True if and only if the lower part of the worm is not adjacent to impassable
-	 * 			terrain.
+	 * @return	True if and only if the worm is not adjacent to impassable
+	 * 			terrain and the worm itself must be on passable terrain.
 	 * 			| result == this.getWorm().getWorld().canFall(getX(),getY(),this.getWorm().getRadius())
 	 */
 	@Raw
@@ -147,6 +153,7 @@ public class Position{
 	 * 			if the direction of the worm is greater than pi.
 	 * 			| Math.PI < worm.getDirection()
 	 */
+	//TODO documentation
 	public double[] getJumpStep(double t) 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
@@ -203,7 +210,6 @@ public class Position{
 		}
 		if(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius))
 			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
-		//TODO nakijken of deze exception te snel gegooid word?
 		
 		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
 		// possible adjacent position.
@@ -242,10 +248,21 @@ public class Position{
 	 * and with respect to the worm's orientation, his mass, the standard acceleration 
 	 * and the number of remaining action points.
 	 * 
-	 * @effect	The x-coordinate is changed as an effect of the jump.
-	 * 			| setX(getJumpStep(getJumpTime())[0])
-	 * @effect	The y-coordinate is changed as an effect of the jump.
-	 * 			| setY(getJumpStep(getJumpTime())[1])
+	 * 
+	 * @effect	If the time needed for the jump does not equal pi or
+	 * 			two times pi the x-coordinate and y-coordinate are
+	 * 			changed as an effect of the jump and checks if any
+	 * 			food can be eaten.
+	 * 			| if(getJumpTime() != Math.PI && getJumpTime() != 2*Math.PI)
+	 * 			| 	then (
+	 * 			|		setX(getJumpStep(getJumpTime())[0]) &&
+	 * 			| 		setY(getJumpStep(getJumpTime())[1]) &&
+	 * 			| 		eatPossibleFood())
+	 * 			|	)
+	 * @effect	If the time needed for the jump does equal pi or two
+	 * 			times pi the worm dies.
+	 * 			| if(time == Math.PI || time == 2*Math.PI)
+	 * 			| 	then (this.getWorm().wormDeath())
 	 * @effect	The new amount of current action points is set to zero.
 	 * 			| worm.setCurrentActionPoints(0)
 	 */
@@ -254,7 +271,7 @@ public class Position{
 	{
 		double time = getJumpTime();
 		double[] tempXY = getJumpStep(time);
-		if(time != Math.PI || time != 2*Math.PI){
+		if(time != Math.PI && time != 2*Math.PI){
 			setX(tempXY[0]);
 			setY(tempXY[1]);
 			eatPossibleFood();
@@ -267,6 +284,7 @@ public class Position{
 	/**
 	 * Moves the worm in the current direction of the worm. 
 	 */
+	//TODO documentation
 	public void move()
 		throws IllegalDirectionException
 	{
@@ -345,7 +363,8 @@ public class Position{
 	/**
 	 * check whether a worm has enough action points to move to the given location.
 	 */
-	//TODO docu
+	//TODO documentation
+	@Model
 	private boolean canMove_Aux(double direction)
 	{
 		if (  (Math.abs(Math.cos(direction)) + Math.abs(Math.sin(direction)*4)  ) >
@@ -361,8 +380,9 @@ public class Position{
 	 * 			The x-coordinate of the position to check.
 	 * @param 	y
 	 * 			The y-coordinate of the position to check.
-	 * @return	True if and only if the lower part of the worm with the given position to
-	 * 			check is not adjacent to impassable terrain.
+	 * @return	True if and only if the worm with the given position to check
+	 * 			is not adjacent to impassable terrain but the worm itself
+	 * 			lies on a passable place.
 	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
 	 */
 	@Model
@@ -370,7 +390,27 @@ public class Position{
 		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
 	}
 	
-	//TODO documentation
+	/**
+	 * Check if the given position lies fully within the boundaries of the world.
+	 * 
+	 * @param 	x
+	 * 			The x position to check
+	 * @param 	y
+	 * 			The y position to check
+	 * @return	If there is no world where this position can be placed, we assumed
+	 * 			that the position is always a valid postion.
+	 * 			| if(this.getWorm().getWorld() == null)
+	 * 			| 	then (result == true)
+	 * 			If there is a world we take the maximum and minimum x and y position 
+	 * 			of the worm, the radius taking into account, and check if these
+	 * 			coordinates lie fully within the world.
+	 * 			| else(
+	 * 			|	result == x>this.getWorm().getRadius() && 
+	 * 			|		x<this.getWorm().getWorld().getWidth() - this.getWorm().getRadius() &&
+	 * 			|		y>this.getWorm().getRadius() && 
+	 * 			|		y<this.getWorm().getWorld().getHeight() - this.getWorm().getRadius()
+	 * 			| )
+	 */
 	@Model
 	private boolean inMap(double x, double y){
 		if(this.getWorm().getWorld() == null)
@@ -381,25 +421,33 @@ public class Position{
 	}
 	
 	/**
-	 * calculates the proper x-coordinate for a gives direction and distance
+	 * Calculates the proper x-coordinate for a gives direction and distance.
+	 * 
+	 * @return	| result == this.getX() + (Math.cos(direction)*distance)
 	 */
+	@Model
 	private double move_CalculateX(double direction, double distance)
 	{
 		return this.getX() + (Math.cos(direction)*distance);
 	}
 	
 	/**
-	 * calculates the proper y-coordinate for a gives direction and distance
+	 * Calculates the proper y-coordinate for a gives direction and distance.
+	 * 
+	 * @return	| result == this.getY() + (Math.sin(direction)*distance)
 	 */
+	@Model
 	private double move_CalculateY(double direction, double distance)
 	{
 		return this.getY() + (Math.sin(direction)*distance);
 	}
-	/**
-	 * calculates the next possible distance for the move method in a certain direction.
-	 * returns 0 if there is no possible distance
-	 */
 	
+	/**
+	 * Calculates the next possible distance for the move method in a certain direction.
+	 * Returns 0 if there is no possible distance.
+	 */
+	//TODO documentation
+	@Model
 	private double move_newDistance(double direction)
 	{
 		//find the highest possible distance which is in a passable location.
@@ -460,6 +508,18 @@ public class Position{
 		// as 10.
 	}
 	
+	/**
+	 * Lets a worm eat a food ration if the worm hitted any as a result of a move, jump or fall.
+	 * 
+	 * @effect	If the worm hitted a food ration as a result of a move, jump or fall, the worm
+	 * 			will grow in size and the food ration has to be deactivated.
+	 * 			| if(this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()) != null)
+	 * 			| 	then(
+	 * 			| 	this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()).deactivate()
+	 * 			|	&& this.getWorm().growInRadius()
+	 * 			|	)	
+	 */
+	@Model
 	private void eatPossibleFood(){
 		if(this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()) != null){
 			Food food = this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius());
@@ -477,6 +537,7 @@ public class Position{
 	 * Variable registering the y-coordinate of a position of a worm in meters.
 	 */
 	private double y = 0;
+	
 	
 	/**
 	 * Final class variable registering the standard acceleration (m/(s*s)).
