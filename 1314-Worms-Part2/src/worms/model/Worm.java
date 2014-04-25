@@ -25,8 +25,6 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 			| canHaveAsRadius(getRadius())
  * @invar	The name of each worm must be a valid name for any worm.
  * 			| canHaveAsName(getName())
- * @invar 	The worms is never in an impassable location
- * 			| !getWorld().isImpassable(getPosition().getX() , getPosition().getY(), getRadius())
  * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
