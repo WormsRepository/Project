@@ -3,15 +3,30 @@ package worms.model;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
-
+/**
+ * a class of weapons associated with a worm.
+ * 
+ *@invar 	|isValidWeapon(getCurrentWeapon())
+ *
+ *@version 1.0
+ *@author Laurens Loots, Pieter Vos
+ */
 public class Weapon {
 	
-	//TODO documentation
+	/**
+	 * creates a new weapon associated with the given worm.
+	 * 
+	 * @param 	worm
+	 * 			the given worm
+	 * @effect	|this.getWorm() == worm
+	 */
 	public Weapon(Worm worm){
 		this.worm = worm;
 	}
 	
-	//TODO documentation
+	/**
+	 * returns the worm this weapon is attached to.
+	 */
 	@Basic @Raw @Model
 	private Worm getWorm(){
 		return this.worm;
@@ -22,13 +37,19 @@ public class Weapon {
 	 */
 	private final Worm worm;
 	
-	//TODO documentation
+	/**
+	 * checks whether or not the given String is a valid weapon.
+	 * 
+	 * @param 	weapon
+	 * 			the String to check.
+
+	 * @return	| weapon.equals(" ") || weapon.equals("Bazooka") || weapon.equals("Rifle")
+	 */
 	@Model
 	private boolean isValidWeapon(String weapon){
 		return (weapon.equals(" ") || weapon.equals("Bazooka") || weapon.equals("Rifle"));
 	}
 	
-	//TODO documentation
 	/**
 	 * Returns the name of the weapon that is currently active for the given worm,
 	 * or null if no weapon is active.
@@ -42,8 +63,14 @@ public class Weapon {
 	
 	/**
 	 * Activates the next weapon for the worm.
+	 * 
+	 * @post 	|if(getCurrentWeapon() == null
+	 * 			|	then new.getCurrentWeapon().equals("Bazooka")
+	 * @post	|if(getCurrentWeapon() == "Bazooka"
+	 * 			|	then new.getCurrentWeapon().equals("Rifle)
+	 * @post	|if(getCurrentWeapon() == "Rifle'
+	 * 			| 	then new.getCurrentWeapon().equals(" ")
 	 */
-	//TODO documentation
 	public void selectNextWeapon()
 	{
 		if(this.getCurrentWeapon() == null)
@@ -54,6 +81,14 @@ public class Weapon {
 			setCurrentWeapon(" ");
 	}
 	
+	/**
+	 * Creates a new Projectile if and only if the cost of action points of the weapon is smaller or
+	 * equal to the current action points of the worm.
+	 * 
+	 * @param 	propulsion
+	 * 			The initial velocity the new Projectile starts with.
+	 * @post	a new object of the class projectile is created.
+	 */
 	public void shoot(int propulsion){
 		if(getCostOfActionPointsOfWeapon() <= getWorm().getCurrentActionPoints()){
 			try{
@@ -69,10 +104,11 @@ public class Weapon {
 	
 
 	
-	//TODO documentation
+	/**
+	 * Calculates and returns the radius of this weapon.
+	 */
 	@Model
-	private double getRadiusOfWeapon() 
-			throws IllegalRadiusException{
+	private double getRadiusOfWeapon(){
 		double newRadius;
 		if(this.getMassOfWeapon() > 0.0){
 			newRadius = Math.pow((3.0/4.0)*this.getMassOfWeapon()/
@@ -83,7 +119,20 @@ public class Weapon {
 		return newRadius;
 	}
 	
-	//TODO documentation
+	
+	/**
+	 * returns the mass of this weapon based on the current weapon.
+	 * 
+	 * @return	the mass of the weapon if and only if the weapon is a bazooka
+	 * 			| if(getCurrentWeapon().equals("Bazooka")
+	 * 			| 		then ( return 0.300 )
+	 * @return	the mass of the weapon if and only if the weapon is a rifle.
+	 * 			| if(getCurrentWeapon().equals("Rifle")
+	 * 			|		then ( return 0.010)
+	 * @return 	the mass of the weapon if no weapon is selected
+	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
+	 * 			|		then( return 0 )
+	 */
 	@Model
 	private double getMassOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
@@ -93,8 +142,16 @@ public class Weapon {
 		else
 			return 0;
 	}
-	
-	//TODO documentation
+	/**
+	 * Calculate the initial velocity for the projectile based on the propulsion.
+	 * 
+	 * @return	The initial velocity of the projectile if and only if the weapon is bazooka.
+	 * 			| if(getCurrentWeapon().equals("Bazooka")
+	 * 			|		then ( initialVelocity = 2.5 + 7.0*(propulsion/100.0) )
+	 * @return	the initial velocity of the projectile if and only if the weapon is a rifle.
+	 * 			| if(getCurrentWeapon().equals("Rifle")
+	 * 			|		then ( initialVelocity = 1.5 )
+	 */
 	@Model
 	private double getInitialVelocity(int propulsion){
 		double initialVelocity = 0.0;
@@ -106,7 +163,19 @@ public class Weapon {
 		return (initialVelocity / getMassOfWeapon()) * 0.5;
 	}
 	
-	//TODO documentation
+	/**
+	 * returns the cost of action points of the weapon, based on the currently selected weapon.
+	 * 
+	 * @return	the cost of action points if and only if the bazooka is selected
+	 * 			| if(getCurrentWeapon().equals("Bazooka")
+	 * 			|		then ( return 50 )
+	 * @return	the cost of action points if and only if the Rifle is selected.
+	 * 			| if(getCurrentWeapon().equals("Rifle")
+	 * 			|		then ( return 10 )
+	 * @return 	the cost of action points if neither the Rifle nor the Bazooka are selected
+	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
+	 * 			|		then(return 0)
+	 */
 	@Model
 	private int getCostOfActionPointsOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
@@ -117,7 +186,19 @@ public class Weapon {
 			return 0;
 	}
 	
-	//TODO documentation
+	/**
+	 * returns the damage of the weapon based on the weapon.
+	 * 
+	 * @return	The damage of the weapon if and only if the Bazooka is selected.
+	 * 			| if(getCurrentWeapon().equals("Bazooka")
+	 * 			|		then ( return 80 )
+	 * @return	The damage of the weapon if and only if the Rifle is selected.
+	 * 			| if(getCurrentWeapon().equals("Rifle")
+	 * 			|		then ( return 2° )
+	 * @return 	the damage if neither the Rifle nor the Bazooka are selected
+	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
+	 * 			|		then(return 0)
+	 */
 	@Model
 	private int getDamageOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
@@ -128,7 +209,16 @@ public class Weapon {
 			return 0;
 	}
 	
-	//TODO documentation
+	/**
+	 * sets the current weapon to the given weapon if and only if the given weapon is
+	 * a valid weapon.
+	 * 
+	 * @param 	weapon
+	 * 			The given weapon
+	 * @post	the new weapon is the given weapon if and only if the given weapon is a valid weapon.
+	 * 			|if(isValidWeapon(weapon)
+	 * 			|	then (new.getCurrentWeapon() == weapon
+	 */
 	@Raw @Model
 	private void setCurrentWeapon(String weapon){
 		if(isValidWeapon(weapon))
