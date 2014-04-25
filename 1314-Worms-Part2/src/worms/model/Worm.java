@@ -148,7 +148,7 @@ public class Worm {
 	}
 	
 	/**
-	 * Variable registering the position of the worm.
+	 * Variable referencing the position of the worm.
 	 */
 	private final Position position;
 
@@ -171,11 +171,13 @@ public class Worm {
 	 * 			The new radius for this worm.
 	 * @post	The new radius of this worm is equal to the given radius.
 	 * 			| new.getRadius() == radius
-	 * @effect	The mass of this new worm and the maximum amount of action points of this worm
-	 * 			is set, it depends on the new radius of this worm. There is only a mass and a maximum
-	 * 			amount of action points if the radius is a valid radius for any worm.
+	 * @effect	The mass of this new worm and the maximum amount of action points and hit points of 
+	 * 			this worm is set, it depends on the new radius of this worm. There is only a mass 
+	 * 			and a maximum amount of action points  and hit points if the radius is a valid 
+	 * 			radius for any worm.
 	 * 			| this.setMass()
 	 * 			| this.setMaxActionPoints()
+	 * 			| this.setMaxHitPoints()
 	 * @throws	IllegalRadiusException(radius,this)
 	 * 			The given radius is not a valid radius for this worm.
 	 * 			| !canHaveAsRadius(radius)
@@ -193,7 +195,7 @@ public class Worm {
 	}
 	
 	/**
-	 * @effect	The Radius is increased with 10 procent.
+	 * @effect	The Radius is increased with 10 percent.
 	 * 			| setRadius(this.getRadius() * 1.1)
 	 */
 	@Raw
@@ -216,8 +218,16 @@ public class Worm {
 	 * 
 	 * @param 	radius
 	 * 			The radius to check.
-	 * @return	True if and only if the given radius is not below the minimum radius.
-	 * 			| radius >= getMinimalRadius()
+	 * @return	True if and only if the given radius is not below the minimum radius
+	 * 			and the worm still lies fully within his world.
+	 * 			| if(this.getWorld() == null)
+	 * 			| 	then result == radius >= getMinimalRadius()
+	 * 			| else
+	 * 			|	then result == this.getPosition().getX()>radius && 
+	 * 			|		this.getPosition().getX()<this.getWorld().getWidth() - radius &&
+	 * 			|			this.getPosition().getY()>radius && 
+	 * 			|				this.getPosition().getY()<this.getWorld().getHeight() - radius 
+	 * 			|					&& radius >= getMinimalRadius();
 	 */
 	@Raw
 	public boolean canHaveAsRadius(double radius)
@@ -423,8 +433,7 @@ public class Worm {
 
 
 	/**
-	 * Returns the variable maxActionPoints.
-	 * 		The maximum amount of action points a worm has is represented by the variable maxActionPoints.
+	 * Returns the maximum amount of action points of the worm.
 	 */
 	@Basic @Raw
 	public int getMaxActionPoints()
@@ -452,7 +461,7 @@ public class Worm {
 	}
 
 	/**
-	 * variable registering the maximum of action points of a worm, derived from the worm's mass.
+	 * Variable registering the maximum of action points of a worm, derived from the worm's mass.
 	 */
 	private int maxActionPoints = 0;
 
@@ -491,8 +500,9 @@ public class Worm {
 	 * 			|	then new.getCurrentActionPoints() == getCurrentActionPoints()
 	 * 			Else the new amount of current action points is equal to the given amount.
 	 * 			| else (new.getCurrentActionPoints() == newActionPoints)
-	 * @effect	If the new amount of current action points is zero, the worm's turn ends.
-	 * 			| if(newActionPoints == 0)
+	 * @effect	If the new amount of current action points is zero and the world of this world
+	 * 			doesn't equals null, the worm's turn ends.
+	 * 			| if(newActionPoints == 0 && this.getWorld() != null)
 	 * 			| 	then this.getWorld().startNextTurn()
 	 */
 	@Model @Raw
@@ -505,7 +515,7 @@ public class Worm {
 	}
 
 	/**
-	 * Variable registering the current amount of aciton points of a worm.
+	 * Variable registering the current amount of action points of a worm.
 	 */
 	private int currentActionPoints = 0;
 
@@ -518,8 +528,9 @@ public class Worm {
 	 * @param 	name
 	 * 			The name to check.
 	 * @return	True if and only if the given name is at least two characters long,
-	 * 			starts with an uppercase letter and only uses letters, quates and spaces.
-	 * 			| name.length()>1 && name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z '\"]+")
+	 * 			starts with an uppercase letter and only uses letters, quates, spaces and digits.
+	 * 			| result == name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
+	 * 			| 				name.matches("[A-Za-z0-9 '\"]+")
 	 */
 	@Raw
 	public boolean canHaveAsName(String name)
@@ -575,6 +586,8 @@ public class Worm {
 	 */
 	private final Weapon weapon = new Weapon(this);
 	
+	
+	
 	/**
 	 * Returns the current number of hit points of the given worm.
 	 */
@@ -602,14 +615,20 @@ public class Worm {
 	 * 
 	 * @param 	newHitPoints
 	 * 			The new amount of current hit points for this worm.
-	 * @post	If the new amount of current hit points is below zero or greater than
-	 * 			the maximum amount of hit points, nothing happens.
-	 * 			| if(newHitPoints < 0 || newHitPoints > getMaxHitPoints())
-	 * 			|	then new.getCurrentHitPoints() == getCurrentHitPoints()
+	 * @post	If the new amount of current hit points is smaller than zero or equals 
+	 * 			zero, the current amount of hit points is set to zero.
+	 * 			| if(newHitPoints <= 0)
+	 * 			|	then (new.getCurrentHitPoints() == 0)
+	 * 			If the new amount of current hit points is larger than the maximum
+	 * 			amount of hit points, nothing happens.
+	 * 			| if(newHitPoints > getMaxHitPoints())
+	 * 			|	then (new.getCurrentHitPoints() == getCurrentHitPoints())
 	 * 			Else the new amount of current hit points is equal to the given amount.
 	 * 			| else (new.getCurrentHitPoints() == newHitPoints)
+	 * @effect	If the new amount of current hit points is smaller than zero or equals 
+	 * 			zero, the worm dies.
+	 * 			| this.wormDeath()
 	 */
-	//TODO fout in documentatie
 	@Model @Raw
 	protected void setCurrentHitPoints(int newHitPoints){
 		if(newHitPoints <= 0)
@@ -624,12 +643,15 @@ public class Worm {
 	}
 	
 	
-	
+	/**
+	 * Variable registering the current amount of hit points of a worm.
+	 */
 	private int currentHitPoints = 0;
 	
+	
+	
 	/**
-	 * Returns the variable maxHitPoints.
-	 * 		The maximum amount of hit points a worm has is represented by the variable maxHitPoints.
+	 * Return the maximum amount of hit points of a worm.
 	 */
 	@Basic @Raw
 	public int getMaxHitPoints()
@@ -638,10 +660,10 @@ public class Worm {
 	}
 	
 	/**
-	 * Set the max action points of this worm according to the mass, 
-	 * if needed change the current amount of action points.
+	 * Set the max hit points of the worm according to the mass, 
+	 * if needed change the current amount of hit points.
 	 * 
-	 * @post 	the new maximum hitpoints is the mass rounded to the nearest integer.
+	 * @post 	The new maximum hit points is the mass rounded to the nearest integer.
 	 * 			| new.maxHitPoints = Math.round(getMass())
 	 * 			If the current amount of hit points is bigger than the maximum amount of hit points
 	 * 			the current amount of hit points is set to the maximum amount of hit points.
@@ -656,25 +678,33 @@ public class Worm {
 			setCurrentHitPoints(getMaxHitPoints());
 	}
 	
+	/**
+	 * Variable registering the maximum amount of hit points.
+	 */
 	private int maxHitPoints = 0;
 	
 	
 	
 	
 	/**
-	 * returns the name the worm is in.
+	 * Returns the team name the worm is in.
 	 */
+	@Basic @Raw
 	public String getTeamName()
 	{
 		return this.team;
 	}
 	
 	/**
-	 * sets the team for a worm. 
+	 * Sets the team for a worm. 
 	 * 
-	 * @param team the new team the worm is assigned to.
+	 * @param 	team 
+	 * 			The new team the worm is assigned to.
+	 * @post	The team name of the worm is set to the given team name.
+	 * 			| new.getTeamName() == team
+	 * @throws	IllegalArgumentException()
+	 * 			| !canHaveAsTeam(team)
 	 */
-	//TODO documentatie
 	public void setTeam(String team)
 		throws IllegalArgumentException
 	{
@@ -684,8 +714,18 @@ public class Worm {
 	}
 	
 	/**
-	 * returns whether the given team is a valid team
+	 * Returns whether the given team is a valid team.
+	 * 
+	 * @param	team
+	 * 			The team name to check.
+	 * @return	If team equals "no team", it is not a valid name.
+	 * 			| if(team.equals("no team"))
+	 * 			|	then result == false
+	 * 			Else true if and only if the world has the team name as one of its
+	 * 			team names, the length of the name larger is than 1, the name starts
+	 * 			with a capital letter and only uses letters.
 	 */
+	//TODO vanaf hier verder nakijken.
 	private boolean canHaveAsTeam(String team)
 	{
 		if(team.equals("no team"))
