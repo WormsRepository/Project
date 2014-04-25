@@ -1,13 +1,8 @@
-//https://github.com/WormsRepository/WormsOfPieterAndLaurens
+//https://github.com/WormsRepository/Project/
 // Laurens Loots 	Informatica
 // Pieter Vos		Informatica
 
 
-//TODO - movement (hoek aanpasse aan de grond eronder)
-//TODO documentatie aanvullen
-//TODO testklassen schrijven voor world en worm! (en anderen als tijd over)
-//TODO klasse team aanmaken als er tijd over is...
-//TODO todo's afgaan!
 package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
