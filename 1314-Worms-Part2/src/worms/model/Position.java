@@ -119,18 +119,6 @@ public class Position{
 		}
 		return false;
 	}
-	 
-	/**
-	 * check whether a worm has enough action points to move to the given location.
-	 */
-	//TODO docu
-	private boolean canMove_Aux(double direction)
-	{
-		if (  (Math.abs(Math.cos(direction)) + Math.abs(Math.sin(direction)*4)  ) >
-								this.getWorm().getCurrentActionPoints() )
-			return false;
-		return true;
-	}
 	
 	/**
 	 * Check whether the worm with the current position can fall.
@@ -348,14 +336,43 @@ public class Position{
 		}
 	}
 	
-	private void eatPossibleFood(){
-		if(this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()) != null){
-			Food food = this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius());
-			food.deactivate();
-			this.getWorm().growInRadius();
-		}
+	/**
+	 * check whether a worm has enough action points to move to the given location.
+	 */
+	//TODO docu
+	private boolean canMove_Aux(double direction)
+	{
+		if (  (Math.abs(Math.cos(direction)) + Math.abs(Math.sin(direction)*4)  ) >
+								this.getWorm().getCurrentActionPoints() )
+			return false;
+		return true;
 	}
 	
+	/**
+	 * Check whether the worm with the given position can fall.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate of the position to check.
+	 * @param 	y
+	 * 			The y-coordinate of the position to check.
+	 * @return	True if and only if the lower part of the worm with the given position to
+	 * 			check is not adjacent to impassable terrain.
+	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
+	 */
+	@Model
+	private boolean canFall(double x, double y){
+		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
+	}
+	
+	//TODO documentation
+	@Model
+	private boolean inMap(double x, double y){
+		if(this.getWorm().getWorld() == null)
+			return true;
+		double radius = this.getWorm().getRadius();
+		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
+				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
+	}
 	
 	/**
 	 * calculates the proper x-coordinate for a gives direction and distance
@@ -437,30 +454,12 @@ public class Position{
 		// as 10.
 	}
 	
-	/**
-	 * Check whether the worm with the given position can fall.
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate of the position to check.
-	 * @param 	y
-	 * 			The y-coordinate of the position to check.
-	 * @return	True if and only if the lower part of the worm with the given position to
-	 * 			check is not adjacent to impassable terrain.
-	 * 			| result == this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius())
-	 */
-	@Model
-	private boolean canFall(double x, double y){
-		return this.getWorm().getWorld().canFall(x, y, this.getWorm().getRadius());
-	}
-	
-	//TODO documentation
-	@Model
-	private boolean inMap(double x, double y){
-		if(this.getWorm().getWorld() == null)
-			return true;
-		double radius = this.getWorm().getRadius();
-		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
-				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
+	private void eatPossibleFood(){
+		if(this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()) != null){
+			Food food = this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius());
+			food.deactivate();
+			this.getWorm().growInRadius();
+		}
 	}
 	
 	/**

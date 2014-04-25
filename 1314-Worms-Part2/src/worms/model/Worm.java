@@ -491,11 +491,16 @@ public class Worm {
 	 * 			|	then new.getCurrentActionPoints() == getCurrentActionPoints()
 	 * 			Else the new amount of current action points is equal to the given amount.
 	 * 			| else (new.getCurrentActionPoints() == newActionPoints)
+	 * @effect	If the new amount of current action points is zero, the worm's turn ends.
+	 * 			| if(newActionPoints == 0)
+	 * 			| 	then this.getWorld().startNextTurn()
 	 */
 	@Model @Raw
 	protected void setCurrentActionPoints(int newActionPoints){
 		if(newActionPoints < 0 || newActionPoints > getMaxActionPoints())
 			return;
+		if(newActionPoints == 0)
+			this.getWorld().startNextTurn();
 		this.currentActionPoints = newActionPoints;
 	}
 
@@ -653,20 +658,7 @@ public class Worm {
 	
 	private int maxHitPoints = 0;
 	
-	/**
-	 * returns if the worm is alive or not.
-	 */
-	public boolean isAlive() {
-		return isAlive;
-	}
 	
-	public void wormDeath(){
-		this.getWorld().removeAsWorm(this);
-		this.isAlive = false;
-	}
-	
-	private boolean isAlive = true;
-
 	
 	
 	/**
@@ -714,4 +706,20 @@ public class Worm {
 	private String team = "no team";
 
 	
+	
+	/**
+	 * returns if the worm is alive or not.
+	 */
+	public boolean isAlive() {
+		return isAlive;
+	}
+	
+	//TODO documentation
+	public void wormDeath(){
+		this.getWorld().startNextTurn();
+		this.getWorld().removeAsWorm(this);
+		this.isAlive = false;
+	}
+	
+	private boolean isAlive = true;
 }
