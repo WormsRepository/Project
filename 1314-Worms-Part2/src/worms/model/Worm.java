@@ -191,6 +191,16 @@ public class Worm {
 		setMaxActionPoints();
 		setMaxHitPoints();
 	}
+	
+	/**
+	 * @effect	The Radius is increased with 10 procent.
+	 * 			| setRadius(this.getRadius() * 1.1)
+	 */
+	@Raw
+	public void growInRadius() 
+			throws IllegalRadiusException{
+		setRadius(this.getRadius() * 1.1);
+	}
 
 	/**
 	 * 	Variable registering the radius of a worm.
@@ -631,8 +641,8 @@ public class Worm {
 	private void setMaxHitPoints()
 	{
 		maxHitPoints = (int)Math.round(getMass());
-		if(getCurrentActionPoints() > getMaxActionPoints())
-			setCurrentActionPoints(getMaxActionPoints());
+		if(getCurrentHitPoints() > getMaxHitPoints())
+			setCurrentHitPoints(getMaxHitPoints());
 	}
 	
 	private int maxHitPoints = 0;

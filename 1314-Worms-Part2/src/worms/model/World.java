@@ -374,6 +374,21 @@ public class World {
 	
 	//TEAMNAMES
 	
+	
+	
+	public Food hitAnyFood(double x, double y, double radius){
+		if(isImpassable(x,y,radius))
+			return null;
+		for(Food food: foodRations){
+			if(Math.pow(Math.pow((food.getX() - x), 2.0) + 
+				Math.pow((food.getY() - y), 2.0),(1.0/2.0)) <= 
+					(Food.getRadius() + radius)){
+				return food;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Check whether this world can have the given food 
 	 * as one of its food rations.

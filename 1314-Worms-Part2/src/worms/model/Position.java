@@ -255,6 +255,7 @@ public class Position{
 		if(time != Math.PI || time != 2*Math.PI){
 			setX(tempXY[0]);
 			setY(tempXY[1]);
+			eatPossibleFood();
 		}
 		this.getWorm().setCurrentActionPoints(0);
 		if(time == Math.PI || time == 2*Math.PI)
@@ -303,8 +304,48 @@ public class Position{
 		
 		setX(this.move_CalculateX(bestDirection, bestDistance));
 		setY(this.move_CalculateY(bestDirection, bestDistance));
-		this.getWorm().setCurrentActionPoints((int) (this.getWorm().getCurrentActionPoints() - 
-				(Math.abs(Math.cos(bestDirection))+ Math.abs(Math.sin(4*bestDirection)))));
+		this.getWorm().reduceCurrentActionPoints((int) (Math.ceil(Math.abs(Math.cos(bestDirection))
+				+ Math.abs(Math.sin(4*bestDirection)))));
+		eatPossibleFood();
+	}
+	
+	//TODO moeilijke documentatie aanvullen lusinvarianten...
+	public void fall() throws RuntimeException{
+		if(!canFall())
+			throw new RuntimeException();
+		double tempY = getY();
+		double temp = 0.5;
+		while(canFall(getX(),tempY) && temp >= (1/500.0)){
+			while(inMap(getX(),tempY) && canFall(getX(),tempY))
+				tempY -= temp;
+			if(!inMap(getX(),tempY))
+				tempY += temp;
+			temp = temp / 3.0;
+			while(!canFall(getX(),tempY) &&
+					!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
+				tempY += temp;
+			temp = temp / 3.0;
+		}
+		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
+		// the worm will fall of the world and die.
+		if(temp < (1.0/4500.0))
+			this.getWorm().wormDeath();
+			
+		else{
+			if(this.getWorm().getWorld().isStarted())
+			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
+					(int)Math.floor(3.0 * (getY() - tempY)));
+		setY(tempY);
+		eatPossibleFood();
+		}
+	}
+	
+	private void eatPossibleFood(){
+		if(this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius()) != null){
+			Food food = this.getWorm().getWorld().hitAnyFood(getX(),getY(),this.getWorm().getRadius());
+			food.deactivate();
+			this.getWorm().growInRadius();
+		}
 	}
 	
 	
@@ -353,36 +394,6 @@ public class Position{
 		if(canMove_Aux(direction))
 			return testDistance;
 		return 0;
-	}
-	
-	//TODO moeilijke documentatie aanvullen lusinvarianten...
-	public void fall() throws RuntimeException{
-		if(!canFall())
-			throw new RuntimeException();
-		double tempY = getY();
-		double temp = 0.5;
-		while(canFall(getX(),tempY) && temp >= (1/500.0)){
-			while(inMap(getX(),tempY) && canFall(getX(),tempY))
-				tempY -= temp;
-			if(!inMap(getX(),tempY))
-				tempY += temp;
-			temp = temp / 3.0;
-			while(!canFall(getX(),tempY) &&
-					!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
-				tempY += temp;
-			temp = temp / 3.0;
-		}
-		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
-		// the worm will fall of the world and die.
-		if(temp < (1.0/4500.0))
-			this.getWorm().wormDeath();
-			
-		else{
-			if(this.getWorm().getWorld().isStarted())
-			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
-					(int)Math.floor(3.0 * (getY() - tempY)));
-		setY(tempY);
-		}
 	}
 	
 	/**
