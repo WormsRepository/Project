@@ -311,7 +311,7 @@ public class World {
 	 */
 	@Basic  @Raw
 	public boolean hasAsteam(String team){
-		return this.worms.contains(team);
+		return this.teamNames.contains(team);
 	}
 	
 	/**
@@ -353,10 +353,8 @@ public class World {
 					return worm.getTeamName();
 			}
 		}
-		
 
 		return null;
-		
 	}
 	
 	
@@ -368,9 +366,15 @@ public class World {
 	 */
 	public void addEmptyTeam(String newName) 
 			throws IllegalNameException{
-		if(newName.length() < 2 || newName.equals("no team"))
+		if(!canHaveAsTeamName(newName))
 			throw new IllegalNameException(newName);
 		teamNames.add(newName);
+	}
+	
+	//TODO documentation
+	private boolean canHaveAsTeamName(String name){
+		 return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
+				 name.matches("[A-Za-z]+") && !name.equals("no team") && teamNames.size() < 10;
 	}
 	
 	private HashSet<String> teamNames = new HashSet<String>();

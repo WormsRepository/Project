@@ -4,10 +4,10 @@
 
 
 //TODO - movement (hoek aanpasse aan de grond eronder)
-//TODO - jump (zowel projectile als worm) met collision prediction
-//TODO - add new worm and food in the world 
 //TODO documentatie aanvullen
-//TODO testklassen schrijven
+//TODO testklassen schrijven voor world en worm! (en anderen als tijd over)
+//TODO klasse team aanmaken als er tijd over is...
+//TODO todo's afgaan!
 package worms.model;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -688,16 +688,10 @@ public class Worm {
 	 */
 	private boolean canHaveAsTeam(String team)
 	{
-		if(team.length() < 2)
-			return false;
 		if(team.equals("no team"))
 			return false;
-		for( String teamName: this.getWorld().getTeamNames())
-		{
-			if (team.equals(teamName))
-					return true;
-		}
-		return false;
+		return this.getWorld().hasAsteam(team) &&
+				name.length()>1 && name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z]+");
 	}
 	
 	/**
