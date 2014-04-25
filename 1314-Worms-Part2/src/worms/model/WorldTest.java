@@ -14,6 +14,11 @@ public class WorldTest {
 	 * Variable referencing a world.
 	 */
 	private static World testWorld1;
+	/**
+	 * a passable map.
+	 */
+	boolean[][] passableMap;
+
 
 	/**
 	 * Set up a mutable test fixture.
@@ -30,7 +35,7 @@ public class WorldTest {
 								   {false,true,true,true,true,false},
 								   {false,true,true,true,true,false},
 								   {false,false,false,false,false,false}};
-		testWorld1 = new World(10,10,passableMap,random);
+		testWorld1 = new World(6,6,passableMap,random);
 	}
 
 	/**
@@ -39,6 +44,199 @@ public class WorldTest {
 	@BeforeClass
 	public static void setUpImmutableFixture(){
 	}
+	
+	
+	@Test
+	public void constructor_legalCase(){
+		Random random = new Random();
+		boolean[][] passableMap = {{false,false,false,false,false,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,false,false,false,false,false}};
+		World myWorld = new World(10,15,passableMap, random);
+		assertTrue(myWorld.getWidth() == 10);
+		assertTrue(myWorld.getHeight() == 15);
+		assertTrue(myWorld.getPassableMap().equals(passableMap));
+		assertTrue(myWorld.getRandom().equals(random));
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void constructor_illegalWidth()
+		throws Exception{
+		Random random = new Random();
+		boolean[][] passableMap = {{false,false,false,false,false,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,false,false,false,false,false}};
+		World myWorld = new World(10,15,passableMap, random);
+		if(!myWorld.canHaveAsWidthOrHeight(-1))
+			new World(-1,15,passableMap, random);
+		if(!myWorld.canHaveAsWidthOrHeight( Double.MAX_VALUE +1 ))
+			new World(Double.MAX_VALUE +1,15,passableMap, random);
+		else
+			throw new IllegalArgumentException();
+	}
+	
+	
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void constructor_illegalHeight()
+		throws Exception{
+		Random random = new Random();
+		boolean[][] passableMap = {{false,false,false,false,false,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,true,true,true,true,false},
+				   {false,false,false,false,false,false}};
+		World myWorld = new World(10,15,passableMap, random);
+		if(!myWorld.canHaveAsWidthOrHeight(-1))
+			new World(10,-1,passableMap, random);
+		if(!myWorld.canHaveAsWidthOrHeight( Double.MAX_VALUE +1 ))
+			new World(10,Double.MAX_VALUE +1,passableMap, random);
+		else
+			throw new IllegalArgumentException();
+	}
+	
+	@Test
+	public void deactivate_legalCase1(){
+		testWorld1.addAsFood(new Food(1,2));
+		
+		testWorld1.deactivate();
+		assertTrue(!testWorld1.isActive());
+		assertTrue(testWorld1.getFood().isEmpty());
+	}
+	
+	@Test
+	public void isActive_legalCase1(){
+		assertTrue(testWorld1.isActive());
+	}
+	
+	@Test
+	public void isActive_legalCase2(){
+		testWorld1.deactivate();
+		assertTrue(!testWorld1.isActive());
+	}
+	
+
+	
+	@Test
+	public void isStarted_legalCase1(){
+		assertTrue(!testWorld1.isStarted());
+	}
+	
+	@Test
+	public void startGame_IllegalCase1(){
+		testWorld1.addAsWorm(new Worm(1,1,0,1,"Test"));
+		testWorld1.startGame();
+		assertTrue(!testWorld1.isStarted());
+	}
+	
+	@Test
+	public void startGame_IllegalCase2(){
+		testWorld1.startGame();
+		assertTrue(!testWorld1.isStarted());
+	}
+	
+	@Test
+	public void canHaveAsWidthOrHeight_legalCase(){
+		assertTrue(testWorld1.canHaveAsWidthOrHeight(2));
+	}
+	
+	@Test
+	public void canHaveAsWidthOrHeight_legalCase2(){
+		assertTrue(testWorld1.canHaveAsWidthOrHeight(Double.MAX_VALUE -1));
+	}
+	
+	@Test
+	public void canHaveAsWidthOrHeight_IllegalCase1(){
+		assertTrue(!testWorld1.canHaveAsWidthOrHeight(-2));
+	}
+	
+	@Test
+	public void getWidth_legalCase(){
+		assertTrue(testWorld1.getWidth() == 6);
+	}
+	
+	@Test
+	public void getHeight_legalCase(){
+		assertTrue(testWorld1.getHeight() == 6);
+	}
+	
+	@Test
+	public void getPassableMap(){
+		Random random = new Random();
+		boolean[][] passableMap = {{false,false,false,false,false,false},
+								   {false,true,true,true,true,false},
+								   {false,true,true,true,true,false},
+								   {false,true,true,true,true,false},
+								   {false,true,true,true,true,false},
+								   {false,false,false,false,false,false}};
+		
+		World testWorld = new World(6,6,passableMap,random);
+		assertTrue(testWorld.getPassableMap().equals(passableMap));
+	}
+	
+	@Test
+	public void startGame_LegalCase1(){
+		testWorld1.addAsWorm(new Worm(1,1,0,1,"Test"));
+		testWorld1.addAsWorm(new Worm(1,2,0,1,"Test2"));
+		testWorld1.addAsWorm(new Worm(1,2,0,1,"Test3"));
+		testWorld1.startGame();
+		assertTrue(testWorld1.isStarted());
+	}
+	
+	
+	@Test
+	public void isImpassable_legalCase1(){
+		assertTrue(testWorld1.isImpassable(5, 5, 1));
+	}
+	
+	@Test
+	public void isImpassable_IllegalCase1(){
+		assertTrue(!testWorld1.isImpassable(2, 2, 1));
+	}
+	
+	@Test
+	public void isAdjacent_IllegalCase1(){
+		assertTrue(!testWorld1.isAdjacent(5, 5, 1));
+	}
+	
+	@Test
+	public void isAdjacent_IllegalCase(){
+		assertTrue(!testWorld1.isAdjacent(3, 3, 0.5));
+	}
+	
+	@Test
+	public void isAdjacent_LegalCase(){
+		assertTrue(testWorld1.isAdjacent(2,2,1));
+	}
+	
+	@Test
+	public void canFall_LegalCase(){
+		assertTrue(testWorld1.canFall(2, 2, 0.25));
+	}
+	
+	@Test
+	public void canFall_IllegalCase(){
+		assertTrue(!testWorld1.canFall(0, 0, 1));
+	}
+	
+	@Test
+	public void canFall_IllegalCase2(){
+		assertTrue(!testWorld1.canFall(2, 2, 1));
+	}
+	
+	@Test
+	public void hasAsTeam_legalCase(){
+		testWorld1.addEmptyTeam("Pieter");
+		assertTrue(testWorld1.hasAsTeam("Pieter"));
+	}
+	
+
 	
 	@Test
 	public void addNewWorm_legalCase(){

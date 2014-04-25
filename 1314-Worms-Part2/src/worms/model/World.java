@@ -1,7 +1,5 @@
 package worms.model;
 
-//TODO food opeten na move, jump en fall
-//TODO team restricties (zie opgave)
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,7 +64,6 @@ public class World {
 			food.deactivate();
 		}
 		this.isActive = false;
-		//TODO aanvullen wanneer mogelijk
 	}
 	
 	/**
@@ -81,7 +78,6 @@ public class World {
 	 * Variable registering whether or not this world is active.
 	 */
 	private boolean isActive = true;
-	// TODO isTerminated van maken?
 	
 	
 	/**
@@ -95,7 +91,6 @@ public class World {
 	/**
 	 * Starts a game in the given world.
 	 */
-	//TODO (not to do) no formal or informal documentation needed!
 	public void startGame(){
 		if(worms.size() > 1){
 			startNextTurn();
@@ -139,6 +134,17 @@ public class World {
 		return this.width;
 	}
 	
+	/**
+	 * returns a new X value.
+	 * 
+	 * @param 	oldX
+	 * 			the old X value on which the new one is based.
+	 * @return	returns the new X value.
+	 * 			| if(oldx > getWidth()/2)
+	 * 			|		then ( return oldX - 0.014)
+	 * 			| if(oldX < getWidth()/2 )
+	 * 			| 		then ( return oldX + 0.014)
+	 */
 	private double newX(double oldX)
 	{
 		if(oldX > this.getWidth()/2)
@@ -148,7 +154,11 @@ public class World {
 	
 		return oldX;
 	}
-	
+	/**
+	 * returns a random integer between 0 and the width of the world.
+	 * 
+	 * @return	|random.nextInt((int)getWidth())
+	 */
 	private int randomStartX()
 	{
 		return random.nextInt((int)this.getWidth());		
@@ -164,10 +174,22 @@ public class World {
 	/**
 	 * Return the height of this world.
 	 */
+	@Basic  @Raw
 	public double getHeight(){
 		return this.height;
 	}
 	
+	/**
+	 * returns a new Y value.
+	 * 
+	 * @param 	oldY
+	 * 			the old Y value on which the new one is based.
+	 * @return	returns the new Y value.
+	 * 			| if(oldY > getHeight()/2)
+	 * 			|		then ( return oldY - 0.014)
+	 * 			| if(oldY < getHeight()/2 )
+	 * 			| 		then ( return oldY + 0.014)
+	 */
 	private double newY(double oldY)
 	{
 		if(oldY > this.getHeight()/2)
@@ -177,7 +199,11 @@ public class World {
 
 		return oldY;
 	}
-	
+	/**
+	 * returns a random integer between 0 and the height of the world.
+	 * 
+	 * @return	|random.nextInt((int)getHeight())
+	 */
 	private int randomStartY()
 	{
 		return random.nextInt((int)this.getHeight());
@@ -193,6 +219,7 @@ public class World {
 	/**
 	 * Return the passable map of this world.
 	 */
+	@Basic @Raw
 	public boolean[][] getPassableMap(){
 		return passableMap;
 	}
@@ -209,8 +236,11 @@ public class World {
 	 * @param 	radius 
 	 * 			The radius of the circle to check
 	 * @return 	True if the given region is impassable, false otherwise.
+	 * 			|if(isImpassable(x,y,radius)
+	 * 			|	then (return true)
+	 * 			|else
+	 * 			|	return false;
 	 */
-	//TODO formal documentation return?
 	
 	//each pixel of an image that is x pixels wide and y pixels high, shall be used to mark a rectangular area
 	// of width/x x height/y of the game world as either passable or impassable
@@ -245,8 +275,6 @@ public class World {
 			return false;
 		else
 		{
-			// a location is adjacent to impassable terrain if the location itself is passable and
-			// the location's distance to impassable terrain is smaller than the game object's radius*0.1.
 			for(double angle = 0; angle < 2*Math.PI ; angle = angle + (Math.PI/180))
 			{
 				if (isImpassablePoint(x+(Math.cos(angle)*radius*1.1), y+(Math.sin(angle))*radius*1.1))
@@ -256,7 +284,21 @@ public class World {
 		}
 	}
 	
-	//TODO documentation
+	
+	/**
+	 * returns if the worm can fall or not.
+	 * 
+	 * @param 	x
+	 * 			the given x position.
+	 * @param 	y
+	 * 			the given y position.
+	 * @param 	radius
+	 * 			the given radius.
+	 * @return	|if(if(isImpassable(x,y,radius) || isAdjacent(x,y,radius))
+				|	return false
+				|else
+				|	return true
+	 */
 	public boolean canFall(double x, double y, double radius){
 		if(isImpassable(x,y,radius) || isAdjacent(x,y,radius))
 			return false;
@@ -264,7 +306,16 @@ public class World {
 	}
 
 	
-	//TODO documentatie.
+	/**
+	 * calculates the right positions int he passable map and
+	 * returns whether the point is impassable or not.
+	 * 
+	 * @param	x
+	 * 			the given x value
+	 * @param 	y
+	 * 			the given y value
+	 * @return	|!getPassableMap()[intX][intY]
+	 */
 	@Raw
 	private boolean isImpassablePoint(double x, double y){
 		int intX, intY;
@@ -316,11 +367,21 @@ public class World {
 	
 	/**
 	 * Returns whether the game in the given world has finished.
-	 */
-	
-	// eindigt bij:
-	// - 1 worm over 
-	// - alle overige wormen aan hetzelfde team
+	 * 
+	 * @return
+	 * 		|if (worms.size() <= 1)
+	 *		|	return true;
+	 *		|String winner = "";
+	 *		|	for(Worm worm : worms)
+	 *		|	{
+	 *		|		if (winner.equals("") && !worm.getTeamName().equals("no team"))
+	 *		|			winner = worm.getTeamName();
+	 *		|		if (!worm.getTeamName().equals(winner))
+	 *		|			return false;
+	 *		|	}
+	 *		|	return true;
+	 * 
+	*/
 	public boolean isGameFinished(){
 		if (worms.size() <= 1)
 				return true;
@@ -339,7 +400,15 @@ public class World {
 	 * Returns the name of a single worm if that worm is the winner, or the name
 	 * of a team if that team is the winner. This method should null if there is no winner.
 	 * 
-	 * (For single-student groups that do not implement teams, this method should always return the name of the winning worm, or null if there is no winner)
+	 * @return	|for( Worm worm : worms)
+	 *			|{
+	 *			|	if(worm != null)
+	 *			|	{
+	 *			|		if (!this.hasAsteam(worm.getTeamName()))
+	 *			|			return worm.getName();
+	 *			|		else
+	 *			|			return worm.getTeamName();
+	 *			}
 	 */
 	public String getWinner(){
 		
@@ -361,8 +430,12 @@ public class World {
 	
 	/**
 	 * Create and add an empty team with the given name to the given world.
+	 * @param 	newName
+	 * 			the new name for the team.
+	 * @post	|teamNames.contains(newName)
 	 * 
-	 * 
+	 * @throws IllegalNameException
+	 * 			|!canHaveAsTeamName(newName)
 	 */
 	public void addEmptyTeam(String newName) 
 			throws IllegalNameException{
@@ -371,18 +444,59 @@ public class World {
 		teamNames.add(newName);
 	}
 	
-	//TODO documentation
+	/**
+	 * check whether this world has the given team as one
+	 * of its teams
+	 * 
+	 * @param 	team
+	 * 			the team to check
+	 */
+	@Basic  @Raw
+	public boolean hasAsTeam(String team){
+		return this.teamNames.contains(team);
+	}
+	
+	
+	/**
+	 * returns whether or not the given name is a valid name for a team.
+	 * @param 	name
+	 * 			the name to check
+	 * @return	|name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
+				|		name.matches("[A-Za-z]+") &&
+				|					 !name.equals("no team") && teamNames.size() < 10
+	 */
 	private boolean canHaveAsTeamName(String name){
 		 return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
 				 name.matches("[A-Za-z]+") && !name.equals("no team") && teamNames.size() < 10;
 	}
-	
+	/**
+	 * a HashSet collecting all the team names in this world.
+	 */
 	private HashSet<String> teamNames = new HashSet<String>();
 	
 	//TEAMNAMES
 	
 	
-	
+	/**
+	 * returns the food object if it in within the given radius on the given position.
+	 * @param 	x
+	 * 			the given x-position
+	 * @param 	y
+	 * 			the given y-position
+	 * @param 	radius
+	 * 			the given radius
+	 * @return	|if(isImpassable(x,y,radius))
+	 *			|	return null;
+	 *			|for(Food food: foodRations){
+	 *			|		if(Math.pow(Math.pow((food.getX() - x), 2.0) + 
+	 *			|			Math.pow((food.getY() - y), 2.0),(1.0/2.0)) <= 
+	 *			|				(Food.getRadius() + radius)){
+	 *			|			return food;
+	 *			|		}
+	 *			|	}
+	 *			|return null;
+	 * 
+	 */
 	public Food hitAnyFood(double x, double y, double radius){
 		if(isImpassable(x,y,radius))
 			return null;
@@ -460,7 +574,7 @@ public class World {
 	 * 
 	 * 
 	 */
-	//TODO dubbele code addnewFood en addnewworm, in andere methode plaatsen
+	//TODO moeilijker docu
 	public void addNewFood() 
 			throws IllegalArgumentException{
 		//find a location for the food
@@ -492,9 +606,7 @@ public class World {
 					testX = newX(testX);
 					testY = newY(testY);
 				}
-				//TODO minimal radius gebruike maar kweet nie hoe.
 				Food newFood = new Food(testX, testY);
-				//TODO me teams maar geen idee hoe.
 				this.addAsFood(newFood);
 	}
 	
@@ -504,7 +616,7 @@ public class World {
 	 * @param 	food
 	 * 			The food to be added.
 	 * @post	| new.hasAsFood(food)
-	 * @post	|Â (new food).getWorld() == this
+	 * @post	| (new food).getWorld() == this
 	 * @throws 	IllegalArgumentException("You can't add this food.")
 	 * 			| !canHaveAsFood(food)
 	 * @throws 	IllegalArgumentException("You can't add this food.")
@@ -564,7 +676,8 @@ public class World {
 	}
 	
 	/**
-	 * Starts the next turn in the given world
+	 * Starts the next turn in the given world by finding the current worm in the linkedHashSet
+	 * and selecting the next worm as new current Worm
 	 */
 	//vorige worm checken, zoeken in linkedHashSet, en de volgende in de set nemen als current worm.
 	//TODO documentation
@@ -616,8 +729,17 @@ public class World {
 	 * 
 	 * @param 	worm
 	 * 			The given worm.
+	 * 
+	 * @post	sets the worms hitpoints to its current hit points incremented with 10
+	 * 			or to maximum if and only if its current hitpoints incremented with 10
+	 * 			is larger than its maximum hitPoints.
+	 * 			| if (worm.getMaxHitPoints() - worm.getCurrentHitPoints() < 10)
+	 * 			|	then new.getWorm().getCurrentHitpoints == getWorm().getMaxHitPoints)
+	 * 			| else
+	 * 			|	new.getWorm().getCurrentHitpoints == this.getWorm().getCurrentHitPoints + 10
+	 * @post	sets the worms actionpoints back to the maximum.
+	 * 			|new.getWorm().getCurrentActionPoints == this.getWorm().getMaxActionPoints
 	 */
-	//TODO documentation
 	private void startNextTurn_Aux(Worm worm)
 	{
 		if (worm.getMaxHitPoints() - worm.getCurrentHitPoints() < 10)
@@ -632,7 +754,26 @@ public class World {
 	private Worm currentWorm = null;
 	
 	
-	
+	/**
+	 * returns the worm object if it is in within the given radius on the given position.
+	 * @param 	x
+	 * 			the given x-position
+	 * @param 	y
+	 * 			the given y-position
+	 * @param 	radius
+	 * 			the given radius
+	 * @return	|if(isImpassable(x,y,radius))
+	 *			|	return null;
+	 *			|for(Worm worm: worms){
+	 *			|		if(Math.pow(Math.pow((worm.getX() - x), 2.0) + 
+	 *			|			Math.pow((worm.getY() - y), 2.0),(1.0/2.0)) <= 
+	 *			|				(worm.getRadius() + radius)){
+	 *			|			return worm;
+	 *			|		}
+	 *			|	}
+	 *			|return null;
+	 * 
+	 */
 	public Worm hitAnyWorm(double x, double y, double radius){
 		if(isImpassable(x,y,radius))
 			return null;
@@ -646,7 +787,12 @@ public class World {
 		return null;
 	}
 	
-	//TODO documentation
+	/**
+	 * returns whether or not this world can have the given worm as a worm or not.
+	 * @param 	worm
+	 * 			the given worm.
+	 * @return	|(worm != null) && worm.isAlive()
+	 */
 	public boolean canHaveAsWorm(Worm worm){
 		return (worm != null) && worm.isAlive();
 	}
@@ -671,15 +817,14 @@ public class World {
 	}
 	
 	
-	//TODO hasProperWorlds aanmaken!
-	//TODO addAsFood(zie facade)
+	
 	
 	/**
 	 * Create and add a new worm to the given world.
-	 * The new worm must be placed at a random adjacent location.
-	 * The new worm can have an arbitrary (but valid) radius and direction.
-	 * The new worm may (but isn't required to) have joined a team.
+	 * 
+	 * 
 	 */
+	//TODO moeilijke docu
 	public void addNewWorm() 
 			throws IllegalArgumentException{
 		//find a location for the worm
@@ -711,7 +856,6 @@ public class World {
 			testX = newX(testX);
 			testY = newY(testY);
 		}
-		//TODO minimal radius gebruike maar kweet nie hoe.
 		int grootte = worms.size() + 1;
 		String name = "Not Yet Named " + grootte;
 				
@@ -819,8 +963,13 @@ public class World {
 	
 	/**
 	 * Sets the given projectile as the new active projectile in this world.
+	 * @pre		|if(projectile != null
+	 * 			|  	then projectile.getWorld() == this
+	 * @pre		|if(projectile == null && getProjectile() != null
+	 * 			|	then !(getProjectile().getWorld() == this)
+	 * 
+	 * @post	|new.projectile == projectile
 	 */
-	//TODO documentation
 	public void setProjectile(Projectile projectile){
 		assert(projectile == null || projectile.getWorld() == this);
 		assert(projectile != null || getProjectile() == null || !(getProjectile().getWorld() == this));
@@ -829,7 +978,13 @@ public class World {
 	
 	private Projectile projectile = null;
 	//PROJECTILE
-
+	/**
+	 * return the random in this world
+	 */
+	@Basic @Raw
+	public Random getRandom(){
+		return random;
+	}
 	private Random random = null;
 	//RANDOM
 

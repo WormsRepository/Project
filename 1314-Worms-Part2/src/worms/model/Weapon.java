@@ -1,5 +1,6 @@
 package worms.model;
 
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -123,15 +124,12 @@ public class Weapon {
 	/**
 	 * returns the mass of this weapon based on the current weapon.
 	 * 
-	 * @return	the mass of the weapon if and only if the weapon is a bazooka
+	 * @return	the mass of the weapon
 	 * 			| if(getCurrentWeapon().equals("Bazooka")
 	 * 			| 		then ( return 0.300 )
-	 * @return	the mass of the weapon if and only if the weapon is a rifle.
 	 * 			| if(getCurrentWeapon().equals("Rifle")
 	 * 			|		then ( return 0.010)
-	 * @return 	the mass of the weapon if no weapon is selected
-	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
-	 * 			|		then( return 0 )
+	 * 			| else	( return 0 )
 	 */
 	@Model
 	private double getMassOfWeapon(){
@@ -145,10 +143,9 @@ public class Weapon {
 	/**
 	 * Calculate the initial velocity for the projectile based on the propulsion.
 	 * 
-	 * @return	The initial velocity of the projectile if and only if the weapon is bazooka.
+	 * @return	The initial velocity of the projectile
 	 * 			| if(getCurrentWeapon().equals("Bazooka")
 	 * 			|		then ( initialVelocity = 2.5 + 7.0*(propulsion/100.0) )
-	 * @return	the initial velocity of the projectile if and only if the weapon is a rifle.
 	 * 			| if(getCurrentWeapon().equals("Rifle")
 	 * 			|		then ( initialVelocity = 1.5 )
 	 */
@@ -166,15 +163,13 @@ public class Weapon {
 	/**
 	 * returns the cost of action points of the weapon, based on the currently selected weapon.
 	 * 
-	 * @return	the cost of action points if and only if the bazooka is selected
+	 * @return	the cost of action points 
 	 * 			| if(getCurrentWeapon().equals("Bazooka")
 	 * 			|		then ( return 50 )
-	 * @return	the cost of action points if and only if the Rifle is selected.
 	 * 			| if(getCurrentWeapon().equals("Rifle")
 	 * 			|		then ( return 10 )
-	 * @return 	the cost of action points if neither the Rifle nor the Bazooka are selected
-	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
-	 * 			|		then(return 0)
+	 * 			| else
+	 * 			|		(return 0)
 	 */
 	@Model
 	private int getCostOfActionPointsOfWeapon(){
@@ -189,15 +184,13 @@ public class Weapon {
 	/**
 	 * returns the damage of the weapon based on the weapon.
 	 * 
-	 * @return	The damage of the weapon if and only if the Bazooka is selected.
+	 * @return	The damage of the weapon
 	 * 			| if(getCurrentWeapon().equals("Bazooka")
 	 * 			|		then ( return 80 )
-	 * @return	The damage of the weapon if and only if the Rifle is selected.
 	 * 			| if(getCurrentWeapon().equals("Rifle")
-	 * 			|		then ( return 2� )
-	 * @return 	the damage if neither the Rifle nor the Bazooka are selected
-	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
-	 * 			|		then(return 0)
+	 * 			|		then ( return 20 )
+	 * 			| else
+	 * 			|		(return 0)
 	 */
 	@Model
 	private int getDamageOfWeapon(){
