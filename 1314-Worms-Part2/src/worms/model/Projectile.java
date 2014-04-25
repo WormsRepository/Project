@@ -116,8 +116,12 @@ public class Projectile {
 			tempTime = tempTime + temp;
 			tempXY = getJumpStep(tempTime);
 		}
-		if(this.getWorld().isImpassable(tempXY[0], tempXY[1], radius))
-			throw new IllegalDirectionException(this.getDirection());
+		if(this.getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
+			tempTime = tempTime - (temp/2.0);
+			tempXY = getJumpStep(tempTime);
+			if(this.getWorld().hitAnyWorm(tempXY[0], tempXY[1], radius) == null)
+				throw new IllegalDirectionException(this.getDirection());
+		}
 		//TODO deze exception verschillend aanpakken als een worm gehit is...
 		
 		// if 'temp' is smaller than 1/400000 the projectile will leave the world because there is no

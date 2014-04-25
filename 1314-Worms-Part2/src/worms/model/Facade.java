@@ -150,8 +150,10 @@ public class Facade implements IFacade {
 			return projectile.getJumpTime(timeStep);
 		}
 		catch(NullPointerException exc){
-			exc.printStackTrace(System.out);
 			throw new ModelException("NullPointerException");
+		}
+		catch(IllegalDirectionException exc){
+			throw new ModelException("IllegalDirectionException");
 		}
 	}
 
@@ -301,6 +303,9 @@ public class Facade implements IFacade {
 		}
 		catch(NullPointerException exc){
 			throw new ModelException("NullPointerException");
+		}
+		catch(IllegalDirectionException exc){
+			throw new ModelException("IllegalDirectionException");
 		}
 	}
 
