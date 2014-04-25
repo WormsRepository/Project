@@ -144,24 +144,19 @@ public class Position{
 	 * @param 	t
 	 * 			The time to check the position of the worm.
 	 * @return	The position of the worm at the given time in the jump.
-	 * @throws	IllegalActionPointsException(0,worm)
-	 * 			It is not possible to perform a jump (and have an initial velocity for a jump)
-	 * 			if the amount of current action points of the worm is zero.
-	 * 			| worm.getCurrentActionPoints() == 0
-	 * @throws 	IllegalDirectionException(worm.getDirection(),worm)
-	 * 			It is not possible to perform a jump (and have an initial velocity for a jump)
-	 * 			if the direction of the worm is greater than pi.
-	 * 			| Math.PI < worm.getDirection()
+	 * 			| result == 
+	 * 			|	{getX() + getInitialVelocity() * Math.cos(this.getWorm().getDirection()) * t,
+	 * 			| 	getY() + getInitialVelocity() * Math.sin(this.getWorm().getDirection())*t - 
+	 * 			|		(STANDARD_ACCELERATION*Math.pow(t,2))/2.0}
 	 */
-	//TODO documentation
 	public double[] getJumpStep(double t) 
 			throws IllegalActionPointsException, IllegalDirectionException
 	{
 		//max horizontalVelocity/verticalVelocity = 
 		//7.5 * 1 = 7.5 (see getinitialVelocity for more explanation)
-		double horizontalVelocity = getInitialVelocity() * Math.cos(worm.getDirection());
+		double horizontalVelocity = getInitialVelocity() * Math.cos(this.getWorm().getDirection());
 		double xPosition = getX() + horizontalVelocity * t;
-		double verticalVelocity = getInitialVelocity() * Math.sin(worm.getDirection());
+		double verticalVelocity = getInitialVelocity() * Math.sin(this.getWorm().getDirection());
 		double yPosition = getY() + verticalVelocity*t - (STANDARD_ACCELERATION*Math.pow(t,2))/2.0;
 		double[] position = {xPosition, yPosition};
 		return position;
@@ -211,7 +206,7 @@ public class Position{
 		if(this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius))
 			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
 		
-		// if 'temp' is smaller than 1/300 the worm will leave the world because there is no
+		// if 'temp' is smaller than 1/8100 the worm will leave the world because there is no
 		// possible adjacent position.
 		while(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && temp >= (1/8100.0)){
 			while(!this.getWorm().getWorld().isImpassable(tempXY[0], tempXY[1], radius)){
@@ -225,7 +220,7 @@ public class Position{
 			}
 			temp = temp / 3.0;
 		}
-		if(temp < (1/8100.0)){
+		if(temp < (1/72900.0)){
 			if(tempTime < Math.PI)
 				return Math.PI;
 			else

@@ -4,8 +4,46 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
+/**
+ * A class of projectile associated with a world involving an initial velocity,
+ * a radius, a damage, a hitted worm, an x-coordinate, an y-coordinate, a direction,
+ * a standard acceleration and a world.
+ * 
+ * @invar 	| isValidPosition(getX(), getY())
+ *
+ * @version 1.0
+ * @author Laurens Loots, Pieter Vos
+ */
 public class Projectile {
 	
+	/**
+	 * Create a new projectile with the given arguments.
+	 * 
+	 * @param 	worm
+	 * 			The worm that 'shoots' this projectile.
+	 * @param 	initialVelocity
+	 * 			The initial velocity for the shot of this projectile.
+	 * @param 	radius
+	 * 			The radius of this projectile.
+	 * @param 	damage
+	 * 			The damage of this projectile.
+	 * @pre		| isValidDirection(worm.getDirection())
+	 * @post	| new.getDirection() == worm.getDirection()
+	 * @post	| new.getInitialVelocity() == initialVelocity
+	 * @post	| new.getRadius() == radius
+	 * @post	| new.getDamage() == damage
+	 * @effect	| this.setWorld(worm.getWorld())
+	 * @effect	| try(
+	 * 			|	this.setInitialPosition(worm.getPosition().getX(), 
+	 * 			|	worm.getPosition().getY(), worm.getRadius())
+	 * 			| )
+	 * 			| catch(IllegalArgumentException exc)(
+	 * 			| 	this.deactivate();
+	 * 			| 	throw exc;
+	 * 			| )
+	 * @throws 	IllegalRadiusException(radius)
+	 * 			| !canHaveAsRadius(radius)
+	 */
 	public Projectile(Worm worm, double initialVelocity, double radius, int damage) 
 			throws IllegalRadiusException, IllegalArgumentException{
 		this.direction = worm.getDirection();
@@ -35,7 +73,13 @@ public class Projectile {
 		return this.isActive;
 	}
 	
-	//TODO documentation
+	/**
+	 * Deactivate the projectile.
+	 * 
+	 * @post	| new.getWorld() == null
+	 * @post	| new.isActive() == false
+	 * @effect	| (new getWorld()).setProjectile(null)
+	 */
 	public void deactivate(){
 		World tempWorld = getWorld();
 		this.world = null;
@@ -43,10 +87,28 @@ public class Projectile {
 		this.isActive = false;
 	}
 	
+	/**
+	 * Variable registering whether or not this projectile is active.
+	 */
+	private boolean isActive = true;
+	
+	
+	
+	/**
+	 * Return the hitted worm, if any.
+	 */
+	@Model @Basic @Raw
 	private Worm getHittedWorm(){
 		return this.hittedWorm;
 	}
 	
+	/**
+	 * Set the hitted worm to the given worm.
+	 * 
+	 * @param 	worm
+	 * 			The worm to set.
+	 * @post	| new.getHittedWorm() == worm
+	 */
 	private void setHittedWorm(Worm worm){
 		this.hittedWorm = worm;
 	}
@@ -56,10 +118,7 @@ public class Projectile {
 	 */
 	private Worm hittedWorm = null;
 	
-	/**
-	 * Variable registering whether or not this projectile is active.
-	 */
-	private boolean isActive = true;
+	
 	
 	
 	/**
@@ -78,6 +137,17 @@ public class Projectile {
 		return this.y;
 	}
 
+	/**
+	 * Return the position of the projectile at a given time in a jump.
+	 * 
+	 * @param 	t
+	 * 			The time to check the position of the projectile.
+	 * @return	The position of the projectile at the given time in the jump.
+	 * 			| result == 
+	 * 			|	{getX() + getInitialVelocity() * Math.cos(this.getDirection()) * t,
+	 * 			| 	getY() + getInitialVelocity() * Math.sin(this.getDirection())*t - 
+	 * 			|		(STANDARD_ACCELERATION*Math.pow(t,2))/2.0}
+	 */
 	public double[] getJumpStep(double t) {
 		double horizontalVelocity = getInitialVelocity() * Math.cos(this.getDirection());
 		double xPosition = getX() + horizontalVelocity * t;
@@ -87,7 +157,7 @@ public class Projectile {
 		return position;
 	}
 	
-	
+	//TODO documentation
 	public double getJumpTime(double timeStep) 
 			throws NullPointerException, IllegalDirectionException{
 		if(this.getWorld() == null)
@@ -101,11 +171,6 @@ public class Projectile {
 		// and not the initial position. We also check if the jump in the current 
 		// direction is worth to do it, if not, this method throws
 		// an IllegalDirectionException.
-		
-		// We have chosen (1/4)/getInitialVelocity() because with the maximum horizontal or
-		// vertical velocity the worm can only move the minimum radius in the horizontal or vertical
-		// direction per step, this equals the minimum radius, so we will probably not skip
-		// any impassable point of the map.
 		double temp = timeStep;
 		double tempTime = 0.0;
 		while(this.getWorld().isAdjacent(tempXY[0], tempXY[1], radius) && tempTime < (1/8.0)
@@ -145,36 +210,77 @@ public class Projectile {
 		
 		return tempTime;
 	}
-	//TODO documentation
+	
+	/**
+	 * Jump with the projectile, this represents the actual shot of the projectile.
+	 * 
+	 * @param 	timeStep
+	 * 	 	 	An elementary time interval during which you may assume
+	 *        	that the projectile will not completely move through a piece of impassable terrain.
+	 * @effect	| setPosition(getJumpStep(getJumpTime(timeStep))[0],
+	 * 			|					getJumpStep(getJumpTime(timeStep))[1])
+	 * @effect	| if(getHittedWorm() != null)
+	 * 			|	then(getHittedWorm().reduceCurrentHitPoints(this.getDamage()))
+	 * @effect	| deactivate()
+	 */
 	public void jump(double timeStep) 
-			throws NullPointerException{
+			throws NullPointerException, IllegalDirectionException{
 		double[] tempXY = getJumpStep(getJumpTime(timeStep));
 		setPosition(tempXY[0],tempXY[1]);
 		if(getHittedWorm() != null)
 			getHittedWorm().reduceCurrentHitPoints(this.getDamage());
-		
 		deactivate();
 	}
 	
-	//TODO documenation
+	/**
+	 * Return whether the given position is a valid position.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate to check.
+	 * @param 	y
+	 * 			The y-coordinate to check.
+	 * @return	| result == !this.getWorld().isImpassable(x,y,this.getRadius())
+	 */
 	@Model
 	private boolean isValidPosition(double x, double y){
 		return !this.getWorld().isImpassable(x,y,this.getRadius());
 	}
 	
-	//TODO documentation
+	/**
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate to set.
+	 * @param 	y
+	 * 			The y-coordinate to set.
+	 * @post	| new.getX() == x
+	 * @post	| new.getY() == y
+	 * @throws 	IllegalArgumentException()
+	 * 			| !isValidPosition(x,y)
+	 */
 	@Model @Raw
 	private void setPosition(double x, double y) 
 			throws IllegalArgumentException{
 		if(!isValidPosition(x,y)){
-			String z = "Invalid Position: x-pos: " + x + " y-pos: "+ y + " radius: " + getRadius();
-			throw new IllegalArgumentException(z);
+			throw new IllegalArgumentException("Invalid position");
 		}
 		this.x = x;
 		this.y = y;
 	}
 	
-	//TODO documentation
+	/**
+	 * Sets the initial position of the projectile.
+	 * 
+	 * @param 	xWorm
+	 * 			The x coordinate of the worm which shoots this projectile.
+	 * @param 	yWorm
+	 * 			The y coordinate of the worm which shoots this projectile.
+	 * @param 	wormRadius
+	 * 			The radius of the worm which shoots this projectile.
+	 * @effect	| setPosition(xWorm + Math.cos(this.getDirection())*
+	 * 			| 	(this.getRadius() + wormRadius)*1.05, 
+	 * 			|		yWorm + Math.sin(this.getDirection())*
+	 * 			|			(this.getRadius() + wormRadius)*1.05)
+	 */
 	@Model @Raw
 	private void setInitialPosition(double xWorm, double yWorm, double wormRadius) 
 			throws IllegalArgumentException{
@@ -282,7 +388,13 @@ public class Projectile {
 	private final double initialVelocity;
 	
 	
-	
+	/**
+	 * Check whether the given world is a valid world.
+	 * 
+	 * @param 	world
+	 * 			The world to check.
+	 * @return	| result == (world != null)
+	 */
 	public boolean isValidWorld(World world){
 		return world != null;
 	}
@@ -295,11 +407,21 @@ public class Projectile {
 		return this.world;
 	}
 	
-	//TODO documentation
+	/**
+	 * Set the world of this projectile to the given world.
+	 * 
+	 * @param 	world
+	 * 			The world to set.
+	 * @post	| new.getWorld() = world
+	 * @effect	| world.setProjectile(this)
+	 * @throws	IllegalArgumentException()
+	 * 			| !isValidWorld(world) || 
+	 * 			| (world != null && world.getProjectile() != null)
+	 */
 	public void setWorld(World world){
 		if(!isValidWorld(world))
 			throw new IllegalArgumentException();
-		if(world.getProjectile() != null && world != null)
+		if(world != null && world.getProjectile() != null)
 			throw new IllegalArgumentException();
 		this.world = world;
 		world.setProjectile(this);
