@@ -2,6 +2,8 @@ package worms.model;
 
 import static org.junit.Assert.*;
 
+import java.util.Random;
+
 import org.junit.*;
 
 /**
@@ -32,6 +34,18 @@ public class WormTest {
 	 * Variable referencing a worm with direction 0.
 	 */
 	private static Worm wormDirection0;
+	
+	private static Random random;
+
+	private static World world;
+
+	// X X X X
+	// . . . .
+	// . . . .
+	// X X X X
+	private static boolean[][] passableMap = new boolean[][] {
+			{ false, false, false, false }, { true, true, true, true },
+			{ true, true, true, true }, { false, false, false, false } };
 
 	/**
 	 * Set up a mutable test fixture.
@@ -55,6 +69,7 @@ public class WormTest {
 	@BeforeClass
 	public static void setUpImmutableFixture(){
 		wormRadius1 = new Worm(0.0 , 0.0 , Math.PI/2 , 1.0 , "Pieter");
+		world = new World(4.0, 4.0, passableMap, random);
 	}
 
 	@Test
@@ -102,25 +117,6 @@ public class WormTest {
 	public void canMove_legalCase() {
 		assertTrue(wormRadius1.getPosition().canMove());
 	}
-
-	//TODO canMove testen!
-
-	//TODO caMove testen!
-	
-	//TODO jumps testen!
-	
-	//TODO : getJumpTime testen
-	
-	//TODO : jump testen
-
-	//TODO : jumps testen
-
-
-	//TODO : jump testen
-
-	//TODO move testen!
-
-	//TODO move testen!
 
 	@Test
 	public void setRadius_legalCase()
@@ -208,5 +204,40 @@ public class WormTest {
 		wormDirection2.setName("Pieter(Vos)");
 		wormDirection2.setName("Laurens'\" LoOtS");
 	}
-
+	
+	@Test
+	public void selectNextWeapon(){
+		Worm worm = new Worm(1, 2, Math.PI/2, 1, "Test");
+		assertTrue(worm.getWeapon().getCurrentWeapon() == null);
+		worm.getWeapon().selectNextWeapon();
+		assertTrue(worm.getWeapon().getCurrentWeapon() == "Bazooka");
+		worm.getWeapon().selectNextWeapon();
+		assertTrue(worm.getWeapon().getCurrentWeapon() == "Rifle");
+		worm.getWeapon().selectNextWeapon();
+		assertTrue(worm.getWeapon().getCurrentWeapon() == null);
+	}
+	
+	@Test
+	public void reduceCurrentActionPoints(){
+		Worm worm = new Worm(1, 2, Math.PI/2, 1, "Test");
+		int actionPoints = worm.getCurrentActionPoints();
+		worm.reduceCurrentActionPoints(11);
+		assertTrue(worm.getCurrentActionPoints() == actionPoints - 11);
+	}
+	
+	@Test
+	public void reduceCurrentHitPoints(){
+		Worm worm = new Worm(1, 2, Math.PI/2, 1, "Test");
+		int hitPoints = worm.getCurrentHitPoints();
+		worm.reduceCurrentHitPoints(10);
+		assertTrue(worm.getCurrentHitPoints() == hitPoints - 10);
+	}
+	
+	@Test
+	public void wormDeath_legalCase(){
+		world.addAsWorm(wormDirection0);
+		assertTrue(wormDirection0.isAlive() == true);
+		wormDirection0.wormDeath();
+		assertTrue(wormDirection0.isAlive() == false);
+	}
 }
