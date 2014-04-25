@@ -226,6 +226,12 @@ public class Position{
 				return 2*Math.PI;
 		}
 		
+		if(Math.pow(Math.pow(tempXY[0] - getX(),2.0) + 
+				Math.pow(tempXY[1] - getY(), 2.0), (1.0/2.0))
+				< radius){
+			throw new IllegalDirectionException(this.getWorm().getDirection(),this.getWorm());
+		}
+		
 		return tempTime;
 	}
 
