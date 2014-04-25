@@ -25,6 +25,8 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 			| canHaveAsRadius(getRadius())
  * @invar	The name of each worm must be a valid name for any worm.
  * 			| canHaveAsName(getName())
+ * @invar	The position of each worm must lie fully within the map.
+ * 			| getPosition().inMap(getPosition().getX(),getPosition().getY())
  * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
@@ -220,7 +222,13 @@ public class Worm {
 	@Raw
 	public boolean canHaveAsRadius(double radius)
 	{
-		return radius >= getMinimalRadius();
+		if(this.getWorld() == null)
+			return radius >= getMinimalRadius();
+		double x = this.getPosition().getX();
+		double y = this.getPosition().getY();
+		return x>radius && x<this.getWorld().getWidth() - radius &&
+		y>radius && y<this.getWorld().getHeight() - radius 
+		&& radius >= getMinimalRadius();
 	}
 
 	/**

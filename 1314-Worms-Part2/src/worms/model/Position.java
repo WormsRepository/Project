@@ -64,10 +64,14 @@ public class Position{
 	 * 			The new x-coordinate for this worm (in meter).
 	 * @post	The new x-coordinate for this worm is equal to the given x-coordinate.
 	 * 			| new.getX() == x
+	 * @throws	IllegalArgumentException("Invalid x-coordinate")
+	 * 			| !inMap(x,getY())
 	 */
 	@Model
 	private void setX(double x)
-	{
+			throws IllegalArgumentException{
+		if(!inMap(x,getY()))
+			throw new IllegalArgumentException("Invalid x-coördinate");
 		this.x = x;
 	}
 
@@ -86,10 +90,14 @@ public class Position{
 	 * 			The new y-coordinate for this worm (in meter).
 	 * @post	The new y-coordinate for this worm is equal to the given y-coordinate.
 	 * 			| new.getY() == y
+	 * @throws	IllegalArgumentException("Invalid y-coordinate")
+	 * 			| !inMap(getX(),y)
 	 */
 	@Model
 	private void setY(double y)
-	{
+			throws IllegalArgumentException{
+		if(!inMap(getX(),y))
+			throw new IllegalArgumentException("Invalid y-coördinate");
 		this.y = y;
 	}
 	
@@ -335,8 +343,8 @@ public class Position{
 			if(this.getWorm().getWorld().isStarted())
 			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 
 					(int)Math.floor(3.0 * (getY() - tempY)));
-		setY(tempY);
-		eatPossibleFood();
+			setY(tempY);
+			eatPossibleFood();
 		}
 	}
 	
@@ -446,7 +454,10 @@ public class Position{
 	}
 	
 	//TODO documentation
+	@Model
 	private boolean inMap(double x, double y){
+		if(this.getWorm().getWorld() == null)
+			return true;
 		double radius = this.getWorm().getRadius();
 		return x>radius && x<this.getWorm().getWorld().getWidth() - radius &&
 				y>radius && y<this.getWorm().getWorld().getHeight() - radius;
@@ -455,12 +466,12 @@ public class Position{
 	/**
 	 * Variable registering the x-coordinate of a position of a worm in meters.
 	 */
-	private double x;
+	private double x = 0;
 
 	/**
 	 * Variable registering the y-coordinate of a position of a worm in meters.
 	 */
-	private double y;
+	private double y = 0;
 	
 	/**
 	 * Final class variable registering the standard acceleration (m/(s*s)).
