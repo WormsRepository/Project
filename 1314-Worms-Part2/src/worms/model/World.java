@@ -327,7 +327,7 @@ public class World {
 		String winner = "";
 		for(Worm worm : worms)
 		{
-			if (winner.equals(""))
+			if (winner.equals("") && !worm.getTeamName().equals("no team"))
 				winner = worm.getTeamName();
 			if (!worm.getTeamName().equals(winner))
 				return false;
@@ -368,7 +368,7 @@ public class World {
 	 */
 	public void addEmptyTeam(String newName) 
 			throws IllegalNameException{
-		if(newName.length() < 2)
+		if(newName.length() < 2 || newName.equals("no team"))
 			throw new IllegalNameException(newName);
 		teamNames.add(newName);
 	}

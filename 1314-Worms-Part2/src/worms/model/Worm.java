@@ -666,21 +666,8 @@ public class Worm {
 	}
 	
 	private boolean isAlive = true;
+
 	
-	/**
-	 * returns whether the given team is a valid team
-	 */
-	private boolean canHaveAsTeam(String team)
-	{
-		if(team.length() < 2)
-			return false;
-		for( String teamName: this.getWorld().getTeamNames())
-		{
-			if (team.equals(teamName))
-					return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * returns the name the worm is in.
@@ -705,9 +692,26 @@ public class Worm {
 	}
 	
 	/**
+	 * returns whether the given team is a valid team
+	 */
+	private boolean canHaveAsTeam(String team)
+	{
+		if(team.length() < 2)
+			return false;
+		if(team.equals("no team"))
+			return false;
+		for( String teamName: this.getWorld().getTeamNames())
+		{
+			if (team.equals(teamName))
+					return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * A variable referencing the team name of a worm.
 	 */
-	private String team = " ";
+	private String team = "no team";
 
 	
 }
