@@ -12,7 +12,7 @@ public class Weapon {
 	}
 	
 	//TODO documentation
-	@Basic @Raw
+	@Basic @Raw @Model
 	private Worm getWorm(){
 		return this.worm;
 	}
@@ -23,6 +23,7 @@ public class Weapon {
 	private final Worm worm;
 	
 	//TODO documentation
+	@Model
 	private boolean isValidWeapon(String weapon){
 		return (weapon.equals(" ") || weapon.equals("Bazooka") || weapon.equals("Rifle"));
 	}
@@ -69,6 +70,7 @@ public class Weapon {
 
 	
 	//TODO documentation
+	@Model
 	private double getRadiusOfWeapon() 
 			throws IllegalRadiusException{
 		double newRadius;
@@ -82,6 +84,7 @@ public class Weapon {
 	}
 	
 	//TODO documentation
+	@Model
 	private double getMassOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
 			return 0.300;
@@ -92,6 +95,7 @@ public class Weapon {
 	}
 	
 	//TODO documentation
+	@Model
 	private double getInitialVelocity(int propulsion){
 		double initialVelocity = 0.0;
 		if(this.getCurrentWeapon().equals("Bazooka"))
@@ -102,6 +106,8 @@ public class Weapon {
 		return (initialVelocity / getMassOfWeapon()) * 0.5;
 	}
 	
+	//TODO documentation
+	@Model
 	private int getCostOfActionPointsOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
 			return 50;
@@ -111,6 +117,8 @@ public class Weapon {
 			return 0;
 	}
 	
+	//TODO documentation
+	@Model
 	private int getDamageOfWeapon(){
 		if(this.getCurrentWeapon().equals("Bazooka"))
 			return 80;
@@ -121,7 +129,7 @@ public class Weapon {
 	}
 	
 	//TODO documentation
-	@Raw
+	@Raw @Model
 	private void setCurrentWeapon(String weapon){
 		if(isValidWeapon(weapon))
 			this.currentWeapon = weapon;
