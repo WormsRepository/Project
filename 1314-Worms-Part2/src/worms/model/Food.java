@@ -46,8 +46,7 @@ public class Food {
 	 * Deactivate this food.
 	 * 
 	 * @post	| ( !new.isActive() )
-	 * @post	| ( !(new getWorld()).hasAsFood(this) )
-	 * 			| && new.getWorld() == null
+	 * @effect	| world.removeAsFood(this)
 	 */
 	public void deactivate(){
 		world.removeAsFood(this);
@@ -58,8 +57,6 @@ public class Food {
 	 * Variable registering whether or not this food is active.
 	 */
 	private boolean isActive = true;
-	
-	//TODO veranderen naar isTerminated?
 	
 	
 	
@@ -192,7 +189,6 @@ public class Food {
 	public static double getRadius(){
 		return RADIUS;
 	}
-	//TODO methode verwijderen want radius is static final?
 	
 	/**
 	 * The radius of a food ration.

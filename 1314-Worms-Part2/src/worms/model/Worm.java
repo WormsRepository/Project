@@ -27,11 +27,12 @@ import be.kuleuven.cs.som.annotate.Raw;
  * 			| canHaveAsName(getName())
  * @invar	The position of each worm must lie fully within the map.
  * 			| getPosition().inMap(getPosition().getX(),getPosition().getY())
+ * @invar	The World to which the worm is attached must be a valid world
+ * 			| hasProperWorld()
  * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
  */
-//TODO world invariants? isValidWorld?
 public class Worm {
 
 
