@@ -724,8 +724,11 @@ public class Worm {
 	 * 			Else true if and only if the world has the team name as one of its
 	 * 			team names, the length of the name larger is than 1, the name starts
 	 * 			with a capital letter and only uses letters.
+	 * 			| else
+	 * 			| result == this.getWorld().hasAsteam(team) && name.length()>1 && 
+	 * 			| name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z]+")
 	 */
-	//TODO vanaf hier verder nakijken.
+	@Raw @Model
 	private boolean canHaveAsTeam(String team)
 	{
 		if(team.equals("no team"))
@@ -742,18 +745,32 @@ public class Worm {
 	
 	
 	/**
-	 * returns if the worm is alive or not.
+	 * Returns if the worm is alive or not.
 	 */
 	public boolean isAlive() {
-		return isAlive;
+		return this.isAlive;
 	}
 	
-	//TODO documentation
+	/**
+	 * The worm dies. This means that his turn ends, that he will be removed
+	 * as a worm in his world and that he is no longer alive.
+	 * 
+	 * @post	The worm is no longer alive.
+	 * 			| new.isAlive() = false
+	 * @effect	The turn of the worm ends
+	 * 			| this.getWorld().startNextTurn()
+	 * @effect	The worm is removed from his world.
+	 * 			| this.getworld().removeAsWorm(this)
+	 */
 	public void wormDeath(){
 		this.getWorld().startNextTurn();
 		this.getWorld().removeAsWorm(this);
 		this.isAlive = false;
 	}
 	
+	/**
+	 * A boolean indicating whether or not the worm is alive.
+	 */
 	private boolean isAlive = true;
 }
+

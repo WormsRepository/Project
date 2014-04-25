@@ -194,7 +194,7 @@ public class Weapon {
 	 * 			|		then ( return 80 )
 	 * @return	The damage of the weapon if and only if the Rifle is selected.
 	 * 			| if(getCurrentWeapon().equals("Rifle")
-	 * 			|		then ( return 2° )
+	 * 			|		then ( return 2ï¿½ )
 	 * @return 	the damage if neither the Rifle nor the Bazooka are selected
 	 * 			| if(!getCurrentWeapon().equals("Rifle") && !getCurrentWeapon().equale("Bazooka"))
 	 * 			|		then(return 0)
