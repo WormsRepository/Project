@@ -499,7 +499,7 @@ public class Worm {
 	protected void setCurrentActionPoints(int newActionPoints){
 		if(newActionPoints < 0 || newActionPoints > getMaxActionPoints())
 			return;
-		if(newActionPoints == 0)
+		if(newActionPoints == 0 && this.getWorld() != null)
 			this.getWorld().startNextTurn();
 		this.currentActionPoints = newActionPoints;
 	}

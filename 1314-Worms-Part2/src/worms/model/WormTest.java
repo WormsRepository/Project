@@ -116,11 +116,7 @@ public class WormTest {
 	//TODO : jumps testen
 
 
-	@Test(expected = RuntimeException.class)
-	public void jump_IllegalDirection()
-		throws Exception	{
-		wormDirection4.getPosition().jump();
-	}
+	//TODO : jump testen
 
 	//TODO move testen!
 
