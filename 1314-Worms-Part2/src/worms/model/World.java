@@ -714,8 +714,30 @@ public class World {
 		String name = "Not Yet Named " + grootte;
 				
 		Worm newWorm = new Worm(testX, testY, 0, 0.25, name);
-		//TODO me teams maar geen idee hoe.
 		this.addAsWorm(newWorm);
+		
+		if(teamNames.size() > 1){
+			String smallestTeam = "";
+			int smallestSize = -1;
+			for(String teamName : teamNames){
+				int size = 0;
+				for(Worm worm : worms){
+					if(worm.getTeamName() == teamName)
+						size++;
+				}
+				if(smallestSize == -1){
+					smallestSize = size;
+					smallestTeam = teamName;
+				}
+				else if(size < smallestSize){
+					smallestSize = size;
+					smallestTeam = teamName;
+				}	
+			}
+			
+			newWorm.setTeam(smallestTeam);
+		}
+		
 		try{
 			newWorm.getPosition().fall();
 		}
