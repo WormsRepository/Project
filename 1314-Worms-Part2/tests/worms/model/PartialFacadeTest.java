@@ -46,9 +46,6 @@ public class PartialFacadeTest {
 	public void testMoveHorizontal() {
 		Worm worm = facade.createWorm(world, 1, 2, 0, 1, "Test");
 		facade.move(worm);
-		assertTrue(worm.getDirection() == 0);
-		System.out.println(facade.getX(worm));
-		System.out.println(facade.getY(worm));
 		assertEquals(2, facade.getX(worm), EPS);
 		assertEquals(2, facade.getY(worm), EPS);
 	}

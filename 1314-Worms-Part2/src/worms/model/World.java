@@ -218,7 +218,7 @@ public class World {
 		if(x-radius<0 || x+radius>getWidth() || y-radius<0 || y+radius>getHeight() || radius <= 0)
 			return true;
 		for(double angle = 0;angle<2*Math.PI;angle+=(Math.PI/180)){
-			if (isImpassablePoint(x+(Math.cos(angle)*radius), y+(Math.sin(angle))*radius))
+			if (isImpassablePoint(x+(Math.cos(angle)*radius*0.99999999), y+(Math.sin(angle))*radius*0.99999999))
 				return true;
 		}
 		return false;
