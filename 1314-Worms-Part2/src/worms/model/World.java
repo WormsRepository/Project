@@ -323,17 +323,16 @@ public class World {
 	public boolean isGameFinished(){
 		if (worms.size() <= 1)
 				return true;
-		String winner = "noTeamAssigned";
+		String winner = "";
 		for(Worm worm : worms)
 		{
-			if (hasAsteam(worm.getTeamName())&& winner.equals("noTeamAssigned") )
+			if (winner.equals(""))
 				winner = worm.getTeamName();
-			if (!worm.getTeamName().equals(winner) || (worm.getTeamName().equals(winner)&& winner.equals("noTeamAssigned")))
+			if (!worm.getTeamName().equals(winner))
 				return false;
 		}
 		return true;
-		
-		}
+	}
 	
 	/**
 	 * Returns the name of a single worm if that worm is the winner, or the name
@@ -366,7 +365,10 @@ public class World {
 	 * 
 	 * 
 	 */
-	public void addEmptyTeam(String newName){
+	public void addEmptyTeam(String newName) 
+			throws IllegalNameException{
+		if(newName.length() < 2)
+			throw new IllegalNameException(newName);
 		teamNames.add(newName);
 	}
 	

@@ -6,8 +6,14 @@ import java.util.Random;
 public class Facade implements IFacade {
 
 	@Override
-	public void addEmptyTeam(World world, String newName) {
-		world.addEmptyTeam(newName);
+	public void addEmptyTeam(World world, String newName) 
+			throws ModelException{
+		try{
+			world.addEmptyTeam(newName);
+		}
+		catch(IllegalNameException x){
+			throw new ModelException("IllegalNameException");
+		}
 	}
 
 	@Override

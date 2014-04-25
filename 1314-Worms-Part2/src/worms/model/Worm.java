@@ -666,6 +666,8 @@ public class Worm {
 	 */
 	private boolean canHaveAsTeam(String team)
 	{
+		if(team.length() < 2)
+			return false;
 		for( String teamName: this.getWorld().getTeamNames())
 		{
 			if (team.equals(teamName))
