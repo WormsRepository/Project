@@ -717,23 +717,13 @@ public class Worm {
 	 * 
 	 * @param	team
 	 * 			The team name to check.
-	 * @return	If team equals "no team", it is not a valid name.
-	 * 			| if(team.equals("no team"))
-	 * 			|	then result == false
-	 * 			Else true if and only if the world has the team name as one of its
-	 * 			team names, the length of the name larger is than 1, the name starts
-	 * 			with a capital letter and only uses letters.
-	 * 			| else
-	 * 			| result == this.getWorld().hasAsteam(team) && name.length()>1 && 
-	 * 			| name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z]+")
+	 * @return	True if and only if the world has the team name as one of its team names.
+	 * 			| result == this.getWorld().hasAsteam(team)
 	 */
 	@Raw @Model
 	private boolean canHaveAsTeam(String team)
 	{
-		if(team.equals("no team"))
-			return false;
-		return this.getWorld().hasAsteam(team) &&
-				name.length()>1 && name.substring(0,1).matches("[A-Z]+") && name.matches("[A-Za-z]+");
+		return this.getWorld().hasAsteam(team);
 	}
 	
 	/**

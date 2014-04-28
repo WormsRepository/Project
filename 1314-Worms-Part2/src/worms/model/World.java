@@ -458,23 +458,24 @@ public class World {
 	
 	
 	/**
-	 * returns whether or not the given name is a valid name for a team.
+	 * Returns whether or not the given name is a valid name for a team.
+	 * 
 	 * @param 	name
 	 * 			the name to check
-	 * @return	|name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
-				|		name.matches("[A-Za-z]+") &&
-				|					 !name.equals("no team") && teamNames.size() < 10
+	 * @return	| result == ( name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
+	 *			|	name.matches("[A-Za-z]+") &&
+	 *			|	!name.equals("no team") && teamNames.size() < 10 )
 	 */
 	private boolean canHaveAsTeamName(String name){
 		 return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
 				 name.matches("[A-Za-z]+") && !name.equals("no team") && teamNames.size() < 10;
 	}
 	/**
-	 * a HashSet collecting all the team names in this world.
+	 * A HashSet collecting all the team names in this world.
 	 */
 	private HashSet<String> teamNames = new HashSet<String>();
 	
-	//TEAMNAMES
+	
 	
 	
 	/**
@@ -616,7 +617,7 @@ public class World {
 	 * @param 	food
 	 * 			The food to be added.
 	 * @post	| new.hasAsFood(food)
-	 * @post	| (new food).getWorld() == this
+	 * @post	|ï¿½(new food).getWorld() == this
 	 * @throws 	IllegalArgumentException("You can't add this food.")
 	 * 			| !canHaveAsFood(food)
 	 * @throws 	IllegalArgumentException("You can't add this food.")
