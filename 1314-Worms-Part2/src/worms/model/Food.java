@@ -60,13 +60,6 @@ public class Food {
 	
 	
 	
-	/**
-	 * Return the world to which this food is attached.
-	 */
-	@Basic @Raw
-	public World getWorld(){
-		return this.world;
-	}
 	
 	/**
 	 * Check whether this food can be attached to the given world.
@@ -93,6 +86,14 @@ public class Food {
 	public boolean hasProperWorld(){
 		return canHaveAsWorld(getWorld()) && 
 				(getWorld() == null || getWorld().hasAsFood(this));
+	}
+	
+	/**
+	 * Return the world to which this food is attached.
+	 */
+	@Basic @Raw
+	public World getWorld(){
+		return this.world;
 	}
 	
 	/**

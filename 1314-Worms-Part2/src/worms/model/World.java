@@ -357,21 +357,8 @@ public class World {
 	//start
 	
 
-	public Collection<String> getTeamNames() {
-		return new HashSet<String>(this.teamNames);
-	}
 	
-	/**
-	 * check whether this world has the given team as one
-	 * of its teams.
-	 * 
-	 * @param 	team
-	 * 			the team to check
-	 */
-	@Basic  @Raw
-	public boolean hasAsteam(String team){
-		return this.teamNames.contains(team);
-	}
+
 	
 	/**
 	 * Returns whether the game in the given world has finished.
@@ -390,18 +377,18 @@ public class World {
 	 *		|	return true;
 	 * 
 	*/
+	//TODO documentation
 	public boolean isGameFinished(){
 		if (worms.size() <= 1)
-				return true;
-		String winner = "";
-		for(Worm worm : worms)
-		{
-			if (winner.equals("") && !worm.getTeamName().equals("no team"))
-				winner = worm.getTeamName();
-			if (!worm.getTeamName().equals(winner))
-				return false;
+			return true;
+		if(teams.size() == 1){
+			for(Worm worm: worms){
+				if(worm.getTeam() == null)
+					return false;
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -418,72 +405,153 @@ public class World {
 	 *			|			return worm.getTeamName();
 	 *			}
 	 */
+	//TODO documentation
 	public String getWinner(){
-		
-		for( Worm worm : worms)
-		{
-			if(worm != null)
-			{
-				if (!this.hasAsteam(worm.getTeamName()))
-					return worm.getName();
-				else
-					return worm.getTeamName();
-			}
+		for(Worm worm: worms){
+			if(worm.getTeam() == null)
+				return worm.getName();
+			else
+				return worm.getTeam().getTeamName();
 		}
-
-		return null;
+		return "No winner";
 	}
 	
 	
+	
+
+	
+
+	
+	
+	
+	/**
+	 * Check whether this world can have the given team 
+	 * as one of its teams.
+	 * 
+	 * @param 	team
+	 * 			The team to check.
+	 * @return	| for each existingTeam in teams(
+	 * 			|	if( existingTeam.getTeamName().equals( team.getTeamName() ))
+	 * 			|		then( result == false ) )
+	 * 			| if (team == null)
+	 * 			|	then result == false
+	 * 			| else result ==
+	 * 			| 	( team.isActive() && this.isActive() )
+	 */
+	@Raw
+	public boolean canHaveAsTeam(Team team){
+		for(Team existingTeam: teams){
+			if(existingTeam.getTeamName().equals( team.getTeamName() ))
+				return false;
+		}
+		return team != null && team.isActive() && this.isActive();
+	}
+	
+	/**
+	 * Check whether this world has proper teams attached to it.
+	 * 
+	 * @return	| if(this.teams.size() > 10)
+	 * 			|	then( result == false)
+	 * 			| else(
+	 * 			| 	result ==
+	 * 			| 	for each team in Team
+	 * 			| 	( 
+	 * 			|		if (this.hasAsTeam(team))
+	 * 			|			then( canHaveAsTeam(team)
+	 * 			|				&& (team.getWorld() == this))
+	 *			|	)	
+	 * 			| )
+	 */
+	@Raw
+	public boolean hasProperTeams(){
+		if(this.teams.size() > 10)
+			return false;
+		for(Team team: this.teams){
+			if(!canHaveAsTeam(team) || team.getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check whether this world has the given team as
+	 * one of the teams attached to it.
+	 * 
+	 * @param 	team
+	 * 			The team to check.
+	 * @Return	| result == this.teams.contains(team)
+	 */
+	public boolean hasAsTeam(Team team){
+		return this.teams.contains(team);
+	}
 	
 	/**
 	 * Create and add an empty team with the given name to the given world.
-	 * @param 	newName
-	 * 			the new name for the team.
-	 * @post	|teamNames.contains(newName)
 	 * 
-	 * @throws IllegalNameException
-	 * 			|!canHaveAsTeamName(newName)
+	 * @param 	newName
+	 * 			The new name for the new empty team.
+	 * @effect	| addAsTeam(new Team(newName))
 	 */
 	public void addEmptyTeam(String newName) 
-			throws IllegalNameException{
-		if(!canHaveAsTeamName(newName))
-			throw new IllegalNameException(newName);
-		teamNames.add(newName);
+			throws IllegalNameException, IllegalArgumentException{
+		addAsTeam(new Team(newName));
 	}
 	
 	/**
-	 * check whether this world has the given team as one
-	 * of its teams
+	 * Add the given team to the set of teams attached to this world.
 	 * 
 	 * @param 	team
-	 * 			the team to check
+	 * 			The team to be added.
+	 * @post	| new.hasAsTeam(team)
+	 * @post	| (new team).getWorld() == this
+	 * @throws 	IllegalArgumentException("You can't add this team.")
+	 * 			| (!canHaveAsTeam(team))
+	 * 			| || ( (team != null) && (team.getWorld() != null) )
+	 * 			| || (this.teams.size() == 10)
 	 */
-	@Basic  @Raw
-	public boolean hasAsTeam(String team){
-		return this.teamNames.contains(team);
+	public void addAsTeam(Team team) 
+			throws IllegalArgumentException{
+		if(!canHaveAsTeam(team))
+			throw new IllegalArgumentException("You can't add this team.");
+		if(team.getWorld() != null)
+			throw new IllegalArgumentException("You can't add this team.");
+		if(this.teams.size() == 10)
+			throw new IllegalArgumentException("You can't add this team.");
+		this.teams.add(team);
+		team.setWorld(this);
 	}
 	
-	
 	/**
-	 * Returns whether or not the given name is a valid name for a team.
+	 * Remove the given team from the set of teams
+	 * attached to this world.
 	 * 
-	 * @param 	name
-	 * 			the name to check
-	 * @return	| result == ( name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
-	 *			|	name.matches("[A-Za-z]+") &&
-	 *			|	!name.equals("no team") && teamNames.size() < 10 )
+	 * @param 	team
+	 * 			The team to be removed
+	 * @post	| !new.hasAsTeam(team)
+	 * @post	| if (hasAsTeam(team))
+	 * 			|	((new team).getWorld() == null)
+	 * @throws	IllegalArgumentException()
+	 * 			| !hasAsTeam(team)
 	 */
-	private boolean canHaveAsTeamName(String name){
-		 return name.length()>1 && name.substring(0,1).matches("[A-Z]+") && 
-				 name.matches("[A-Za-z]+") && !name.equals("no team") && teamNames.size() < 10;
+	public void removeAsTeam(Team team){
+		if(!hasAsTeam(team))
+			throw new IllegalArgumentException();
+		this.teams.remove(team);
+		team.setWorld(null);
 	}
+	
 	/**
-	 * A HashSet collecting all the team names in this world.
+	 * A set collecting references to teams attached to this world.
+	 * 
+	 * @invar	| teams != null
+	 * @invar	| for each team in teams(
+	 * 			|	canHaveAsTeam(team))
+	 * @invar	| for each team in teams(
+	 * 			|	(team.getWorld() == this))
+	 * @invar	| teams.size() <= 10
 	 */
-	private HashSet<String> teamNames = new HashSet<String>();
-	
-	
+	private HashSet<Team> teams = new HashSet<Team>();
+
 	
 	
 	/**
@@ -559,6 +627,7 @@ public class World {
 	 * 
 	 * @param 	food
 	 * 			The food to check.
+	 * @Return	| result == this.foodRations.contains(food)
 	 */
 	@Basic @Raw
 	public boolean hasAsFood(Food food){
@@ -625,7 +694,7 @@ public class World {
 	 * @param 	food
 	 * 			The food to be added.
 	 * @post	| new.hasAsFood(food)
-	 * @post	|�(new food).getWorld() == this
+	 * @post	| (new food).getWorld() == this
 	 * @throws 	IllegalArgumentException("You can't add this food.")
 	 * 			| !canHaveAsFood(food)
 	 * @throws 	IllegalArgumentException("You can't add this food.")
@@ -664,7 +733,7 @@ public class World {
 	
 	
 	/**
-	 * Set collecting references to food rations attached to this world.
+	 * A set collecting references to food rations attached to this world.
 	 * 
 	 * @invar	| foodRations != null
 	 * @invar	| for each foodRations in foodRations
@@ -797,7 +866,9 @@ public class World {
 	}
 	
 	/**
-	 * returns whether or not this world can have the given worm as a worm or not.
+	 * Returns whether or not this world can have the given worm 
+	 * as one of its worms or not.
+	 * 
 	 * @param 	worm
 	 * 			the given worm.
 	 * @return	|(worm != null) && worm.isAlive()
@@ -812,6 +883,7 @@ public class World {
 	 * 
 	 * @param 	worm
 	 * 			the worm to check
+	 * @return	| result == this.worms.contains(worm)
 	 */
 	@Basic  @Raw
 	public boolean hasAsWorm(Worm worm){
@@ -871,26 +943,17 @@ public class World {
 		Worm newWorm = new Worm(testX, testY, 0, 0.25, name);
 		this.addAsWorm(newWorm);
 		
-		if(teamNames.size() > 1){
-			String smallestTeam = "";
-			int smallestSize = -1;
-			for(String teamName : teamNames){
-				int size = 0;
-				for(Worm worm : worms){
-					if(worm.getTeamName() == teamName)
-						size++;
-				}
-				if(smallestSize == -1){
+		if(teams.size() > 1){
+			Team smallestTeam = null;
+			int smallestSize = Integer.MAX_VALUE;
+			for(Team team : teams){
+				int size = team.getSizeOfTeam();
+				if(size < smallestSize){
 					smallestSize = size;
-					smallestTeam = teamName;
-				}
-				else if(size < smallestSize){
-					smallestSize = size;
-					smallestTeam = teamName;
+					smallestTeam = team;
 				}	
 			}
-			
-			newWorm.setTeam(smallestTeam);
+			smallestTeam.addAsTeamWorm(newWorm);
 		}
 	}
 	
@@ -947,7 +1010,7 @@ public class World {
 	}
 	
 	/**
-	 * set collecting references to worms attached to this world.
+	 * Set collecting references to worms attached to the world.
 	 * 
 	 * @invar	each element in the set of worms references
 	 * 			a worm that is a acceptable worm for this world.

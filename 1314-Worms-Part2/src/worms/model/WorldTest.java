@@ -232,8 +232,9 @@ public class WorldTest {
 	
 	@Test
 	public void hasAsTeam_legalCase(){
-		testWorld1.addEmptyTeam("Pieter");
-		assertTrue(testWorld1.hasAsTeam("Pieter"));
+		Team team = new Team("Pieter");
+		testWorld1.addAsTeam(team);
+		assertTrue(testWorld1.hasAsTeam(team));
 	}
 	
 

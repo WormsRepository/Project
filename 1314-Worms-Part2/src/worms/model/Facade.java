@@ -14,6 +14,9 @@ public class Facade implements IFacade {
 		catch(IllegalNameException x){
 			throw new ModelException("IllegalNameException");
 		}
+		catch(IllegalArgumentException x){
+			throw new ModelException("IllegalArgumentException");
+		}
 	}
 
 	@Override
@@ -229,7 +232,9 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getTeamName(Worm worm) {
-		return worm.getTeamName();
+		if(worm.getTeam() == null)
+			return "";
+		return worm.getTeam().getTeamName();
 	}
 
 	@Override

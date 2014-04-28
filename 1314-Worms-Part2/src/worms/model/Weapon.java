@@ -7,10 +7,10 @@ import be.kuleuven.cs.som.annotate.Raw;
 /**
  * A class of weapons associated with a worm.
  * 
- *@invar 	|isValidWeapon(getCurrentWeapon())
+ * @invar 	|isValidWeapon(getCurrentWeapon())
  *
- *@version 1.0
- *@author Laurens Loots, Pieter Vos
+ * @version 1.0
+ * @author Laurens Loots, Pieter Vos
  */
 public class Weapon {
 	

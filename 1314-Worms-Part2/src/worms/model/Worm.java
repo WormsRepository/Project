@@ -686,50 +686,78 @@ public class Worm {
 	
 	
 	/**
-	 * Returns the team name the worm is in.
+	 * A variable referencing the team name of a worm.
+	 */
+	
+	
+	/**
+	 * Check whether this worm can be attached to the given team.
+	 * 
+	 * @param 	team
+	 * 			The team to check.
+	 * @return	True if and only if the team equals null or if
+	 * 			the given team can have this worm as one of its worms.
+	 * 			| result == ((team == null) || 
+	 * 			|				team.canHaveAsTeamWorm(this))
+	 */
+	@Raw
+	public boolean canHaveAsTeam(Team team){
+		return team == null || team.canHaveAsTeamWorm(this);
+	}
+	
+	/**
+	 * Check whether this worm has a proper team 
+	 * to which it is attached.
+	 * 
+	 * @return	True if and only if this worm can have the team that 
+	 * 			is attached to this worm as its team and if
+	 * 			the team that is attached to this worm equals null
+	 * 			or that team has this worm as one of its worms.
+	 * 			| result == canHaveAsTeam(getTeam()) && 
+	 * 			|		(getTeam() == null || getTeam().hasAsTeamWorm(this))
+	 */
+	@Raw
+	public boolean hasProperTeam(){
+		return canHaveAsTeam(getTeam()) &&
+				(getTeam() == null || getTeam().hasAsTeamWorm(this));
+	}
+	
+	/**
+	 * Return the team to which this worm is attached.
 	 */
 	@Basic @Raw
-	public String getTeamName()
-	{
+	public Team getTeam(){
 		return this.team;
 	}
 	
 	/**
-	 * Sets the team for a worm. 
+	 * Set the team to which this worm is attached to the given team.
 	 * 
-	 * @param 	team 
-	 * 			The new team the worm is assigned to.
-	 * @post	The team name of the worm is set to the given team name.
-	 * 			| new.getTeamName() == team
-	 * @throws	IllegalArgumentException()
-	 * 			| !canHaveAsTeam(team)
+	 * @param 	team
+	 * 			The team to attach this worm to.
+	 * @pre		If the given team doesn't equal null, then the given
+	 * 			team will have this worm as one of its worms.
+	 * 			| if(team != null)
+	 * 			|	then team.hasAsTeamWorm(this)
+	 * @pre		If the given team equals null and the old team of
+	 * 			this worm doesn't equal null then the given team
+	 * 			will not have this worm as one of its worms.
+	 * 			| if( (team == null) && (getTeam() != null) )
+	 * 			| 	then !getTeam().hasAsTeamWorm(this)
+	 * @post	The new team of this worm will be equal to the given team.
+	 * 			| new.getTeam() == team
 	 */
-	public void setTeam(String team)
-		throws IllegalArgumentException
-	{
-		if(!canHaveAsTeam(team))
-			throw new IllegalArgumentException();
+	@Raw
+	void setTeam(@Raw Team team){
+		assert(team == null || team.hasAsTeamWorm(this));
+		assert(team != null || getTeam() == null || !getTeam().hasAsTeamWorm(this));
 		this.team = team;
 	}
 	
 	/**
-	 * Returns whether the given team is a valid team.
-	 * 
-	 * @param	team
-	 * 			The team name to check.
-	 * @return	True if and only if the world has the team name as one of its team names.
-	 * 			| result == this.getWorld().hasAsteam(team)
+	 * Variable referencing the team to which this worm is attached.
 	 */
-	@Raw @Model
-	private boolean canHaveAsTeam(String team)
-	{
-		return this.getWorld().hasAsteam(team);
-	}
-	
-	/**
-	 * A variable referencing the team name of a worm.
-	 */
-	private String team = "no team";
+	private Team team = null;
 
 	
 	
@@ -746,12 +774,19 @@ public class Worm {
 	 * 
 	 * @post	The worm is no longer alive.
 	 * 			| new.isAlive() = false
+	 * @effect	If the team of the worm doesn't equal null, this worm will
+	 * 			no longer be part of that team.
+	 * 			| if(this.getTeam() != null)
+	 * 			|	then( this.getTeam().removeAsTeamWorm(this) )
 	 * @effect	The turn of the worm ends
 	 * 			| this.getWorld().startNextTurn()
 	 * @effect	The worm is removed from his world.
 	 * 			| this.getworld().removeAsWorm(this)
 	 */
 	public void wormDeath(){
+		if(this.getTeam() != null)
+			this.getTeam().removeAsTeamWorm(this);
+		//TODO enkel van turn veranderen als de geddoode worm ook de current worm is.
 		this.getWorld().startNextTurn();
 		this.getWorld().removeAsWorm(this);
 		this.isAlive = false;
