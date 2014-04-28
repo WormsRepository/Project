@@ -10,6 +10,14 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 
+/**
+ * A class of worlds involving a width, a height, a passable map,
+ * food rations, worms, teams and projectiles.
+ * 
+ * @version 1.0
+ * @author 	Laurens Loots, Pieter Vos
+ */
+//TODO class invariants...
 public class World {
 	
 	/**
@@ -952,6 +960,8 @@ public class World {
 	 */
 	private LinkedHashSet<Worm> worms = new LinkedHashSet<Worm>();
 
+	
+	//TODO hasProperWorms()
 	//WORM
 	
 	

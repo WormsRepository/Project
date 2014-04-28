@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 /**
- * a class of weapons associated with a worm.
+ * A class of weapons associated with a worm.
  * 
  *@invar 	|isValidWeapon(getCurrentWeapon())
  *
