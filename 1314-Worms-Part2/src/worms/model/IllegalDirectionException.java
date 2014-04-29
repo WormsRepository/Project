@@ -35,19 +35,17 @@ public class IllegalDirectionException extends RuntimeException
 	}
 	
 	/**
-	 * Initialize this new illegal direction exception with given direction and given worm.
+	 * Initialize this new illegal direction exception with given direction and no worm.
 	 * 
 	 * @param	direction
 	 * 			The direction for this new illegal direction exception.
-	 * @post	The direction of this new illegal direction exception is equal to the given direction.
-	 * 			| new.getDirection() == direction
-	 * @effect	This new illegal direction exception is further initialized as a new runtime exception
-	 * 			involving no diagnostic message and no cause.
-	 * 			| super()
+	 * @effect	This new illegal direction exception is initialized with the given direction
+	 * 			as its direction and null as the worm it references.
+	 * 			| this(direction, null)
 	 */
 	public IllegalDirectionException(double direction)
 	{
-		this.direction = direction;
+		this(direction, null);
 	}
 
 
@@ -78,5 +76,5 @@ public class IllegalDirectionException extends RuntimeException
 	/**
 	 * Variable referencing the worm of this illegal direction exception.
 	 */
-	private Worm worm;
+	private final Worm worm;
 }

@@ -35,19 +35,17 @@ public class IllegalRadiusException extends RuntimeException
 	}
 	
 	/**
-	 * Initialize this new illegal radius exception with given radius and given worm.
+	 * Initialize this new illegal radius exception with given radius and no worm.
 	 * 
 	 * @param	radius
 	 * 			The radius for this new illegal radius exception.
-	 * @post	The radius of this new illegal radius exception is equal to the given radius.
-	 * 			| new.getRadius() == radius
-	 * @effect	This new illegal radius exception is further initialized as a new runtime exception
-	 * 			involving no diagnostic message and no cause.
-	 * 			| super()
+	 * @effect	This new illegal radius exception is initialized with the given radius
+	 * 			as its radius and null as the worm it references.
+	 * 			| this(radius, null)
 	 */
 	public IllegalRadiusException(double radius)
 	{
-		this.radius = radius;
+		this(radius, null);
 	}
 
 

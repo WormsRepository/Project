@@ -17,6 +17,16 @@ import be.kuleuven.cs.som.annotate.*;
 //TODO nakijken
 public class Team {
 
+	/**
+	 * Create a new team with the given team name
+	 * as its team name.
+	 * 
+	 * @param 	teamName
+	 * 			The team name for this new team.
+	 * @post	| new.getTeamName() == teamName
+	 * @throws 	IllegalNameException(teamName)
+	 * 			| !canHaveAsTeamName(teamName)
+	 */
 	public Team(String teamName) 
 			throws IllegalNameException{
 		if(!canHaveAsTeamName(teamName))

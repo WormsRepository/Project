@@ -778,16 +778,17 @@ public class Worm {
 	 * 			no longer be part of that team.
 	 * 			| if(this.getTeam() != null)
 	 * 			|	then( this.getTeam().removeAsTeamWorm(this) )
-	 * @effect	The turn of the worm ends
-	 * 			| this.getWorld().startNextTurn()
+	 * @effect	The turn of the worm ends if it was his turn.
+	 * 			| if(this == this.getWorld().getCurrentWorm())
+	 * 			| 	then( this.getWorld().startNextTurn() )
 	 * @effect	The worm is removed from his world.
 	 * 			| this.getworld().removeAsWorm(this)
 	 */
 	public void wormDeath(){
 		if(this.getTeam() != null)
 			this.getTeam().removeAsTeamWorm(this);
-		//TODO enkel van turn veranderen als de geddoode worm ook de current worm is.
-		this.getWorld().startNextTurn();
+		if(this == this.getWorld().getCurrentWorm())
+			this.getWorld().startNextTurn();
 		this.getWorld().removeAsWorm(this);
 		this.isAlive = false;
 	}

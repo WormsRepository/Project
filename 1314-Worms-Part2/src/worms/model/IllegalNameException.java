@@ -35,19 +35,17 @@ public class IllegalNameException extends RuntimeException
 	}
 	
 	/**
-	 * Initialize this new illegal name exception with given name and given worm.
+	 * Initialize this new illegal name exception with given name and no worm.
 	 * 
 	 * @param 	name
 	 * 			The name for this new illegal name exception.
-	 * @post	The name of this new illegal name exception is equal to the given name.
-	 * 			| new.getName() == name
-	 * @effect	This new illegal name exception is further initialized as a new runtime exception
-	 * 			involving no diagnostic message and no cause.
-	 * 			| super()
+	 * @effect	This new illegal name exception is initialized with the given name as its
+	 * 			name and null as the worm it references.
+	 * 			| this(name, null)
 	 */
 	public IllegalNameException(String name)
 	{
-		this.name = name;
+		this(name, null);
 	}
 
 
