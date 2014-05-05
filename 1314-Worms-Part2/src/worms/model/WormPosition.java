@@ -161,7 +161,7 @@ public class WormPosition extends Position{
 			}
 			temp = temp / 3.0;
 		}
-		if(temp < (1/72900.0)){
+		if(!this.getWorm().getWorld().isAdjacent(tempXY[0], tempXY[1], radius)){
 			if(tempTime < Math.PI)
 				return Math.PI;
 			else
@@ -268,24 +268,26 @@ public class WormPosition extends Position{
 			throws IllegalPositionException{
 		if(!canFall())
 			throw new IllegalPositionException(getX(), getY());
+		double radius = this.getWorm().getRadius();
 		double tempY = getY();
 		double temp = 0.5;
-		while(canFall(getX(),tempY) && temp >= (1/500.0)){
+		while(canFall(getX(),tempY) && temp >= (1.0/500.0)){
 			while(inMap(getX(),tempY) && canFall(getX(),tempY))
 				tempY -= temp;
 			if(!inMap(getX(),tempY))
 				tempY += temp;
 			temp = temp / 3.0;
 			while(!canFall(getX(),tempY) &&
-					!getWorm().getWorld().isAdjacent(getX(), tempY, this.getWorm().getRadius()) )
+					!getWorm().getWorld().isAdjacent(getX(), tempY, radius) )
 				tempY += temp;
 			temp = temp / 3.0;
 		}
 		// if 'temp' is smaller than 1/300 there will be no adjacent position after the fall,
 		// the worm will fall of the world and die.
-		if(temp < (1.0/4500.0))
+		if(canFall(getX(),tempY)){
+			setY(radius + 0.01);
 			this.getWorm().wormDeath();
-			
+		}
 		else{
 			if(this.getWorm().getWorld().isStarted())
 			this.getWorm().setCurrentHitPoints(this.getWorm().getCurrentHitPoints() - 

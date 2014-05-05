@@ -106,10 +106,7 @@ public class WormTest {
 
 	}
 
-	@Test
-	public void canMove_legalCase() {
-		assertTrue(wormRadius1.getWormPosition().canMove());
-	}
+	//TODO canMove testen
 
 	@Test
 	public void setRadius_legalCase()
