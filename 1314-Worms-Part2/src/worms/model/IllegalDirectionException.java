@@ -6,7 +6,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class of exceptions signaling an illegal direction for a jump.
- * 	Each illegal direction exception involves the illegal direction and the worm.
+ * 	Each illegal direction exception involves at least the illegal direction.
  * 
  * @author Laurens Loots, Pieter Vos
  */

@@ -6,7 +6,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class of exceptions signaling an illegal name of worms.
- * Each illegal name exception involves the illegal name and the worm.
+ * Each illegal name exception involves at least the illegal name.
  * 
  * @author Laurens Loots, Pieter Vos
  */

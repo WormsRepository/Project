@@ -43,12 +43,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean canFall(Worm worm) {
-		return worm.getPosition().canFall();
+		return worm.getWormPosition().canFall();
 	}
 
 	@Override
 	public boolean canMove(Worm worm) {
-		return worm.getPosition().canMove();
+		return worm.getWormPosition().canMove();
 	}
 
 	@Override
@@ -102,10 +102,10 @@ public class Facade implements IFacade {
 	public void fall(Worm worm) 
 			throws ModelException{
 		try{
-			worm.getPosition().fall();
+			worm.getWormPosition().fall();
 		}
-		catch(RuntimeException x){
-			throw new ModelException("RuntimeException");
+		catch(IllegalPositionException x){
+			throw new ModelException("IllegalPositionException");
 		}
 	}
 
@@ -143,7 +143,7 @@ public class Facade implements IFacade {
 	public double[] getJumpStep(Worm worm, double t) 
 			throws ModelException{
 		try{
-			return worm.getPosition().getJumpStep(t);
+			return worm.getWormPosition().getJumpStep(t);
 		}
 		catch(IllegalActionPointsException x){
 			throw new ModelException("IllegalActionPointsException");
@@ -170,7 +170,7 @@ public class Facade implements IFacade {
 	public double getJumpTime(Worm worm, double timeStep) 
 			throws ModelException{
 		try{
-			return worm.getPosition().getJumpTime();
+			return worm.getWormPosition().getJumpTime();
 		}
 		catch(IllegalActionPointsException x){
 			throw new ModelException("IllegalActionPointsException");
@@ -259,7 +259,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getX(Worm worm) {
-		return worm.getPosition().getX();
+		return worm.getWormPosition().getX();
 	}
 
 	@Override
@@ -274,7 +274,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getY(Worm worm) {
-		return worm.getPosition().getY();
+		return worm.getWormPosition().getY();
 	}
 
 	@Override
@@ -324,7 +324,7 @@ public class Facade implements IFacade {
 	public void jump(Worm worm, double timeStep) 
 			throws ModelException{
 		try{
-			worm.getPosition().jump();
+			worm.getWormPosition().jump();
 		}
 		catch(IllegalActionPointsException x){
 			throw new ModelException("IllegalActionPointsException");
@@ -332,16 +332,22 @@ public class Facade implements IFacade {
 		catch(IllegalDirectionException x){
 			throw new ModelException("IllegalDirectionException");
 		}
+		catch(IllegalPositionException x){
+			throw new ModelException("IllegalPositionException");
+		}
 	}
 
 	@Override
 	public void move(Worm worm) {
 		try
 		{
-			worm.getPosition().move();
+			worm.getWormPosition().move();
 		}
 		catch(IllegalDirectionException x){
 			throw new ModelException("IllegalDirectionException");
+		}
+		catch(IllegalPositionException x){
+			throw new ModelException("IllegalPositionException");
 		}
 	}
 

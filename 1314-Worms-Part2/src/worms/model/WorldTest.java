@@ -245,8 +245,8 @@ public class WorldTest {
 			testWorld1.addNewWorm();
 		}
 		for(Worm worm: testWorld1.getWorms()){
-			assertTrue(testWorld1.isAdjacent(worm.getPosition().getX(),
-					worm.getPosition().getY(),worm.getRadius()) == true);
+			assertTrue(testWorld1.isAdjacent(worm.getWormPosition().getX(),
+					worm.getWormPosition().getY(),worm.getRadius()) == true);
 			assertTrue(worm.getRadius() == 0.25);
 		}
 	}

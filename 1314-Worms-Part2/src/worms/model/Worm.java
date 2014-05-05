@@ -66,7 +66,7 @@ public class Worm {
 	public Worm(double x, double y, double direction, double radius,String name) 
 			throws IllegalRadiusException, IllegalNameException
 	{
-		position = new Position(this,x,y);
+		wormPosition = new WormPosition(this,x,y);
 		setDirection(direction);
 		setRadius(radius);
 		setCurrentActionPoints(getMaxActionPoints());
@@ -141,15 +141,15 @@ public class Worm {
 	 * Returns the reference to the position of this worm.
 	 */
 	@Basic @Raw
-	public Position getPosition()
+	public WormPosition getWormPosition()
 	{
-		return this.position;
+		return this.wormPosition;
 	}
 	
 	/**
 	 * Variable referencing the position of the worm.
 	 */
-	private final Position position;
+	private final WormPosition wormPosition;
 
 	
 	
@@ -233,8 +233,8 @@ public class Worm {
 	{
 		if(this.getWorld() == null)
 			return radius >= getMinimalRadius();
-		double x = this.getPosition().getX();
-		double y = this.getPosition().getY();
+		double x = this.getWormPosition().getX();
+		double y = this.getWormPosition().getY();
 		return x>radius && x<this.getWorld().getWidth() - radius &&
 		y>radius && y<this.getWorld().getHeight() - radius 
 		&& radius >= getMinimalRadius();

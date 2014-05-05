@@ -8,13 +8,11 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of projectile associated with a world involving an initial velocity,
  * a radius, a damage, a hitted worm, an x-coordinate, an y-coordinate, a direction,
  * a standard acceleration and a world.
- * 
- * @invar 	| isValidPosition(getX(), getY())
  *
  * @version 1.0
  * @author Laurens Loots, Pieter Vos
  */
-public class Projectile {
+public class Projectile extends Position{
 	
 	/**
 	 * Create a new projectile with the given arguments.
@@ -45,7 +43,7 @@ public class Projectile {
 	 * 			| !canHaveAsRadius(radius)
 	 */
 	public Projectile(Worm worm, double initialVelocity, double radius, int damage) 
-			throws IllegalRadiusException, IllegalArgumentException{
+			throws IllegalRadiusException, IllegalArgumentException, IllegalPositionException{
 		this.direction = worm.getDirection();
 		this.initialVelocity = initialVelocity;
 		if(!canHaveAsRadius(radius))
@@ -55,14 +53,15 @@ public class Projectile {
 		
 		this.setWorld(worm.getWorld());
 		try{
-			this.setInitialPosition(worm.getPosition().getX(), 
-					worm.getPosition().getY(), worm.getRadius());
+			this.setInitialPosition(worm.getWormPosition().getX(), 
+					worm.getWormPosition().getY(), worm.getRadius());
 		}
 		catch(IllegalArgumentException exc){
 			this.deactivate();
 			throw exc;
 		}
 	}
+	
 	
 	
 	/**
@@ -121,21 +120,7 @@ public class Projectile {
 	
 	
 	
-	/**
-	 * Return the x-coordinate of the position of the projectile (in meter).
-	 */
-	@Basic @Raw
-	public double getX() {
-		return this.x;
-	}
-	
-	/**
-	 * Return the y-coordinate of the position of the projectile (in meter).
-	 */
-	@Basic @Raw
-	public double getY() {
-		return this.y;
-	}
+
 
 	/**
 	 * Return the position of the projectile at a given time in a jump.
@@ -233,41 +218,6 @@ public class Projectile {
 	}
 	
 	/**
-	 * Return whether the given position is a valid position.
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate to check.
-	 * @param 	y
-	 * 			The y-coordinate to check.
-	 * @return	| result == !this.getWorld().isImpassable(x,y,this.getRadius())
-	 */
-	@Model
-	private boolean isValidPosition(double x, double y){
-		return !this.getWorld().isImpassable(x,y,this.getRadius());
-	}
-	
-	/**
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate to set.
-	 * @param 	y
-	 * 			The y-coordinate to set.
-	 * @post	| new.getX() == x
-	 * @post	| new.getY() == y
-	 * @throws 	IllegalArgumentException()
-	 * 			| !isValidPosition(x,y)
-	 */
-	@Model @Raw
-	private void setPosition(double x, double y) 
-			throws IllegalArgumentException{
-		if(!isValidPosition(x,y)){
-			throw new IllegalArgumentException("Invalid position");
-		}
-		this.x = x;
-		this.y = y;
-	}
-	
-	/**
 	 * Sets the initial position of the projectile.
 	 * 
 	 * @param 	xWorm
@@ -283,22 +233,13 @@ public class Projectile {
 	 */
 	@Model @Raw
 	private void setInitialPosition(double xWorm, double yWorm, double wormRadius) 
-			throws IllegalArgumentException{
+			throws IllegalPositionException{
 		double resultingRadius = this.getRadius() + wormRadius;
 		double xPos = xWorm + Math.cos(this.getDirection())*resultingRadius*1.05;
 		double yPos = yWorm + Math.sin(this.getDirection())*resultingRadius*1.05;
 		setPosition(xPos, yPos);
 	}
 	
-	/**
-	 * Variable registering the x-coordinate of a position of a projectile in meters.
-	 */
-	private double x;
-
-	/**
-	 * Variable registering the y-coordinate of a position of a projectile in meters.
-	 */
-	private double y;
 	
 	
 
@@ -418,7 +359,8 @@ public class Projectile {
 	 * 			| !isValidWorld(world) || 
 	 * 			| (world != null && world.getProjectile() != null)
 	 */
-	public void setWorld(World world){
+	public void setWorld(World world) 
+			throws IllegalArgumentException{
 		if(!isValidWorld(world))
 			throw new IllegalArgumentException();
 		if(world != null && world.getProjectile() != null)
@@ -430,7 +372,7 @@ public class Projectile {
 	/**
 	 * Variable referencing the world to which this projectile belongs.
 	 */
-	private World world;
+	private World world = null;
 	
 	
 	
@@ -438,4 +380,21 @@ public class Projectile {
 	 * Final class variable registering the standard acceleration (m/(s*s)).
 	 */
 	private final static double STANDARD_ACCELERATION = 9.80665;
+
+
+	
+	/**
+	 * Check if the given position is a valid position for any projectile.
+	 * 
+	 * @Return	If the world attached to this projectile exists it is 
+	 * 			true if and only if the projectile does not lie 
+	 * 			in an impassable part of the map.
+	 * 			| result == !this.getWorld().isImpassable(x,y,this.getRadius())
+	 */
+	@Override @Model
+	protected boolean isValidPosition(double x, double y) {
+		if(this.getWorld() == null)
+			return x>=0 && y>=0;
+		return !this.getWorld().isImpassable(x,y,this.getRadius());
+	}
 }

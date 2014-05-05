@@ -6,8 +6,9 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * A class of exceptions signaling an illegal radius of worms.
- * 	Each illegal radius exception involves the illegal radius and the worm.
+ * 	Each illegal radius exception involves at least the illegal radius.
  * 
+ * @version	1.0
  * @author Laurens Loots, Pieter Vos
  */
 @SuppressWarnings("serial")

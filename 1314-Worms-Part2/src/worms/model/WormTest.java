@@ -21,11 +21,6 @@ public class WormTest {
 	private static Worm wormRadius1;
 
 	/**
-	 * Variable referencing a worm with direction 4.
-	 */
-	private static Worm wormDirection4;
-
-	/**
 	 * Variable referencing a worm with direction 2.
 	 */
 	private static Worm wormDirection2;
@@ -50,13 +45,11 @@ public class WormTest {
 	/**
 	 * Set up a mutable test fixture.
 	 * 
-	 * @post The variable wormDirection4 references a new worm with radius 0.25, x and y coordinates 0, and direction 4.
 	 * @post The variable wormDirection2 references a new worm with radius 0.25, x and y coordinates 0, and direction 2.
 	 * @post The variable wormDirection0 references a new worm with radius 0.25, x and y coordinates 0, and direction 0.
 	 */
 	@Before
 	public void setUpMutableFixture(){
-		wormDirection4 = new Worm(0.0 , 0.0 , 4 , 0.25 , "Pieter");
 		wormDirection2 = new Worm(0.0 , 0.0 , 2 , 0.25 , "Pieter");
 		wormDirection0 = new Worm(0.0 , 0.0 , 0 , 0.25 , "Laurens");
 	}
@@ -76,8 +69,8 @@ public class WormTest {
 	public void constructor_LegalCase()
 		throws Exception	{
 		Worm myWorm = new Worm(0.0 , 0.0 , Math.PI/2 , 0.30 , "Pieter");
-		assertTrue(myWorm.getPosition().getX() == 0);
-		assertTrue(myWorm.getPosition().getY() == 0);
+		assertTrue(myWorm.getWormPosition().getX() == 0);
+		assertTrue(myWorm.getWormPosition().getY() == 0);
 		assertTrue(myWorm.getDirection() == Math.PI/2);
 		assertTrue(myWorm.getRadius() == 0.30);
 		assertTrue(myWorm.getCurrentActionPoints() == (int)Math.round(myWorm.getMass()));
@@ -115,7 +108,7 @@ public class WormTest {
 
 	@Test
 	public void canMove_legalCase() {
-		assertTrue(wormRadius1.getPosition().canMove());
+		assertTrue(wormRadius1.getWormPosition().canMove());
 	}
 
 	@Test

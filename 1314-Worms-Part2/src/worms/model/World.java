@@ -856,8 +856,8 @@ public class World {
 		if(isImpassable(x,y,radius))
 			return null;
 		for(Worm worm: worms){
-			if(Math.pow(Math.pow((worm.getPosition().getX() - x), 2) + 
-				Math.pow((worm.getPosition().getY() - y), 2),(1/2.0)) <= 
+			if(Math.pow(Math.pow((worm.getWormPosition().getX() - x), 2) + 
+				Math.pow((worm.getWormPosition().getY() - y), 2),(1/2.0)) <= 
 					(worm.getRadius() + radius)){
 				return worm;
 			}

@@ -1,21 +1,18 @@
 package worms.model;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
-import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.annotate.*;
 
 
 /**
  * A class of food rations involving an x-coordinate, an y-coordinate, 
  * a radius (in meter), the activity of food rations and a world.
  * 
- * @invar	| isValidPosition(getX(),getY())
  * @invar	| hasProperWorld()
  * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
  */
-public class Food {
+public class Food extends Position{
 	
 	/**
 	 * Create a new food ration that is positioned at the given
@@ -25,11 +22,11 @@ public class Food {
 	 * 			The x-coordinate of this new food ration (in meter).
 	 * @param 	y
 	 * 			The y-coordinate of this new food ration (in meter).
-	 * @effect	| this.setPosition(x,y)
+	 * @effect	| super(x,y)
 	 */
 	public Food(double x, double y) 
-			throws IllegalArgumentException{
-		this.setPosition(x,y);
+			throws IllegalPositionException{
+		super(x,y);
 	}
 	
 	
@@ -121,72 +118,11 @@ public class Food {
 	
 	
 	
-	/**
-	 * Checks whether or not the given position is a valid position 
-	 * in the world where this food ration belongs to.
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate to check.
-	 * @param 	y
-	 * 			The y-coordinate to check.
-	 * @return	| x >= 0 && y >= 0
-	 */
-	@Raw
-	public boolean isValidPosition(double x, double y){
-		return x >= 0 && y >= 0;
-	}
-	
-	/**
-	 * Returns the x-coordinate of this food ration.
-	 */
-	@Basic @Raw
-	public double getX(){
-		return this.x;
-	}
-	
-	/**
-	 * Returns the y-coordinate of this food ration.
-	 */
-	@Basic @Raw
-	public double getY(){
-		return this.y;
-	}
-	
-	/**
-	 * Sets the x-coordinate and y-coordinate to the given coordinates.
-	 * 
-	 * @param 	x
-	 * 			The x-coordinate to set.
-	 * @param 	y
-	 * 			The y-coordinate to set.
-	 * @throws 	IllegalArgumentException("This is not a valid position to place a food ration!")
-	 * 			| !isValidPosition(x,y)
-	 */
-	@Model @Raw
-	private void setPosition(double x, double y) 
-			throws IllegalArgumentException{
-		if(! isValidPosition(x,y))
-			throw new IllegalArgumentException("This is not a valid position to place a food ration!");
-		this.x = x;
-		this.y = y;
-	}
-	
-	/**
-	 * The x-coordinate of this food ration.
-	 */
-	private double x = 0;
-	
-	/**
-	 * The y-coordinate of this food ration.
-	 */
-	private double y = 0;
-	
-	
 	
 	/**
 	 * Returns the radius of this food ration.
 	 */
-	@Basic @Raw
+	@Basic @Raw @Immutable
 	public static double getRadius(){
 		return RADIUS;
 	}
@@ -195,4 +131,23 @@ public class Food {
 	 * The radius of a food ration.
 	 */
 	private static final double RADIUS = 0.20;
+
+
+
+	/**
+	 * Check if the given position is a valid position for any food.
+	 * 
+	 * @return 	The food ration must lie fully within the borders of the world.
+	 * 			| if(this.getWorld() != null)
+	 * 			|	then( result == (x>RADIUS && 
+	 * 			|		x<this.getWorld().getWidth() - RADIUS &&
+				|		y>RADIUS && y<this.getWorld().getHeight() - RADIUS) )
+	 */
+	@Override
+	protected boolean isValidPosition(double x, double y) {
+		if(this.getWorld() == null)
+			return x>=0 && y>=0;
+		return x>RADIUS && x<this.getWorld().getWidth() - RADIUS &&
+				y>RADIUS && y<this.getWorld().getHeight() - RADIUS;
+	}
 }
