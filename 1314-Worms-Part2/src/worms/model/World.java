@@ -14,10 +14,17 @@ import be.kuleuven.cs.som.annotate.Raw;
  * A class of worlds involving a width, a height, a passable map,
  * food rations, worms, teams and projectiles.
  * 
+ * @invar	| canHaveAsWidthOrHeight(getWidth())
+ * @invar	| canHaveAsWidthOrHeight(getHeight())
+ * @invar	| hasProperTeams()
+ * @invar	| hasProperFoodRations()
+ * @invar	| hasProperWorms()
+ * @invar	| hasProperProjectile()
+ * 
  * @version 1.0
  * @author 	Laurens Loots, Pieter Vos
  */
-//TODO class invariants...
+//TODO check class invariants
 public class World {
 	
 	/**
@@ -363,21 +370,15 @@ public class World {
 	/**
 	 * Returns whether the game in the given world has finished.
 	 * 
-	 * @return
-	 * 		|if (worms.size() <= 1)
-	 *		|	return true;
-	 *		|String winner = "";
-	 *		|	for(Worm worm : worms)
-	 *		|	{
-	 *		|		if (winner.equals("") && !worm.getTeamName().equals("no team"))
-	 *		|			winner = worm.getTeamName();
-	 *		|		if (!worm.getTeamName().equals(winner))
-	 *		|			return false;
-	 *		|	}
-	 *		|	return true;
-	 * 
+	 * @return	| if (worms.size() <= 1)
+	 *			|	then(result == true);
+	 *			| else if(teams.size() == 1)
+	 *			|	then(	for each worm in worms:
+	 *			|				(if(worm.getTeam() == null)
+	 *			|					then(result == false))
+	 *			| 			else result == true)
+	 *			| else (result == false)
 	*/
-	//TODO documentation
 	public boolean isGameFinished(){
 		if (worms.size() <= 1)
 			return true;
@@ -393,19 +394,15 @@ public class World {
 	
 	/**
 	 * Returns the name of a single worm if that worm is the winner, or the name
-	 * of a team if that team is the winner. This method should null if there is no winner.
+	 * of a team if that team is the winner. This method returns null if there is no winner.
 	 * 
-	 * @return	|for( Worm worm : worms)
-	 *			|{
-	 *			|	if(worm != null)
-	 *			|	{
-	 *			|		if (!this.hasAsteam(worm.getTeamName()))
-	 *			|			return worm.getName();
-	 *			|		else
-	 *			|			return worm.getTeamName();
-	 *			}
+	 * @return	| for each worm in worms:
+	 * 			|	(if(worm.getTeam() == null)
+	 * 			|		then (result == worm.getName())
+	 * 			|		else (result == worm.getTeamName())
+	 * 			|	)
+	 * 			| else (result == null)
 	 */
-	//TODO documentation
 	public String getWinner(){
 		for(Worm worm: worms){
 			if(worm.getTeam() == null)
@@ -413,7 +410,7 @@ public class World {
 			else
 				return worm.getTeam().getTeamName();
 		}
-		return "No winner";
+		return null;
 	}
 	
 	
@@ -878,6 +875,23 @@ public class World {
 	}
 	
 	/**
+	 * Check whether this world has proper worms attached to it.
+	 * 
+	 * @return	| result ==
+	 * 			|	for each worm in Worm:
+	 * 			|		( if (this.hasAsWorm(worm))
+	 * 			|			then (canHaveAsWorm(worm)
+	 * 			|				&& (worm.getWorld() == this)) )
+	 */
+	public boolean hasProperWorms(){
+		for(Worm worm: this.worms){
+			if(!canHaveAsWorm(worm) || worm.getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * check whether this world has the given worm as one
 	 * of its worms attached to it.
 	 * 
@@ -1024,9 +1038,31 @@ public class World {
 	private LinkedHashSet<Worm> worms = new LinkedHashSet<Worm>();
 
 	
-	//TODO hasProperWorms()
 	//WORM
 	
+	/**
+	 * Check whether this world can have the given projectile
+	 * as its projectile.
+	 * 
+	 * @param 	projectile
+	 * 			The projectile to check.
+	 * @return	| result == ( (projectile == null) ||
+	 * 			|					(projectile.isActive()) )
+	 */
+	public boolean canHaveAsProjectile(Projectile projectile){
+		return projectile == null || projectile.isActive();
+	}
+	
+	/**
+	 * Check whether this world has a proper projectile attached to it.
+	 * 
+	 * @return	| result == canHaveAsprojectile(this.projectile) && 
+	 * 			|				(projectile == null || this.projectile.getWorld() == this)
+	 */
+	public boolean hasProperProjectile(){
+		return canHaveAsProjectile(this.projectile) && 
+				(projectile == null || this.projectile.getWorld() == this);
+	}
 	
 	/**
 	 * Returns the active projectile in the world, or null if no active projectile exists.
@@ -1037,16 +1073,21 @@ public class World {
 	
 	/**
 	 * Sets the given projectile as the new active projectile in this world.
-	 * @pre		|if(projectile != null
-	 * 			|  	then projectile.getWorld() == this
-	 * @pre		|if(projectile == null && getProjectile() != null
-	 * 			|	then !(getProjectile().getWorld() == this)
 	 * 
-	 * @post	|new.projectile == projectile
+	 * @pre		| if(projectile != null)
+	 * 			|  	then (projectile.getWorld() == this)
+	 * @pre		| if(projectile == null && getProjectile() != null)
+	 * 			|	then !(getProjectile().getWorld() == this)
+	 * @post	| new.projectile == projectile
+	 * @throws	IllegalArgumentException("Invalid projectile")
+	 * 			| !canHaveAsProjectile(projectile)
 	 */
-	public void setProjectile(Projectile projectile){
+	public void setProjectile(Projectile projectile) 
+			throws IllegalArgumentException{
 		assert(projectile == null || projectile.getWorld() == this);
 		assert(projectile != null || getProjectile() == null || !(getProjectile().getWorld() == this));
+		if(!canHaveAsProjectile(projectile))
+			throw new IllegalArgumentException("Invalid projectile");
 		this.projectile = projectile;
 	}
 	
