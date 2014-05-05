@@ -16,11 +16,6 @@ import org.junit.*;
 public class WormTest {
 
 	/**
-	 * Variable referencing a worm with radius 1.
-	 */
-	private static Worm wormRadius1;
-
-	/**
 	 * Variable referencing a worm with direction 2.
 	 */
 	private static Worm wormDirection2;
@@ -61,7 +56,6 @@ public class WormTest {
 	 */
 	@BeforeClass
 	public static void setUpImmutableFixture(){
-		wormRadius1 = new Worm(0.0 , 0.0 , Math.PI/2 , 1.0 , "Pieter");
 		world = new World(4.0, 4.0, passableMap, random);
 	}
 
